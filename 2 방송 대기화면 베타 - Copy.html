@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실시간 정보 및 일정 안내</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            background-color: #000000;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            transition: background 0.5s ease;
+        }
+
+        .screen {
+            /* 기본 모드 (화면 전환) 스타일 */
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 1s ease-in-out;
+            z-index: 10; padding: 1rem;
+        }
+
+        /* [추가됨] 위젯 모드 활성화 시 스타일 */
+        body.widget-mode {
+            display: grid !important;
+            grid-template-columns: 1.6fr 1fr; 
+            grid-template-rows: 1fr 1fr;
+            grid-template-areas: 
+                "area1 area2"
+                "area1 area3";
+            gap: 1.5rem;
+            padding: 2rem;
+            height: 100vh;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        
+        body.widget-mode .screen {
+            position: relative !important;
+            width: 100% !important;
+            height: 100% !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            top: auto !important; 
+            left: auto !important;
+            transform: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10 !important;
+        }
+        
+        /* 위젯 모드일 때 설정 창 위치 보정 (중앙 유지) */
+        body.widget-mode #settings-modal {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* [수정됨] 메인 카드: 가로 길이를 내용에 맞춤 */
+        .glass-card {
+            width: fit-content; /* 내용량에 맞춰 줄어듦 */
+            min-width: 320px;   /* 최소 너비 */
+            max-width: 90vw;    /* 화면 넘침 방지 */
+            margin: 0 auto;     /* 중앙 정렬 */
+            
+            /* 기존 스타일 유지 */
+            background: radial-gradient(125% 125% at 50% 20%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.03) 100%);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border-radius: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.6);
+            border-left: 1px solid rgba(255, 255, 255, 0.6);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.4),
+                inset 2px 2px 15px rgba(255, 255, 255, 0.25),
+                inset -5px -5px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.5s ease-in-out, backdrop-filter 1s ease-out, -webkit-backdrop-filter 1s ease-out;
+        }
+
+        /* [수정됨] 설정 버튼 등 원형 버튼 스타일 강화 (로고 박스와 동일 효과) */
+        .edit-btn, #back-settings-btn, #close-settings-btn {
+            background: radial-gradient(125% 125% at 50% 20%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.03) 100%);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border-top: 1px solid rgba(255, 255, 255, 0.6);
+            border-left: 1px solid rgba(255, 255, 255, 0.6);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), inset 1px 1px 5px rgba(255, 255, 255, 0.2);
+            
+            /* 크기 및 레이아웃 */
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            color: white; /* 텍스트 색상 강제 지정 */
+        }
+        .edit-btn:hover, #back-settings-btn:hover, #close-settings-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 1px 1px 8px rgba(255, 255, 255, 0.3);
+            background: radial-gradient(125% 125% at 50% 20%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.05) 100%);
+        }
+
+        /* 2. 설정창 내부 섹션: 동일한 효과지만 약간 투명하게 */
+        .glass-section { 
+            background: radial-gradient(125% 125% at 50% 10%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+            backdrop-filter: blur(12px) saturate(150%);
+            -webkit-backdrop-filter: blur(12px) saturate(150%);
+            border-radius: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            border-left: 1px solid rgba(255, 255, 255, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 1px 1px 10px rgba(255,255,255,0.1);
+        }
+
+        /* 3. 입력창: 안으로 파인 느낌 대신 통일감을 위해 볼록하지만 조금 어두운 유리 느낌 */
+        .glass-input { 
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            border-left: 1px solid rgba(255, 255, 255, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px; 
+            padding: 0.75rem 1rem; 
+            color: white; 
+            transition: all 0.3s ease; 
+            box-shadow: inset 2px 2px 8px rgba(0,0,0,0.1);
+        }
+        .glass-input:focus { 
+            outline: none; 
+            background: rgba(255,255,255,0.2); 
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.3); 
+        }
+
+        /* 4. 버튼: 클릭 가능한 볼록 렌즈 효과 */
+        .glass-button { 
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05)); 
+            backdrop-filter: blur(8px) saturate(140%); 
+            -webkit-backdrop-filter: blur(8px) saturate(140%); 
+            border-top: 1px solid rgba(255,255,255,0.5); 
+            border-left: 1px solid rgba(255,255,255,0.5); 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+            border-right: 1px solid rgba(255,255,255,0.1); 
+            color: white; 
+            border-radius: 12px; 
+            padding: 0.75rem 1.5rem; 
+            font-weight: 600; 
+            transition: all 0.3s ease; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2), inset 1px 1px 5px rgba(255,255,255,0.2);
+        }
+        .glass-button:hover { 
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1)); 
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3), inset 1px 1px 5px rgba(255,255,255,0.3);
+        }
+
+        /* 5. D-Day 배너: 좌측 상단 작은 배너에도 동일 효과 적용 */
+        #dday-banner {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 45;
+            display: none;
+            padding: 0.55rem 1.2rem; /* 입체감을 위해 패딩 미세 조정 */
+            border-radius: 50px;   /* Pill(알약) 디자인 적용 */
+            color: #ffffff;
+            font-weight: 700;
+            
+            /* 학교 로고 박스와 동일한 stereoscopic glass 효과 적용 */
+            background: radial-gradient(125% 125% at 50% 20%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.03) 100%);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border-top: 1px solid rgba(255, 255, 255, 0.6);
+            border-left: 1px solid rgba(255, 255, 255, 0.6);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.4),
+                inset 2px 2px 15px rgba(255, 255, 255, 0.25),
+                inset -5px -5px 15px rgba(0, 0, 0, 0.15);
+                
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+            min-width: 160px;
+            max-width: 380px;
+        }
+        
+        .settings-container { position: fixed; top: 5px; right: 5px; z-index: 50; padding: 10px; opacity: 0; transition: opacity 0.5s ease; }
+        .edit-btn { background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 4px 10px rgba(0,0,0,0.2); width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; transition: background 0.3s; }
+        .edit-btn:hover { background: rgba(255,255,255,0.2); }
+        .edit-svg { color: white; transition: transform 0.3s; }
+        .edit-btn:hover .edit-svg { transform: scale(1.1); }
+
+        .font-notosanskr { font-family: 'Noto Sans KR', sans-serif; }
+        .font-nanumgothic { font-family: 'Nanum Gothic', sans-serif; }
+        .font-system { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        .settings-view { transition: opacity 0.3s ease; }
+
+        /* D-Day 배너 (화면 좌측 상단) - 카드 디자인과 일치하도록 스타일링 */
+        #dday-banner {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 45;
+            display: none;
+            padding: 0.55rem 1.2rem; /* 입체감을 위해 패딩 미세 조정 */
+            border-radius: 50px;   /* Pill(알약) 디자인 적용 */
+            color: #ffffff;
+            font-weight: 700;
+            
+            /* 학교 로고 박스와 동일한 stereoscopic glass 효과 적용 */
+            background: radial-gradient(125% 125% at 50% 20%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.03) 100%);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border-top: 1px solid rgba(255, 255, 255, 0.6);
+            border-left: 1px solid rgba(255, 255, 255, 0.6);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.4),
+                inset 2px 2px 15px rgba(255, 255, 255, 0.25),
+                inset -5px -5px 15px rgba(0, 0, 0, 0.15);
+                
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+            min-width: 160px;
+            max-width: 380px;
+        }
+        #dday-banner .dday-count { font-size: 1rem; padding: 0.15rem 0.5rem; border-radius: 999px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+        #dday-banner .dday-title { font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* 빨간 상태 (일주일 이내) */
+        #dday-banner.red {
+            background: rgba(255, 40, 40, 0.12);
+            border-color: rgba(255, 40, 40, 0.6);
+            box-shadow: 0 6px 20px rgba(255,40,40,0.08);
+        }
+        #dday-banner.red .dday-count { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+
+        /* Settings sidebar & galaxy style additions */
+    .settings-layout { display: flex; gap: 1rem; align-items: stretch; }
+        .settings-sidebar { min-width: 14rem; max-height: 70vh; overflow: auto; }
+        .settings-details { min-height: 320px; }
+
+        .sidebar-item { transition: all 0.22s ease; border: 1px solid transparent; }
+        .sidebar-item:hover { transform: translateX(6px); background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.06); }
+        .sidebar-item:focus { outline: none; box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+        .sidebar-item[aria-pressed="true"], .sidebar-item.active { background: linear-gradient(90deg, rgba(99,102,241,0.07), rgba(255,255,255,0.03)); box-shadow: 0 8px 30px rgba(80,60,200,0.06); border-color: rgba(255,255,255,0.14); }
+
+        /* detail panel glass enhancement */
+        .settings-details .glass-section { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius: 14px; }
+
+    /* background preview helpers */
+        #bg-preview { background-size: cover; background-position: center; border-radius: 10px; }
+    /* removed bg-logo-preview (logo is edited in profile view) */
+
+    /* sidebar profile */
+    .sidebar-profile { border-bottom: 1px solid rgba(255,255,255,0.03); margin-bottom: 0.6rem; }
+    .sidebar-profile img { box-shadow: 0 6px 18px rgba(0,0,0,0.35); }
+    #sidebar-school-name { cursor: pointer; }
+    #sidebar-school-name:hover { text-decoration: underline; }
+
+    /* Info view tabs */
+    .info-tabs { display: flex; gap: 0.5rem; }
+    .info-tab-button { padding: 0.5rem 0.75rem; border-radius: 8px; background: rgba(255,255,255,0.04); color: #fff; border: 1px solid rgba(255,255,255,0.06); cursor: pointer; }
+    .info-tab-button.active { background: linear-gradient(90deg, rgba(99,102,241,0.09), rgba(255,255,255,0.02)); box-shadow: 0 6px 18px rgba(80,60,200,0.06); }
+    .info-tab-content { color: #eaeef8; }
+
+        /* auxiliary clock (for schedule and custom message screens) */
+    .aux-clock { display: none; text-align: center; margin-bottom: 1rem; }
+    /* Make auxiliary clocks visually match the main weather clock (responsive) */
+    .aux-clock .aux-time { font-weight: 800; line-height: 1; font-size: 3.75rem; /* text-6xl */ }
+    @media (min-width: 640px) { .aux-clock .aux-time { font-size: 6rem; /* text-8xl */ } }
+    .aux-clock .aux-date { font-size: 1.5rem; /* text-2xl */ opacity: 0.95; margin-top: 0.25rem; }
+
+        /* Auto darken: when body has .bg-darken, darken card backgrounds but KEEP TEXT WHITE.
+           We add an overlay (::before) on glass elements and strong text-shadow on key text
+           so legibility is improved on very bright backgrounds without making text dark. */
+        .bg-darken .glass-card,
+        .bg-darken .glass-section {
+            background: rgba(0,0,0,0.48) !important; /* darker card */
+            border-color: rgba(255,255,255,0.06) !important;
+            position: relative; /* for overlay */
+            overflow: visible;
+        }
+        /* subtle darker overlay behind card content for stronger contrast */
+        .bg-darken .glass-card::before,
+        .bg-darken .glass-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: rgba(0,0,0,0.36);
+            z-index: 0;
+            pointer-events: none;
+        }
+        /* ensure card contents render above overlay */
+        .bg-darken .glass-card > *,
+        .bg-darken .glass-section > * {
+            position: relative;
+            z-index: 1;
+        }
+        /* preserve white text color, but add heavy shadows for readability */
+        .bg-darken #current-time,
+        .bg-darken .aux-time,
+        .bg-darken h1,
+        .bg-darken h2,
+        .bg-darken h3,
+        .bg-darken .text-white,
+        .bg-darken .dday-title,
+        .bg-darken .dday-count,
+        .bg-darken .glass-card .text-lg,
+        .bg-darken .glass-card .text-xl {
+            color: #ffffff !important;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 3px 8px rgba(0,0,0,0.45) !important;
+        }
+        .bg-darken .glass-card.no-initial-blur { backdrop-filter: blur(6px) !important; }
+
+        /* responsive: stack on small screens */
+        @media (max-width: 720px) {
+            .settings-layout { flex-direction: column; }
+            .settings-sidebar { width: 100%; display: flex; gap: 0.5rem; overflow-x: auto; }
+            .sidebar-item { min-width: 12rem; flex-shrink: 0; }
+        }
+
+        /* 6. 스크롤바 커스텀: 글래스모피즘 + 필(Pill) 디자인 */
+        ::-webkit-scrollbar {
+            width: 14px;
+        }
+        ::-webkit-scrollbar-track {
+            background-color: rgba(255, 255, 255, 0.02);
+            border-radius: 999px; /* 트랙도 둥글게 */
+            margin: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 999px; /* 알약 모양 */
+            border: 3px solid transparent; /* 트랙과의 간격을 위해 투명 테두리 사용 */
+            background-clip: content-box; /* 테두리 안쪽만 색칠 */
+            backdrop-filter: blur(4px);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* --- [새로 추가됨] 위젯 모드 및 글래스 UI 스타일 --- */
+
+        /* [수정됨] 체크박스: 흰색(White) 베이스 디자인 */
+        .glass-checkbox-input:checked + .glass-checkbox-box {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+            border-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3), inset 1px 1px 3px rgba(255,255,255,0.4);
+        }
+
+        /* [수정됨] 드래그 가능한 아이템 스타일 (설정창용) */
+        .draggable-item {
+            cursor: grab;
+            transition: transform 0.2s, box-shadow 0.2s;
+            user-select: none;
+        }
+        .draggable-item:active {
+            cursor: grabbing;
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        .draggable-item.dragging {
+            opacity: 0.5;
+            border: 2px dashed rgba(255,255,255,0.5);
+        }
+
+        /* 위젯 모드 개별 스크린 스타일 재정의 */
+        body.widget-mode .screen {
+            position: relative !important;
+            width: 100% !important;
+            height: 100% !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            top: auto !important; 
+            left: auto !important;
+            transform: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10 !important;
+        }
+
+        /* 위젯 모드에서 카드 크기 최적화 */
+        body.widget-mode .glass-card {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: none !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            border-radius: 24px;
+            overflow: hidden;
+        }
+
+        /* 위젯 모드에서 중복되는 보조 시계 숨김 */
+        body.widget-mode .aux-clock {
+            display: none !important;
+        }
+        
+        /* 위젯 모드에서 폰트 크기 반응형 조절 */
+        body.widget-mode h1 { font-size: 3rem; }
+        body.widget-mode h2 { font-size: 2rem; }
+        body.widget-mode .text-6xl { font-size: 2.5rem; }
+        
+        /* 모바일 대응: 세로로 쌓기 */
+        @media (max-width: 1024px) {
+            body.widget-mode {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1.2fr 1fr 1fr;
+                grid-template-areas: 
+                    "area1"
+                    "area2"
+                    "area3";
+                padding: 1rem;
+                overflow-y: auto;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white overflow-hidden">
+
+    <div class="settings-container">
+        <button id="settings-btn" class="edit-btn">
+            <svg class="edit-svg w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5L2 22l1.5-5.5L17 3z"/>
+            </svg>
+        </button>
+    </div>
+
+    <div id="settings-modal" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[60] p-6 glass-card" style="max-width:78rem;width:95%;max-height:92vh;overflow:auto;">
+        <div id="settings-header" class="flex justify-between items-center mb-4">
+            <button id="back-settings-btn" class="text-2xl text-white hover:text-sky-300 transition-colors hidden font-bold pr-4">&leftarrow;</button>
+            <h2 id="settings-title" class="text-2xl font-bold text-white flex-grow text-center sm:text-left">대시보드 설정</h2>
+            <button id="close-settings-btn" class="text-2xl text-white hover:text-sky-300 transition-colors">&times;</button>
+        </div>
+
+        <!-- Galaxy-style two column layout: left sidebar + right detail panel -->
+        <div id="settings-content-wrapper" class="overflow-hidden">
+            <div class="settings-layout flex gap-4">
+                <!-- Sidebar -->
+                <aside class="settings-sidebar w-56 p-3 space-y-3 glass-section" aria-label="설정 사이드바">
+                    <div id="sidebar-profile" class="sidebar-profile flex items-center gap-3 p-2" data-view="profile" tabindex="0" role="button" aria-pressed="false">
+                        <img id="sidebar-logo" src="image_5c43d9.png" alt="학교 로고" class="w-14 h-14 rounded-full object-cover border border-white/10">
+                        <div>
+                            <div id="sidebar-school-name" class="font-semibold">대륜고등학교</div>
+                            <div class="text-xs text-gray-400">학교 계정</div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center gap-3" data-view="main-menu" tabindex="0" role="button" aria-pressed="true">
+                        <span class="w-10 h-10 rounded-md bg-white/6 flex items-center justify-center text-xl">⚙️</span>
+                        <div class="text-sm">
+                            <div class="font-semibold">기본 설정</div>
+                            <div class="text-xs text-gray-300">화면 전환 / 시간</div>
+                        </div>
+                    </div>
+                    <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center gap-3" data-view="custom-text" tabindex="0" role="button" aria-pressed="false">
+                        <span class="w-10 h-10 rounded-md bg-white/6 flex items-center justify-center text-xl">✏️</span>
+                        <div class="text-sm">
+                            <div class="font-semibold">메시지 설정</div>
+                            <div class="text-xs text-gray-300">커스텀 텍스트 및 스타일</div>
+                        </div>
+                    </div>
+                    <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center gap-3" data-view="schedule-edit" tabindex="0" role="button" aria-pressed="false">
+                        <span class="w-10 h-10 rounded-md bg-white/6 flex items-center justify-center text-xl">📅</span>
+                        <div class="text-sm">
+                            <div class="font-semibold">일정 관리</div>
+                            <div class="text-xs text-gray-300">학사 일정 / D-Day</div>
+                        </div>
+                    </div>
+                    <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center gap-3" data-view="background" tabindex="0" role="button" aria-pressed="false">
+                        <span class="w-10 h-10 rounded-md bg-white/6 flex items-center justify-center text-xl">🖼️</span>
+                        <div class="text-sm">
+                            <div class="font-semibold">배경 / 로고</div>
+                            <div class="text-xs text-gray-300">이미지 업로드</div>
+                        </div>
+                    </div>
+                        <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center gap-3" data-view="info" tabindex="0" role="button" aria-pressed="false">
+                            <span class="w-10 h-10 rounded-md bg-white/6 flex items-center justify-center text-xl">ℹ️</span>
+                            <div class="text-sm">
+                                <div class="font-semibold">정보</div>
+                                <div class="text-xs text-gray-300">앱 정보 및 버전</div>
+                            </div>
+                        </div>
+                    
+                </aside>
+
+                <!-- Right detail panel -->
+                <section class="settings-details flex-1 p-3">
+                    <div class="glass-section p-4 h-full overflow-hidden" style="min-height:320px;">
+                        <!-- Existing views are moved into the right panel -->
+                        <div id="main-menu-view" class="settings-view space-y-4">
+                            <div class="p-4 space-y-5">
+                                <h3 class="text-lg font-semibold border-b border-white/30 pb-2 flex items-center gap-2">
+                                    <span class="text-xl">📺</span> 화면 표시 모드
+                                </h3>
+                                
+                                <div class="glass-toggle-container">
+                                    <button id="mode-transition" class="glass-toggle-btn active" onclick="setDisplayMode('transition')">
+                                        화면 전환 (기본)
+                                    </button>
+                                    <button id="mode-widget" class="glass-toggle-btn" onclick="setDisplayMode('widget')">
+                                        위젯 모드 (한눈에)
+                                    </button>
+                                </div>
+
+                                <div id="transition-settings-container" class="space-y-4 transition-all duration-300">
+                                    <h4 class="text-sm text-gray-400 font-bold uppercase tracking-wider mt-2">전환 타이밍 설정</h4>
+                                    
+                                    <div class="space-y-2">
+                                        <label for="weather-duration-slider" class="flex justify-between text-sm text-gray-200">
+                                            <span>날씨/시계 화면</span>
+                                            <span><span id="weather-duration-value" class="font-bold text-white">8</span>초</span>
+                                        </label>
+                                        <input type="range" id="weather-duration-slider" min="5" max="60" value="8" class="glass-input w-full">
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <label for="schedule-duration-slider" class="flex justify-between text-sm text-gray-200">
+                                            <span>학사 일정 화면</span>
+                                            <span><span id="schedule-duration-value" class="font-bold text-white">6</span>초</span>
+                                        </label>
+                                        <input type="range" id="schedule-duration-slider" min="5" max="60" value="6" class="glass-input w-full">
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <label for="custom-duration-slider" class="flex justify-between text-sm text-gray-200">
+                                            <span>커스텀 메시지 화면</span>
+                                            <span><span id="custom-duration-value" class="font-bold text-white">8</span>초</span>
+                                        </label>
+                                        <input type="range" id="custom-duration-slider" min="2" max="30" value="8" class="glass-input w-full">
+                                    </div>
+                                    
+                                    <div class="pt-2 border-t border-white/10">
+                                        <label class="glass-checkbox-label">
+                                            <input type="checkbox" id="always-show-clock" class="glass-checkbox-input" /> 
+                                            <span class="glass-checkbox-box"></span>
+                                            <span class="text-sm text-gray-200">모든 화면에 시계 표시</span>
+                                        </label>
+                                        
+                                        <label class="glass-checkbox-label">
+                                            <input type="checkbox" id="auto-darken-bg" class="glass-checkbox-input" /> 
+                                            <span class="glass-checkbox-box"></span>
+                                            <span class="text-sm text-gray-200">밝은 배경 자동 감지 (어둡게 처리)</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div id="widget-settings-container" class="hidden space-y-4 transition-all duration-300">
+                                    <h4 class="text-sm text-gray-400 font-bold uppercase tracking-wider mt-2">위젯 선택 및 순서</h4>
+                                    <p class="text-xs text-gray-400 mb-2">체크하여 위젯을 표시하고, 숫자로 순서를 지정하세요.</p>
+
+                                    <div class="flex items-center justify-between glass-section p-3 bg-white/5 rounded-xl">
+                                        <label class="glass-checkbox-label mb-0">
+                                            <input type="checkbox" id="show-weather-widget" class="glass-checkbox-input" onchange="updateWidgetSettings()"> 
+                                            <span class="glass-checkbox-box"></span>
+                                            <span class="text-white font-medium">날씨 및 시계</span>
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs text-gray-400">순서</span>
+                                            <input type="number" id="order-weather-widget" value="1" min="1" max="9" class="glass-input text-center p-1 w-12 h-8" onchange="updateWidgetSettings()">
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center justify-between glass-section p-3 bg-white/5 rounded-xl">
+                                        <label class="glass-checkbox-label mb-0">
+                                            <input type="checkbox" id="show-schedule-widget" class="glass-checkbox-input" onchange="updateWidgetSettings()"> 
+                                            <span class="glass-checkbox-box"></span>
+                                            <span class="text-white font-medium">학사 일정</span>
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs text-gray-400">순서</span>
+                                            <input type="number" id="order-schedule-widget" value="2" min="1" max="9" class="glass-input text-center p-1 w-12 h-8" onchange="updateWidgetSettings()">
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center justify-between glass-section p-3 bg-white/5 rounded-xl">
+                                        <label class="glass-checkbox-label mb-0">
+                                            <input type="checkbox" id="show-message-widget" class="glass-checkbox-input" onchange="updateWidgetSettings()"> 
+                                            <span class="glass-checkbox-box"></span>
+                                            <span class="text-white font-medium">커스텀 메시지</span>
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs text-gray-400">순서</span>
+                                            <input type="number" id="order-message-widget" value="3" min="1" max="9" class="glass-input text-center p-1 w-12 h-8" onchange="updateWidgetSettings()">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-4 space-y-3">
+                                <h3 class="text-lg font-semibold border-b border-white/30 pb-2">콘텐츠 편집 및 UI 스타일</h3>
+                                <button id="open-custom-text-btn" class="glass-button w-full flex justify-between items-center">
+                                    <span>커스텀 메시지 설정 및 스타일</span>
+                                    <span class="text-xl">&gt;</span>
+                                </button>
+                                <button id="open-schedule-edit-btn" class="glass-button w-full flex justify-between items-center">
+                                    <span>학사 일정 관리</span>
+                                    <span class="text-xl">&gt;</span>
+                                </button>
+                            </div>
+
+                            <div class="p-4 space-y-3">
+                                <h3 class="text-lg font-semibold border-b border-white/30 pb-2 flex items-center">
+                                    <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-white/10 border border-white/20 backdrop-blur-sm shadow-lg mr-3 text-lg">
+                                        🖼️
+                                    </div>
+                                    배경 변경
+                                </h3>
+                                <label for="bg-upload-modal" class="glass-button w-full text-center cursor-pointer">배경화면 변경</label>
+                                <input type="file" id="bg-upload-modal" class="hidden" accept="image/*">
+                            </div>
+
+                            <!-- [추가됨] 화면 표시 모드 설정 섹션 -->
+                            <div class="p-4 space-y-3 bg-white/5 rounded-xl border border-white/10 mt-2">
+                                <h3 class="text-lg font-semibold flex items-center">
+                                    <span class="mr-2">🖥️</span> 화면 표시 모드
+                                </h3>
+                                <div class="flex gap-2 p-1 bg-black/20 rounded-lg">
+                                    <button id="mode-transition" class="flex-1 py-2 rounded-md text-sm transition-all bg-white/20 font-bold shadow-sm">화면 전환 (기본)</button>
+                                    <button id="mode-widget" class="flex-1 py-2 rounded-md text-sm transition-all hover:bg-white/10 text-gray-400">위젯 모드 (한눈에)</button>
+                                </div>
+                                <p class="text-xs text-gray-400">위젯 모드에서는 모든 박스가 한 화면에 배치됩니다.</p>
+                                
+                                <div id="widget-visibility-settings" class="mt-3 space-y-2 hidden border-t border-white/10 pt-3">
+                                    <p class="text-sm font-semibold mb-2">표시할 박스 선택:</p>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" id="show-weather-widget" checked class="glass-input w-4 h-4">
+                                        <span class="text-sm">날씨/시계 박스</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" id="show-schedule-widget" checked class="glass-input w-4 h-4">
+                                        <span class="text-sm">일정 박스</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" id="show-message-widget" checked class="glass-input w-4 h-4">
+                                        <span class="text-sm">메시지 박스</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="custom-text-view" class="settings-view hidden space-y-4">
+                            <h4 class="text-xl font-semibold border-b border-white/30 pb-2">메시지 내용 및 스타일</h4>
+                            <label for="custom-title-input" class="block text-sm font-medium text-gray-200">화면 제목 (화면 3)</label>
+                            <input type="text" id="custom-title-input" placeholder="제목을 입력하세요 (예: 오늘의 메시지)" class="glass-input w-full" maxlength="50">
+                            <label for="custom-text-input" class="block text-sm font-medium text-gray-200">메시지 내용 (화면 3)</label>
+                            <textarea id="custom-text-input" placeholder="세 번째 화면에 표시할 메시지를 입력하세요." class="glass-input w-full h-20" maxlength="300"></textarea>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div>
+                                    <label for="text-size-select" class="block text-sm font-medium text-gray-200">글자 크기</label>
+                                    <select id="text-size-select" class="glass-input w-full appearance-none">
+                                        <option value="text-2xl">작게 (2XL)</option>
+                                        <option value="text-3xl">보통 (3XL)</option>
+                                        <option value="text-4xl" selected>크게 (4XL)</option>
+                                        <option value="text-5xl">매우 크게 (5XL)</option>
+                                        <option value="text-6xl">최대 크게 (6XL)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="font-weight-select" class="block text-sm font-medium text-gray-200">글자 굵기</label>
+                                    <select id="font-weight-select" class="glass-input w-full appearance-none">
+                                        <option value="font-light" selected>얇게 (Light)</option>
+                                        <option value="font-normal">보통 (Normal)</option>
+                                        <option value="font-semibold">굵게 (SemiBold)</option>
+                                        <option value="font-bold">매우 굵게 (Bold)</option>
+                                        <option value="font-extrabold">최대 굵게 (ExtraBold)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="font-family-select" class="block text-sm font-medium text-gray-200">글꼴 (폰트)</label>
+                                    <select id="font-family-select" class="glass-input w-full appearance-none">
+                                        <option value="font-notosanskr">Noto Sans KR (웹 폰트)</option>
+                                        <option value="font-nanumgothic">Nanum Gothic (웹 폰트)</option>
+                                        <option value="font-system" selected>시스템 기본 (가장 빠름)</option>
+                                    </select>
+                                    <p class="text-xs text-gray-400 mt-1">(*Windows 환경에 최적화)</p>
+                                </div>
+                            </div>
+
+                            <button id="save-custom-text-btn" class="glass-button w-full mt-2">메시지 저장 및 적용</button>
+                        </div>
+
+                        <div id="schedule-edit-view" class="settings-view hidden space-y-4">
+                            <h4 class="text-xl font-semibold border-b border-white/30 pb-2">학사 일정 관리 및 편집</h4>
+
+                            <!-- 일정 추가 폼에 D-Day 체크박스 추가 -->
+                            <form id="schedule-form-modal" class="flex flex-col sm:flex-row gap-4">
+                                <input type="date" id="schedule-date-modal" class="glass-input flex-grow" required>
+                                <input type="text" id="schedule-event-modal" placeholder="일정 내용을 입력하세요..." class="glass-input flex-grow-[2]" required>
+                                <label class="glass-input flex items-center gap-2 justify-center">
+                                    <input type="checkbox" id="schedule-dday-modal"> D-Day 표시
+                                </label>
+                                <button type="submit" class="glass-button">일정 추가</button>
+                            </form>
+
+                            <div class="p-4 max-h-64 overflow-y-auto schedule-list-container">
+                                <div id="schedule-list-modal" class="space-y-3"></div>
+                            </div>
+
+                            <button id="save-schedule-edit-btn" class="glass-button w-full mt-2">편집 완료 및 저장</button>
+                        </div>
+
+                        <!-- Profile view: edit school name and logo (saved like other settings) -->
+                        <div id="profile-view" class="settings-view hidden space-y-4">
+                            <h4 class="text-xl font-semibold border-b border-white/30 pb-2">계정 설정</h4>
+                            <label for="profile-school-name-input" class="block text-sm font-medium text-gray-200">이름</label>
+                            <input id="profile-school-name-input" type="text" class="glass-input w-full" maxlength="60" placeholder="학교 이름을 입력하세요">
+
+                            <label class="block text-sm font-medium text-gray-200">로고</label>
+                            <div class="flex items-center gap-4">
+                                <div class="w-28 h-28 rounded-full overflow-hidden border border-white/10 flex items-center justify-center bg-white/3">
+                                    <img id="profile-logo-preview" src="image_5c43d9.png" alt="로고 미리보기" class="object-contain max-h-full max-w-full">
+                                </div>
+                                <div class="flex-1">
+                                    <label for="profile-logo-input" class="glass-button cursor-pointer">로고 업로드</label>
+                                    <input type="file" id="profile-logo-input" class="hidden" accept="image/*">
+                                    <p class="text-xs text-gray-400 mt-2">권장: PNG(투명) 또는 JPG 최대 용량: 1MB</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-2 mt-3">
+                                <button id="save-profile-btn" class="glass-button">저장</button>
+                                <button id="cancel-profile-btn" class="glass-button bg-white/6" type="button">취소</button>
+                            </div>
+                        </div>
+
+                        <!-- Background view: reuses file inputs above but provides quick preview -->
+                        <div id="background-view" class="settings-view hidden space-y-4">
+                            <h4 class="text-xl font-semibold border-b border-white/30 pb-2">배경 및 로고 미리보기</h4>
+                            <div class="flex flex-col sm:flex-row gap-4 items-start">
+                                <div class="w-full sm:w-1/2">
+                                    <label class="block text-sm font-medium text-gray-200 mb-2">현재 배경</label>
+                                    <div id="bg-preview" class="w-full h-40 bg-cover bg-center rounded-lg border border-white/10"></div>
+                                </div>
+                                <!-- removed logo preview column (logo can be edited in 학교 계정 설정) -->
+                            </div>
+                            <div class="flex gap-2">
+                                <label for="bg-upload-modal-2" class="glass-button cursor-pointer">배경 업로드</label>
+                            </div>
+                            <input type="file" id="bg-upload-modal-2" class="hidden" accept="image/*">
+                            </div>
+
+                            <div id="info-view" class="settings-view hidden space-y-4">
+                                <h4 class="text-xl font-semibold border-b border-white/30 pb-2">정보</h4>
+                                <div class="info-tabs">
+                                    <button type="button" class="info-tab-button" data-tab="developer">개발자</button>
+                                    <button type="button" class="info-tab-button" data-tab="languages">사용된 언어</button>
+                                    <button type="button" class="info-tab-button" data-tab="version">버전</button>
+                                </div>
+
+                                <div id="info-developer" class="info-tab-content">
+                                    <h5 class="font-semibold">개발자 도구</h5>
+                                    <p class="text-sm text-gray-300">ADK</p>
+                                </div>
+
+                                <div id="info-languages" class="info-tab-content hidden">
+                                    <h5 class="font-semibold">사용된 언어</h5>
+                                    <ul class="list-disc pl-5 text-gray-300">
+                                        <li>HTML</li>
+                                        <li>CSS (Tailwind + custom)</li>
+                                        <li>JavaScript</li>
+                                    </ul>
+                                </div>
+
+                                <div id="info-version" class="info-tab-content hidden">
+                                    <h5 class="font-semibold">버전</h5>
+                                    <p class="text-gray-300">1.0.4</p>
+                                </div>
+                            </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- D-Day 배너 (좌측 상단) -->
+    <div id="dday-banner" aria-hidden="true">
+        <span class="dday-count"></span>
+        <span class="dday-title"></span>
+    </div>
+
+    <div id="weather-screen" class="screen p-4 sm:p-8">
+        <div class="max-w-4xl w-full text-center space-y-8">
+            <p id="current-date" class="text-2xl sm:text-3xl font-extrabold mb-4 text-white"></p>
+            <h1 id="current-time" class="text-6xl sm:text-8xl font-extrabold tracking-tight text-white">00:00:00</h1>
+
+            <div class="glass-card no-initial-blur p-6 sm:p-8 rounded-[40px] shadow-2xl mt-12">
+                <p class="text-xl sm:text-2xl font-semibold text-gray-200 mb-4">현재 위치: 대구 수성구 만촌 3동</p>
+                <div class="flex flex-col sm:flex-row justify-around items-center">
+                    <div class="flex items-center space-x-4 mb-6 sm:mb-0">
+                        <span class="text-6xl sm:text-7xl">☀️</span>
+                        <div>
+                            <p class="text-5xl sm:text-6xl font-bold text-yellow-300">22°C</p>
+                            <p class="text-lg text-gray-200">맑음</p>
+                        </div>
+                    </div>
+                    <div class="text-left space-y-2 sm:border-l border-gray-400/50 sm:pl-6">
+                        <p class="text-xl font-semibold mb-2 text-gray-200">오늘의 예보</p>
+                        <div class="text-lg flex justify-between gap-4"><span>최고 기온:</span><span class="font-bold text-red-400">25°C</span></div>
+                        <div class="text-lg flex justify-between gap-4"><span>최저 기온:</span><span class="font-bold text-blue-400">15°C</span></div>
+                        <p class="text-md text-gray-300 pt-2">하루 종일 화창할 것으로 예상됩니다.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- initial wait removed; slides start immediately based on per-screen durations -->
+        </div>
+    </div>
+
+    <div id="schedule-screen" class="screen p-4 sm:p-8">
+        <div class="max-w-5xl w-full h-full flex flex-col justify-center items-center">
+                <div class="aux-clock" id="schedule-aux-clock">
+                    <div class="aux-time aux-time-el">00:00:00</div>
+                    <div class="aux-date aux-date-el">00월 00일(요일)</div>
+                </div>
+                <h2 class="text-5xl sm:text-6xl font-extrabold text-white mt-6 mb-6 text-shadow-lg">학사 일정 안내</h2>
+            <div class="glass-card no-initial-blur w-full p-6 sm:p-10 rounded-[40px] shadow-2xl text-left text-white max-h-[70vh] flex flex-col">
+                <div class="flex justify-between items-center mb-4 border-b pb-2 border-gray-300/50">
+                    <h3 class="text-3xl font-bold text-white">주요 학사 일정</h3>
+                </div>
+                <div id="schedule-list" class="space-y-4 text-lg overflow-y-auto schedule-list-container pr-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="custom-text-screen" class="screen p-4 sm:p-8">
+        <div class="max-w-4xl w-full text-center space-y-8">
+            <div class="aux-clock" id="custom-aux-clock">
+                <div class="aux-time aux-time-el">00:00</div>
+                <div class="aux-date aux-date-el">00월 00일(요일)</div>
+            </div>
+            <div class="glass-card no-initial-blur p-8 sm:p-12 rounded-[40px] shadow-2xl w-full">
+                <h2 id="custom-title" class="text-4xl sm:text-5xl font-extrabold text-white mb-6">환영 메시지</h2>
+                <p id="custom-message" class="text-4xl font-light leading-relaxed whitespace-pre-wrap text-white">안녕하세요! 환영합니다.</p>
+                <p id="custom-message-placeholder" class="text-xl sm:text-2xl text-gray-400 italic mt-4 hidden">(설정에서 원하는 메시지를 입력하여 표시할 수 있습니다.)</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="school-logo-container" class="glass-card fixed bottom-5 left-1/2 -translate-x-1/2 py-3 px-6 flex items-center gap-4 z-20" style="border-radius: 999px;">
+        <img id="school-logo-img" src="image_5c43d9.png" alt="학교 로고" class="h-10 w-auto">
+        <span id="school-name-bottom" class="text-white text-lg font-semibold">대륜고등학교</span>
+    </div>
+
+    <script>
+    // per-screen durations in milliseconds (weather, schedule, custom)
+    const DEFAULT_DURATIONS = [8000, 6000, 8000];
+    let screenDurations = [...DEFAULT_DURATIONS];
+    let slideTimeout = null;
+        const TRANSITION_DURATION = 1000;
+        const DEFAULT_LOGO_URL = 'image_5c43d9.png';
+
+        const SCREENS = ['weather-screen', 'schedule-screen', 'custom-text-screen'];
+        let currentScreenIndex = 0;
+        let currentSettingsView = 'main-menu';
+
+    const timeElement = document.getElementById('current-time');
+    const dateElement = document.getElementById('current-date');
+    // auxiliary clocks on other screens
+    const auxTimeElems = () => Array.from(document.querySelectorAll('.aux-time'));
+    const auxDateElems = () => Array.from(document.querySelectorAll('.aux-date'));
+        const weatherScreen = document.getElementById('weather-screen');
+        const scheduleScreen = document.getElementById('schedule-screen');
+        const customTextScreen = document.getElementById('custom-text-screen');
+        const customTitleElement = document.getElementById('custom-title');
+        const customMessageElement = document.getElementById('custom-message');
+        const customMessagePlaceholder = document.getElementById('custom-message-placeholder');
+    // initial wait removed
+        const schoolLogoImg = document.getElementById('school-logo-img');
+        const scheduleList = document.getElementById('schedule-list');
+
+        const settingsContainer = document.querySelector('.settings-container');
+        const settingsModal = document.getElementById('settings-modal');
+        const settingsTitle = document.getElementById('settings-title');
+        const backSettingsBtn = document.getElementById('back-settings-btn');
+        const closeSettingsBtn = document.getElementById('close-settings-btn');
+        const settingsContentWrapper = document.getElementById('settings-content-wrapper');
+
+    const mainMenuView = document.getElementById('main-menu-view');
+    // per-screen duration controls
+    const weatherDurationSlider = document.getElementById('weather-duration-slider');
+    const weatherDurationValue = document.getElementById('weather-duration-value');
+    const scheduleDurationSlider = document.getElementById('schedule-duration-slider');
+    const scheduleDurationValue = document.getElementById('schedule-duration-value');
+    const customDurationSlider = document.getElementById('custom-duration-slider');
+    const customDurationValue = document.getElementById('custom-duration-value');
+        const openCustomTextBtn = document.getElementById('open-custom-text-btn');
+        const openScheduleEditBtn = document.getElementById('open-schedule-edit-btn');
+    const bgUploadModal = document.getElementById('bg-upload-modal');
+    // profile view elements (school name + logo)
+    const profileView = document.getElementById('profile-view');
+    const profileSchoolNameInput = document.getElementById('profile-school-name-input');
+    const profileLogoInput = document.getElementById('profile-logo-input');
+    const profileLogoPreview = document.getElementById('profile-logo-preview');
+    const saveProfileBtn = document.getElementById('save-profile-btn');
+    const cancelProfileBtn = document.getElementById('cancel-profile-btn');
+
+        const customTextView = document.getElementById('custom-text-view');
+        const customTitleInput = document.getElementById('custom-title-input');
+        const customTextInput = document.getElementById('custom-text-input');
+        const textSizeSelect = document.getElementById('text-size-select');
+        const fontWeightSelect = document.getElementById('font-weight-select');
+        const fontFamilySelect = document.getElementById('font-family-select');
+        const saveCustomTextBtn = document.getElementById('save-custom-text-btn');
+
+        const scheduleEditView = document.getElementById('schedule-edit-view');
+        const scheduleFormModal = document.getElementById('schedule-form-modal');
+        const scheduleDateInputModal = document.getElementById('schedule-date-modal');
+        const scheduleEventInputModal = document.getElementById('schedule-event-modal');
+        const scheduleDdayModal = document.getElementById('schedule-dday-modal');
+        const scheduleListModal = document.getElementById('schedule-list-modal');
+        const saveScheduleEditBtn = document.getElementById('save-schedule-edit-btn');
+
+    let schedules = [];
+        const currentScreenElements = [weatherScreen, scheduleScreen, customTextScreen];
+
+        const OPENWEATHER_API_KEY = 'af8f2f48035d25a72c21fb5c4a576d5b';
+        const weatherCard = weatherScreen.querySelector('.glass-card.no-initial-blur');
+
+        async function fetchManchon3DongWeather() {
+            if (!weatherCard) return;
+            if (!OPENWEATHER_API_KEY) {
+                weatherCard.innerHTML = `<div class="text-sm text-gray-300">OpenWeatherMap API 키가 설정되어 있지 않습니다.</div>`;
+                return;
+            }
+            try {
+                const q = encodeURIComponent('만촌3동,대구,KR');
+                const geoRes = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${q}&limit=1&appid=${OPENWEATHER_API_KEY}`);
+                const geoJson = await geoRes.json();
+                if (!Array.isArray(geoJson) || geoJson.length === 0) {
+                    weatherCard.innerHTML = `<div class="text-sm text-gray-300">위치 정보를 찾을 수 없습니다.</div>`;
+                    return;
+                }
+                const { lat, lon, name } = geoJson[0];
+                const weatherRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=kr&appid=${OPENWEATHER_API_KEY}`);
+                const weather = await weatherRes.json();
+                if (weather.cod && weather.cod !== 200) {
+                    console.error('Weather API error:', weather);
+                    weatherCard.innerHTML = `<div class="text-sm text-gray-300">날씨 정보를 불러오는 중 오류가 발생했습니다.</div>`;
+                    return;
+                }
+                renderWeather(weather, name || '만촌3동');
+            } catch (err) {
+                console.error(err);
+                weatherCard.innerHTML = `<div class="text-sm text-gray-300">날씨 정보를 불러오는 중 오류가 발생했습니다.</div>`;
+            }
+        }
+
+        function renderWeather(data, locationName = '') {
+            const temp = Math.round(data.main.temp);
+            const feels = Math.round(data.main.feels_like);
+            const humidity = data.main.humidity;
+            const wind = (data.wind && data.wind.speed) ? data.wind.speed : null;
+            const description = data.weather && data.weather[0] ? data.weather[0].description : '';
+            const icon = data.weather && data.weather[0] ? data.weather[0].icon : '01d';
+            const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+
+            weatherCard.innerHTML = `
+                <p class="text-xl sm:text-2xl font-semibold text-gray-200 mb-4">
+                    현재 위치: ${locationName}
+                </p>
+                <div class="flex flex-col sm:flex-row justify-around items-center">
+                    <div class="flex items-center space-x-4 mb-6 sm:mb-0">
+                        <img src="${iconUrl}" alt="${description}" class="w-20 h-20">
+                        <div>
+                            <p class="text-5xl sm:text-6xl font-bold text-yellow-300">
+                                ${temp}°C
+                            </p>
+                            <p class="text-lg text-gray-200">${description}</p>
+                        </div>
+                    </div>
+                    <div class="text-left space-y-2 sm:border-l border-gray-400/50 sm:pl-6">
+                        <p class="text-xl font-semibold mb-2 text-gray-200">오늘의 예보</p>
+                        <div class="text-lg flex justify-between gap-4">
+                            <span>체감온도:</span>
+                            <span class="font-bold text-red-400">${feels}°C</span>
+                        </div>
+                        <div class="text-lg flex justify-between gap-4">
+                            <span>습도:</span>
+                            <span class="font-bold text-blue-400">${humidity}%</span>
+                        </div>
+                        <p class="text-md text-gray-300 pt-2">${wind !== null ? `풍속: ${wind} m/s` : ''}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long', timeZone: 'Asia/Seoul' };
+            // include seconds for all clocks (HH:MM:SS)
+            const timeOptionsWithSeconds = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'Asia/Seoul' };
+            // full date with weekday (short for aux)
+            const dateText = now.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short', timeZone: 'Asia/Seoul' });
+
+            // main weather clock and date
+            dateElement.textContent = now.toLocaleDateString('ko-KR', dateOptions);
+            if (timeElement) timeElement.textContent = now.toLocaleTimeString('ko-KR', timeOptionsWithSeconds);
+
+            // update auxiliary clocks (HH:MM:SS, and e.g. 10월 5일(화))
+            auxTimeElems().forEach(el => { el.textContent = now.toLocaleTimeString('ko-KR', timeOptionsWithSeconds); });
+            auxDateElems().forEach(el => { el.textContent = dateText.replace(/\s+/g, ' '); });
+        }
+
+        function toggleCardBlur(screenIndex, enableBlur) {
+            const screenElement = currentScreenElements[screenIndex];
+            const mainCard = screenElement.querySelector('.glass-card.no-initial-blur');
+            if (mainCard) mainCard.classList.toggle('no-initial-blur', !enableBlur);
+        }
+
+        function transitionToScreen(nextIndex) {
+            const currentElement = currentScreenElements[currentScreenIndex];
+            const nextElement = currentScreenElements[nextIndex];
+            currentElement.style.opacity = '0';
+            currentElement.style.pointerEvents = 'none';
+            toggleCardBlur(currentScreenIndex, false);
+            setTimeout(() => {
+                currentElement.style.zIndex = '5';
+                nextElement.style.zIndex = '10';
+                nextElement.style.opacity = '1';
+                nextElement.style.pointerEvents = 'auto';
+                toggleCardBlur(nextIndex, true);
+                currentScreenIndex = nextIndex;
+            }, TRANSITION_DURATION);
+        }
+
+        // cycleScreens removed — using startScreenLoop with per-screen durations
+
+        function startScreenLoop() {
+            if (slideTimeout) clearTimeout(slideTimeout);
+            // schedule next transition after current screen's duration
+            const dur = screenDurations[currentScreenIndex] || DEFAULT_DURATIONS[currentScreenIndex];
+            slideTimeout = setTimeout(() => {
+                const nextIndex = (currentScreenIndex + 1) % SCREENS.length;
+                transitionToScreen(nextIndex);
+                // after transition completes, start loop again for the new current screen
+                setTimeout(startScreenLoop, TRANSITION_DURATION);
+            }, dur);
+        }
+
+        const SETTINGS_ZONE_RATIO = 0.20;
+        function updateSettingsButtonProximity(e) {
+            if (!settingsModal.classList.contains('hidden')) { settingsContainer.style.opacity = '0'; return; }
+            const x = e.clientX, y = e.clientY, vw = window.innerWidth, vh = window.innerHeight;
+            const rightZoneBoundary = vw * (1 - SETTINGS_ZONE_RATIO);
+            const topZoneBoundary = vh * SETTINGS_ZONE_RATIO;
+            const isInZone = x > rightZoneBoundary && y < topZoneBoundary;
+            settingsContainer.style.opacity = isInZone ? '1' : '0';
+        }
+
+        // No-op: modal uses fixed height and internal scrolling, so we don't adjust height dynamically.
+        function adjustModalHeight() { /* intentionally empty */ }
+
+        function switchSettingsView(viewName) {
+            currentSettingsView = viewName;
+            const backgroundView = document.getElementById('background-view');
+            const profileViewEl = document.getElementById('profile-view');
+            const infoViewEl = document.getElementById('info-view');
+            [mainMenuView, customTextView, scheduleEditView, backgroundView, profileViewEl, infoViewEl].forEach(view => view && view.classList.add('hidden'));
+            let titleText = '대시보드 설정';
+            let showBackButton = false;
+            let targetView = mainMenuView;
+
+            if (viewName === 'custom-text') {
+                titleText = '커스텀 메시지 설정';
+                showBackButton = true;
+                targetView = customTextView;
+            } else if (viewName === 'schedule-edit') {
+                titleText = '학사 일정 관리';
+                showBackButton = true;
+                targetView = scheduleEditView;
+                renderModalSchedules();
+            } else if (viewName === 'background') {
+                titleText = '배경';
+                showBackButton = true;
+                targetView = backgroundView;
+                // populate background preview only (logo edited in profile)
+                try {
+                    const savedBg = localStorage.getItem('dashboardBackground');
+                    const bgPrev = document.getElementById('bg-preview');
+                    if (bgPrev) bgPrev.style.backgroundImage = savedBg ? `url(${savedBg})` : '';
+                } catch (err) { console.warn('preview load failed', err); }
+            } else if (viewName === 'profile') {
+                titleText = '학교 계정 설정';
+                showBackButton = true;
+                targetView = profileViewEl;
+            } else if (viewName === 'info') {
+                titleText = '정보';
+                showBackButton = true;
+                targetView = infoViewEl;
+            }
+
+            settingsTitle.textContent = titleText;
+            backSettingsBtn.classList.toggle('hidden', !showBackButton);
+            targetView.classList.remove('hidden');
+
+            // update sidebar active state (include profile block which uses data-view)
+            document.querySelectorAll('[data-view]').forEach(item => {
+                const v = item.dataset.view;
+                const active = v === viewName;
+                item.classList.toggle('active', active);
+                item.setAttribute('aria-pressed', active ? 'true' : 'false');
+            });
+
+            setTimeout(() => adjustModalHeight(), 50);
+        }
+
+        // Info tab switching inside the 정보 view
+        function switchInfoTab(tabName) {
+            document.querySelectorAll('.info-tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.info-tab-button').forEach(b => b.classList.remove('active'));
+            const showEl = document.getElementById('info-' + tabName);
+            if (showEl) showEl.classList.remove('hidden');
+            const btn = document.querySelector(`.info-tab-button[data-tab="${tabName}"]`);
+            if (btn) btn.classList.add('active');
+        }
+
+        function loadSchedules() {
+            const storedSchedules = localStorage.getItem('daeryunSchedules');
+            if (storedSchedules) {
+                try {
+                    schedules = JSON.parse(storedSchedules).map(s => ({ date: s.date, event: s.event, dday: !!s.dday }));
+                } catch (e) {
+                    schedules = [];
+                }
+            } else {
+                schedules = [
+                    { date: '2025-10-28', event: '2학기 중간고사 (~11/1)', dday: false },
+                    { date: '2025-11-15', event: '수강 철회 기간 마감일', dday: false },
+                    { date: '2025-12-01', event: '계절학기 수강 신청 시작', dday: false }
+                ];
+            }
+            schedules.sort((a, b) => new Date(a.date) - new Date(b.date));
+            renderDisplaySchedules();
+        }
+
+        function saveSchedules() {
+            schedules.sort((a, b) => new Date(a.date) - new Date(b.date));
+            localStorage.setItem('daeryunSchedules', JSON.stringify(schedules));
+            updateDdayBanner();
+        }
+
+        function calcDdayDiffDays(targetDateStr) {
+            const today = new Date();
+            const t = new Date(targetDateStr);
+            const todayMid = new Date(new Date(today.toLocaleDateString('ko-KR')).getTime());
+            const targetMid = new Date(new Date(t.toLocaleDateString('ko-KR')).getTime());
+            const diffDays = Math.round((targetMid - todayMid) / (24 * 3600 * 1000));
+            return diffDays;
+        }
+
+        function updateDdayBanner() {
+            const banner = document.getElementById('dday-banner');
+            const countEl = banner.querySelector('.dday-count');
+            const titleEl = banner.querySelector('.dday-title');
+
+            const ddaySchedules = schedules.filter(s => s.dday);
+            if (ddaySchedules.length === 0) {
+                banner.style.display = 'none';
+                banner.classList.remove('red');
+                return;
+            }
+
+            // 우선순위: 앞으로 남은 날짜(>=0) 중 가장 작은 값 선택. 없으면 과거 중 가장 최근 선택.
+            let best = null;
+            let bestDiff = Infinity;
+            // find future (>=0)
+            const future = ddaySchedules.map(s => ({ s, diff: calcDdayDiffDays(s.date) })).filter(x => x.diff >= 0);
+            if (future.length > 0) {
+                future.sort((a, b) => a.diff - b.diff);
+                best = future[0].s;
+                bestDiff = future[0].diff;
+            } else {
+                // choose closest past
+                const past = ddaySchedules.map(s => ({ s, diff: calcDdayDiffDays(s.date) })).sort((a, b) => Math.abs(a.diff) - Math.abs(b.diff));
+                best = past[0].s;
+                bestDiff = past[0].diff;
+            }
+
+            const diff = bestDiff;
+            let countText = '';
+            if (diff > 0) countText = `D-${diff}`;
+            else if (diff === 0) countText = `D-Day`;
+            else countText = `D+${Math.abs(diff)}`;
+
+            // set color for within 7 days (0..7)
+            if (diff >= 0 && diff <= 7) {
+                banner.classList.add('red');
+            } else {
+                banner.classList.remove('red');
+            }
+
+            const formattedDate = new Date(best.date).toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' });
+            countEl.textContent = countText;
+            titleEl.textContent = `${best.event} · ${formattedDate}`;
+            banner.style.display = 'flex';
+        }
+
+        function createScheduleElement(date, eventText, targetList, isEditable) {
+            const li = document.createElement('li');
+            // white text unified, flex layout: D-day | event | date
+            li.className = 'flex items-center justify-between bg-white/6 bg-clip-padding p-3 rounded-lg text-white';
+
+            const left = document.createElement('div');
+            left.className = 'flex items-center gap-3';
+
+            // D-Day (always shown)
+            const diff = calcDdayDiffDays(date);
+            const ddaySpan = document.createElement('span');
+            ddaySpan.className = 'inline-block font-extrabold py-1 px-3 rounded-full';
+            if (diff > 0) ddaySpan.textContent = `D-${diff}`;
+            else if (diff === 0) ddaySpan.textContent = 'D-Day';
+            else ddaySpan.textContent = `D+${Math.abs(diff)}`;
+            // default badge style
+            ddaySpan.style.background = 'rgba(255,255,255,0.06)';
+            ddaySpan.style.color = '#ffffff';
+            ddaySpan.style.border = '1px solid rgba(255,255,255,0.06)';
+            // if within 7 days, emphasize in soft red
+            if (diff >= 0 && diff <= 7) {
+                ddaySpan.style.background = 'rgba(255,40,40,0.12)';
+                ddaySpan.style.border = '1px solid rgba(255,40,40,0.6)';
+            }
+
+            left.appendChild(ddaySpan);
+
+            // Event title (center)
+            const middle = document.createElement('div');
+            middle.className = 'flex-1 px-4';
+            const eventEl = document.createElement('div');
+            eventEl.className = 'text-white';
+            eventEl.textContent = eventText;
+            middle.appendChild(eventEl);
+
+            // Date (right)
+            const right = document.createElement('div');
+            right.className = 'text-sm text-white opacity-90';
+            const formattedDate = new Date(date).toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' });
+            right.textContent = formattedDate;
+
+            // If editable, keep the edit controls on the far right as before
+            if (isEditable) {
+                const controls = document.createElement('div');
+                controls.className = 'flex items-center gap-2';
+
+                const ddayLabel = document.createElement('label');
+                ddayLabel.className = 'text-sm flex items-center gap-2 text-white';
+                const ddayCheckbox = document.createElement('input');
+                ddayCheckbox.type = 'checkbox';
+                // find corresponding schedule object
+                const sched = schedules.find(s => s.date === date && s.event === eventText);
+                ddayCheckbox.checked = !!(sched && sched.dday);
+                ddayCheckbox.addEventListener('change', () => {
+                    if (sched) sched.dday = ddayCheckbox.checked;
+                    saveSchedules();
+                    renderDisplaySchedules();
+                    renderModalSchedules();
+                    setTimeout(adjustModalHeight, 100);
+                });
+                ddayLabel.appendChild(ddayCheckbox);
+                ddayLabel.appendChild(document.createTextNode('D-Day'));
+                controls.appendChild(ddayLabel);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = '삭제';
+                deleteButton.className = 'text-xs bg-red-500/70 hover:bg-red-500/90 text-white py-1 px-3 rounded-md transition-colors';
+                deleteButton.onclick = () => { removeSchedule(date, eventText); };
+                controls.appendChild(deleteButton);
+
+                li.appendChild(left);
+                li.appendChild(middle);
+                li.appendChild(right);
+                li.appendChild(controls);
+            } else {
+                // display-only: D-day | event | date
+                li.appendChild(left);
+                li.appendChild(middle);
+                li.appendChild(right);
+            }
+
+            targetList.appendChild(li);
+        }
+
+        function renderDisplaySchedules() {
+            scheduleList.innerHTML = '';
+            if (schedules.length === 0) {
+                scheduleList.innerHTML = '<p class="text-gray-300">추가된 일정이 없습니다.</p>';
+                updateDdayBanner();
+                return;
+            }
+            schedules.forEach(schedule => createScheduleElement(schedule.date, schedule.event, scheduleList, false));
+            updateDdayBanner();
+        }
+
+        function renderModalSchedules() {
+            scheduleListModal.innerHTML = '';
+            if (schedules.length === 0) {
+                scheduleListModal.innerHTML = '<p class="text-gray-300">추가된 일정이 없습니다.</p>';
+                setTimeout(adjustModalHeight, 50);
+                return;
+            }
+            schedules.forEach(schedule => createScheduleElement(schedule.date, schedule.event, scheduleListModal, true));
+            setTimeout(adjustModalHeight, 50);
+        }
+
+        function handleAddSchedule(e) {
+            e.preventDefault();
+            const date = scheduleDateInputModal.value;
+            const eventText = scheduleEventInputModal.value;
+            const ddayFlag = !!(scheduleDdayModal && scheduleDdayModal.checked);
+
+            if (!date || !eventText) {
+                console.warn("날짜와 일정 내용을 모두 입력해주세요.");
+                return;
+            }
+
+            schedules.push({ date, event: eventText, dday: ddayFlag });
+            saveSchedules();
+            renderDisplaySchedules();
+            renderModalSchedules();
+
+            scheduleDateInputModal.value = '';
+            scheduleEventInputModal.value = '';
+            if (scheduleDdayModal) scheduleDdayModal.checked = false;
+            setTimeout(adjustModalHeight, 100);
+        }
+
+        function removeSchedule(date, eventText) {
+            schedules = schedules.filter(schedule => !(schedule.date === date && schedule.event === eventText));
+            saveSchedules();
+            renderDisplaySchedules();
+            renderModalSchedules();
+            setTimeout(adjustModalHeight, 100);
+               }
+        function applyStyleClasses(element, prefix, newClass) {
+            if (!element) return;
+            const classes = Array.from(element.classList);
+            const classesToRemove = classes.filter(cls => cls.startsWith(prefix) || (cls.startsWith('sm:') && cls.substring(3).startsWith(prefix)));
+            element.classList.remove(...classesToRemove);
+            element.classList.add(newClass);
+        }
+
+        function loadSettings() {
+            const savedBg = localStorage.getItem('dashboardBackground');
+            if (savedBg) document.body.style.backgroundImage = `url(${savedBg})`; else document.body.style.backgroundImage = '';
+            const savedLogo = localStorage.getItem('dashboardLogo');
+            schoolLogoImg.src = savedLogo || DEFAULT_LOGO_URL;
+            schoolLogoImg.onerror = () => { schoolLogoImg.src = DEFAULT_LOGO_URL; };
+
+            // load school name
+            const savedSchoolName = localStorage.getItem('dashboardSchoolName') || '대륜고등학교';
+            const sidebarName = document.getElementById('sidebar-school-name');
+            const bottomName = document.getElementById('school-name-bottom');
+            if (sidebarName) sidebarName.textContent = savedSchoolName;
+            if (bottomName) bottomName.textContent = savedSchoolName;
+
+            // load profile view inputs/previews if present
+            if (profileSchoolNameInput) profileSchoolNameInput.value = savedSchoolName;
+            const logoUrl = savedLogo || DEFAULT_LOGO_URL;
+            if (profileLogoPreview) profileLogoPreview.src = logoUrl;
+            if (document.getElementById('sidebar-logo')) document.getElementById('sidebar-logo').src = logoUrl;
+
+            const savedCustomText = localStorage.getItem('dashboardCustomText');
+            const savedCustomTitle = localStorage.getItem('dashboardCustomTitle') || '환영 메시지';
+            const savedTextSize = localStorage.getItem('dashboardTextSize') || 'text-4xl';
+            const savedFontWeight = localStorage.getItem('dashboardFontWeight') || 'font-light';
+            const savedFontFamily = localStorage.getItem('dashboardFontFamily') || 'font-system';
+
+            customTitleElement.textContent = savedCustomTitle;
+            customTitleInput.value = savedCustomTitle;
+            if (savedCustomText) {
+                customMessageElement.textContent = savedCustomText;
+                customTextInput.value = savedCustomText;
+                customMessagePlaceholder.classList.add('hidden');
+            } else {
+                customMessageElement.textContent = "안녕하세요! 환영합니다.";
+                customTextInput.value = '';
+                customMessagePlaceholder.classList.remove('hidden');
+            }
+
+            applyStyleClasses(customMessageElement, 'text-', savedTextSize);
+            applyStyleClasses(customMessageElement, 'font-', savedFontWeight);
+            applyStyleClasses(customMessageElement, 'font-', savedFontFamily);
+
+            textSizeSelect.value = savedTextSize;
+            fontWeightSelect.value = savedFontWeight;
+            fontFamilySelect.value = savedFontFamily;
+
+            // load per-screen durations (seconds). Fall back to DEFAULT_DURATIONS.
+            const savedWeatherSec = parseInt(localStorage.getItem('dashboardDurationWeather'), 10);
+            const savedScheduleSec = parseInt(localStorage.getItem('dashboardDurationSchedule'), 10);
+            const savedCustomSec = parseInt(localStorage.getItem('dashboardDurationCustom'), 10);
+            const wSec = Number.isFinite(savedWeatherSec) ? savedWeatherSec : DEFAULT_DURATIONS[0] / 1000;
+            const sSec = Number.isFinite(savedScheduleSec) ? savedScheduleSec : DEFAULT_DURATIONS[1] / 1000;
+            const cSec = Number.isFinite(savedCustomSec) ? savedCustomSec : DEFAULT_DURATIONS[2] / 1000;
+
+            // update sliders/labels
+            if (weatherDurationSlider) weatherDurationSlider.value = wSec;
+            if (weatherDurationValue) weatherDurationValue.textContent = String(wSec);
+            if (scheduleDurationSlider) scheduleDurationSlider.value = sSec;
+            if (scheduleDurationValue) scheduleDurationValue.textContent = String(sSec);
+            if (customDurationSlider) customDurationSlider.value = cSec;
+            if (customDurationValue) customDurationValue.textContent = String(cSec);
+
+            // set internal durations in ms
+            screenDurations = [wSec * 1000, sSec * 1000, cSec * 1000];
+
+            // load new settings: always show clock & auto darken
+            const savedAlwaysClock = localStorage.getItem('dashboardAlwaysShowClock') === '1';
+            const savedAutoDarken = localStorage.getItem('dashboardAutoDarken') === '1';
+            const alwaysClockEl = document.getElementById('always-show-clock');
+            const autoDarkenEl = document.getElementById('auto-darken-bg');
+            if (alwaysClockEl) alwaysClockEl.checked = savedAlwaysClock;
+            if (autoDarkenEl) autoDarkenEl.checked = savedAutoDarken;
+
+            applyAlwaysShowClock(savedAlwaysClock);
+            // check background brightness and apply darken if needed
+            applyAutoDarkenSetting(savedAutoDarken);
+        }
+
+        function saveCustomText() {
+            const title = customTitleInput.value.trim();
+            const text = customTextInput.value.trim();
+            const sizeClass = textSizeSelect.value;
+            const weightClass = fontWeightSelect.value;
+            const familyClass = fontFamilySelect.value;
+
+            if (title) localStorage.setItem('dashboardCustomTitle', title); else localStorage.removeItem('dashboardCustomTitle');
+            if (text) localStorage.setItem('dashboardCustomText', text); else localStorage.removeItem('dashboardCustomText');
+
+            localStorage.setItem('dashboardTextSize', sizeClass);
+            localStorage.setItem('dashboardFontWeight', weightClass);
+            localStorage.setItem('dashboardFontFamily', familyClass);
+
+            loadSettings();
+            switchSettingsView('main-menu');
+        }
+
+        // show/hide auxiliary clocks in other screens
+        function applyAlwaysShowClock(enabled) {
+           
+
+            const auxs = Array.from(document.querySelectorAll('.aux-clock'));
+            auxs.forEach(a => { a.style.display = enabled ? 'block' : 'none'; });
+        }
+
+        // brightness detection: determine if background is bright; if so, add .bg-darken to body when autoEnabled
+        function luminanceFromRgb(r, g, b) {
+            // r,g,b in 0..255
+            const srgb = [r, g, b].map(v => v / 255);
+            const lin = srgb.map(c => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)));
+            return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
+        }
+
+        function checkBackgroundBrightnessAndApply() {
+            const autoEnabled = localStorage.getItem('dashboardAutoDarken') === '1';
+            if (!autoEnabled) { document.body.classList.remove('bg-darken'); return; }
+
+            const bg = getComputedStyle(document.body).backgroundImage;
+            if (bg && bg !== 'none') {
+                // attempt to extract URL
+                const m = bg.match(/url\((?:\"|\')?(.*?)(?:\"|\')?\)/);
+                if (m && m[1]) {
+                    const img = new Image();
+                    img.crossOrigin = 'Anonymous';
+                    img.onload = () => {
+                       
+                        try {
+                            const canvas = document.createElement('canvas');
+                            const w = 40, h = 40;
+                            canvas.width = w; canvas.height = h;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, w, h);
+                            const data = ctx.getImageData(0,0,w,h).data;
+                            let sum = 0, count=0;
+                            for (let i=0;i<data.length;i+=4) {
+                                const r = data[i], g = data[i+1], b = data[i+2];
+                                const lum = luminanceFromRgb(r,g,b);
+                                sum += lum; count++;
+                            }
+                            const avg = sum / count;
+                            // if average luminance > 0.6 consider bright
+                            if (avg > 0.6) document.body.classList.add('bg-darken'); else document.body.classList.remove('bg-darken');
+                        } catch (err) {
+                            console.warn('brightness check failed', err);
+                            document.body.classList.remove('bg-darken');
+                        }
+                    };
+                    img.onerror = () => { document.body.classList.remove('bg-darken'); };
+                    // use saved dashboardBackground if there is one to avoid CORS issues
+                    const saved = localStorage.getItem('dashboardBackground');
+                    img.src = saved || m[1];
+                    return;
+                }
+            }
+            // fallback: examine background-color
+            const bgColor = getComputedStyle(document.body).backgroundColor;
+            if (bgColor) {
+                const rgb = bgColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+                if (rgb) {
+                    const lum = luminanceFromRgb(parseInt(rgb[1],10), parseInt(rgb[2],10), parseInt(rgb[3],10));
+                    if (lum > 0.6) document.body.classList.add('bg-darken'); else document.body.classList.remove('bg-darken');
+                    return;
+                }
+            }
+            document.body.classList.remove('bg-darken');
+        }
+
+        function applyAutoDarkenSetting(enabled) {
+            if (!enabled) { document.body.classList.remove('bg-darken'); return; }
+            checkBackgroundBrightnessAndApply();
+        }
+
+        // handlers for per-screen duration sliders
+        function handleDurationChange(screenIndex, e) {
+            const seconds = parseInt(e.target.value, 10) || 5;
+            // update label
+            if (screenIndex === 0 && weatherDurationValue) weatherDurationValue.textContent = String(seconds);
+            if (screenIndex === 1 && scheduleDurationValue) scheduleDurationValue.textContent = String(seconds);
+            if (screenIndex === 2 && customDurationValue) customDurationValue.textContent = String(seconds);
+
+            // persist and update runtime durations
+            if (screenIndex === 0) localStorage.setItem('dashboardDurationWeather', String(seconds));
+            if (screenIndex === 1) localStorage.setItem('dashboardDurationSchedule', String(seconds));
+            if (screenIndex === 2) localStorage.setItem('dashboardDurationCustom', String(seconds));
+
+            screenDurations[screenIndex] = seconds * 1000;
+            // restart loop to pick up new durations immediately
+            try { startScreenLoop(); } catch (err) { console.warn('failed to restart screen loop', err); }
+        }
+
+        function handleBgUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const imgDataUrl = event.target.result;
+                document.body.style.backgroundImage = `url(${imgDataUrl})`;
+                try { localStorage.setItem('dashboardBackground', imgDataUrl); } catch (error) { console.error("배경화면 저장 실패:", error); }
+                // re-check brightness for auto-darken
+                try { checkBackgroundBrightnessAndApply(); } catch (err) { console.warn(err); }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Profile logo upload handler (preview only; saved when user clicks 저장)
+        let pendingProfileLogoDataUrl = null;
+        function handleProfileLogoSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const imgDataUrl = event.target.result;
+                pendingProfileLogoDataUrl = imgDataUrl;
+                if (profileLogoPreview) profileLogoPreview.src = imgDataUrl;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // --- 위젯 모드 및 설정 제어 로직 ---
+    
+    // 현재 모드 상태 변수
+    let currentDisplayMode = 'transition'; // 'transition' or 'widget'
+    let widgetSettings = {
+        weather: { show: true, order: 1 },
+        schedule: { show: true, order: 2 },
+        message: { show: true, order: 3 }
+    };
+
+    // 1. 모드 전환 함수
+    function setDisplayMode(mode) {
+        currentDisplayMode = mode;
+        const isWidget = (mode === 'widget');
+        
+        // 1-1. Body 클래스 토글
+        if (isWidget) {
+            document.body.classList.add('widget-mode');
+            // 위젯 모드 진입 시 루프 중지
+            if (slideTimeout) clearTimeout(slideTimeout);
+        } else {
+            document.body.classList.remove('widget-mode');
+            // 기본 모드 복귀 시 루프 재개
+            startScreenLoop();
+        }
+
+        // 1-2. UI 버튼 상태 업데이트 (Active 클래스)
+        const btnTrans = document.getElementById('mode-transition');
+        const btnWidget = document.getElementById('mode-widget');
+        if (isWidget) {
+            btnTrans.classList.remove('active');
+            btnWidget.classList.add('active');
+        } else {
+            btnTrans.classList.add('active');
+            btnWidget.classList.remove('active');
+        }
+
+        // 1-3. 설정 패널 표시/숨김 전환
+        const transSettings = document.getElementById('transition-settings-container');
+        const widSettings = document.getElementById('widget-settings-container');
+        
+        if (isWidget) {
+            transSettings.classList.add('hidden');
+            widSettings.classList.remove('hidden');
+            // 위젯 설정 적용 (화면 갱신)
+            updateWidgetSettings(); 
+        } else {
+            transSettings.classList.remove('hidden');
+            widSettings.classList.add('hidden');
+            // 기본 모드 복귀 시 모든 스크린 스타일 초기화
+            resetScreenStylesForTransition();
+        }
+
+        // 설정 저장
+        localStorage.setItem('displayMode', mode);
+    }
+
+    // 2. 위젯 설정 업데이트 (체크박스/순서 변경 시 호출)
+    function updateWidgetSettings() {
+        if (currentDisplayMode !== 'widget') return;
+
+        // 입력값 가져오기
+        const weatherShow = document.getElementById('show-weather-widget').checked;
+        const weatherOrder = document.getElementById('order-weather-widget').value;
+        
+        const scheduleShow = document.getElementById('show-schedule-widget').checked;
+        const scheduleOrder = document.getElementById('order-schedule-widget').value;
+        
+        const messageShow = document.getElementById('show-message-widget').checked;
+        const messageOrder = document.getElementById('order-message-widget').value;
+
+        // 상태 업데이트
+        widgetSettings = {
+            weather: { show: weatherShow, order: weatherOrder },
+            schedule: { show: scheduleShow, order: scheduleOrder },
+            message: { show: messageShow, order: messageOrder }
+        };
+        localStorage.setItem('widgetSettings', JSON.stringify(widgetSettings));
+
+        // 실제 화면(DOM)에 적용
+        applyWidgetStyles('weather-screen', widgetSettings.weather);
+        applyWidgetStyles('schedule-screen', widgetSettings.schedule);
+        applyWidgetStyles('custom-text-screen', widgetSettings.message);
+    }
+
+    // 개별 위젯 스타일 적용 헬퍼
+    function applyWidgetStyles(elementId, setting) {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+
+        if (setting.show) {
+            el.style.display = 'flex';
+            el.style.opacity = '1';
+            el.style.order = setting.order; // Flex 순서 적용
+            el.style.pointerEvents = 'auto';
+            el.style.zIndex = '10';
+        } else {
+            el.style.display = 'none';
+        }
+    }
+
+    // 3. 기본 모드로 복귀 시 스타일 초기화
+    function resetScreenStylesForTransition() {
+        const screens = ['weather-screen', 'schedule-screen', 'custom-text-screen'];
+        screens.forEach((id, index) => {
+            const el = document.getElementById(id);
+            if(el) {
+                el.style.display = 'flex'; // 기본 flex 유지
+                el.style.order = '0';      // 순서 초기화
+                // opacity 등은 startScreenLoop()에서 관리됨
+            }
+        });
+        // 현재 인덱스 화면만 보이게 재설정
+        transitionToScreen(currentScreenIndex); 
+    }
+
+    // 4. 초기 로드 시 저장된 설정 불러오기 (initApp 내 추가)
+    function loadSavedWidgetSettings() {
+        const savedMode = localStorage.getItem('displayMode') || 'transition';
+        const savedWidgetSet = localStorage.getItem('widgetSettings');
+        
+        if (savedWidgetSet) {
+            widgetSettings = JSON.parse(savedWidgetSet);
+            // 체크박스/인풋 값 복구
+            document.getElementById('show-weather-widget').checked = widgetSettings.weather.show;
+            document.getElementById('order-weather-widget').value = widgetSettings.weather.order;
+            
+            document.getElementById('show-schedule-widget').checked = widgetSettings.schedule.show;
+            document.getElementById('order-schedule-widget').value = widgetSettings.schedule.order;
+            
+            document.getElementById('show-message-widget').checked = widgetSettings.message.show;
+            document.getElementById('order-message-widget').value = widgetSettings.message.order;
+        }
+
+        // 약간의 지연 후 모드 적용 (DOM 렌더링 확보)
+        setTimeout(() => {
+            setDisplayMode(savedMode);
+        }, 100);
+    }
+
+    // window.onload에 loadSavedWidgetSettings() 호출을 추가해야 합니다.
+    // 예: window.onload = function() { initApp(); loadSavedWidgetSettings(); ... }
+        function initApp() {
+            updateTime();
+            setInterval(updateTime, 1000);
+            loadSettings();
+            loadSchedules();
+            fetchManchon3DongWeather();
+
+            // 1시간 (밀리초 단위: 60분 * 60초 * 1000)
+            const ONE_HOUR = 60 * 60 * 1000;
+
+            // 1. 날씨 정보: 1시간마다 새로고침
+            setInterval(fetchManchon3DongWeather, ONE_HOUR);
+
+            // 2. 학사일정 및 D-Day: 1시간마다 새로고침 (날짜가 바뀌면 D-Day 숫자 갱신)
+            setInterval(() => {
+                console.log("Auto-refreshing schedule and D-Day...");
+                // 전체 로직을 다시 수행할 필요 없이 D-Day 계산만 다시 렌더링
+                renderDisplaySchedules(); 
+            }, ONE_HOUR);
+
+            document.getElementById('settings-btn').addEventListener('click', () => { settingsModal.classList.remove('hidden'); settingsContainer.style.opacity = '0'; switchSettingsView('main-menu'); });
+            closeSettingsBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
+            backSettingsBtn.addEventListener('click', () => switchSettingsView('main-menu'));
+
+            openCustomTextBtn.addEventListener('click', () => switchSettingsView('custom-text'));
+            openScheduleEditBtn.addEventListener('click', () => switchSettingsView('schedule-edit'));
+
+            // wire per-screen duration sliders
+            if (weatherDurationSlider) weatherDurationSlider.addEventListener('input', (e) => handleDurationChange(0, e));
+            if (scheduleDurationSlider) scheduleDurationSlider.addEventListener('input', (e) => handleDurationChange(1, e));
+            if (customDurationSlider) customDurationSlider.addEventListener('input', (e) => handleDurationChange(2, e));
+
+            scheduleFormModal.addEventListener('submit', handleAddSchedule);
+            saveScheduleEditBtn.addEventListener('click', () => switchSettingsView('main-menu'));
+
+            saveCustomTextBtn.addEventListener('click', saveCustomText);
+            if (bgUploadModal) bgUploadModal.addEventListener('change', handleBgUpload);
+            // profile logo input
+            if (profileLogoInput) profileLogoInput.addEventListener('change', handleProfileLogoSelect);
+            // new settings toggles
+            const alwaysClockToggle = document.getElementById('always-show-clock');
+            const autoDarkenToggle = document.getElementById('auto-darken-bg');
+            if (alwaysClockToggle) alwaysClockToggle.addEventListener('change', (e) => {
+                const v = !!e.target.checked;
+                try { localStorage.setItem('dashboardAlwaysShowClock', v ? '1' : '0'); } catch (err) { console.error(err); }
+                applyAlwaysShowClock(v);
+            });
+            if (autoDarkenToggle) autoDarkenToggle.addEventListener('change', (e) => {
+                const v = !!e.target.checked;
+                try { localStorage.setItem('dashboardAutoDarken', v ? '1' : '0'); } catch (err) { console.error(err); }
+                applyAutoDarkenSetting(v);
+            });
+            if (saveProfileBtn) saveProfileBtn.addEventListener('click', () => {
+                const newName = profileSchoolNameInput ? profileSchoolNameInput.value.trim() : null;
+                if (newName && newName.length > 0) {
+                    try { localStorage.setItem('dashboardSchoolName', newName); } catch (err) { console.error('save school name failed', err); }
+                    const sidebarName = document.getElementById('sidebar-school-name');
+                    const bottomName = document.getElementById('school-name-bottom');
+                    if (sidebarName) sidebarName.textContent = newName;
+                    if (bottomName) bottomName.textContent = newName;
+                }
+                if (pendingProfileLogoDataUrl) {
+                    try { localStorage.setItem('dashboardLogo', pendingProfileLogoDataUrl); } catch (err) { console.error('save logo failed', err); }
+                    if (profileLogoPreview) profileLogoPreview.src = pendingProfileLogoDataUrl;
+                    if (document.getElementById('sidebar-logo')) document.getElementById('sidebar-logo').src = pendingProfileLogoDataUrl;
+                    if (schoolLogoImg) schoolLogoImg.src = pendingProfileLogoDataUrl;
+                    pendingProfileLogoDataUrl = null;
+                }
+                switchSettingsView('main-menu');
+            });
+            if (cancelProfileBtn) cancelProfileBtn.addEventListener('click', () => {
+                // discard pending changes
+                pendingProfileLogoDataUrl = null;
+                // restore preview to saved logo
+                const savedLogo = localStorage.getItem('dashboardLogo') || DEFAULT_LOGO_URL;
+                if (profileLogoPreview) profileLogoPreview.src = savedLogo;
+                if (profileSchoolNameInput) profileSchoolNameInput.value = localStorage.getItem('dashboardSchoolName') || '대륜고등학교';
+                switchSettingsView('main-menu');
+            });
+
+            // wire info tab buttons (if present)
+            document.querySelectorAll('.info-tab-button').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const t = btn.dataset.tab;
+                    if (t) switchInfoTab(t);
+                });
+            });
+            // default info tab
+            try { switchInfoTab('developer'); } catch (e) {}
+
+            document.body.addEventListener('mousemove', updateSettingsButtonProximity);
+
+            // Sidebar interactions: click to switch views, keyboard accessible.
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const view = item.dataset.view;
+                    switchSettingsView(view);
+                });
+                item.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); item.click(); }
+                });
+            });
+
+            // make the sidebar profile open the profile view when clicked
+            const sidebarProfile = document.getElementById('sidebar-profile');
+            if (sidebarProfile) {
+                sidebarProfile.addEventListener('click', () => switchSettingsView('profile'));
+                sidebarProfile.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sidebarProfile.click(); } });
+            }
+
+            // background preview uploads (secondary inputs)
+            const bgUpload2 = document.getElementById('bg-upload-modal-2');
+            const bgPreview = document.getElementById('bg-preview');
+            if (bgUpload2) bgUpload2.addEventListener('change', (e) => {
+                const file = e.target.files[0]; if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const imgDataUrl = ev.target.result;
+                    document.body.style.backgroundImage = `url(${imgDataUrl})`;
+                    if (bgPreview) bgPreview.style.backgroundImage = `url(${imgDataUrl})`;
+                    try { localStorage.setItem('dashboardBackground', imgDataUrl); } catch (err) { console.error(err); }
+                };
+                reader.readAsDataURL(file);
+            });
+
+            currentScreenElements.forEach((el, index) => {
+                el.style.opacity = index === 0 ? '1' : '0';
+                el.style.zIndex = index === 0 ? '10' : '5';
+                el.style.pointerEvents = index === 0 ? 'auto' : 'none';
+            });
+
+            toggleCardBlur(0, true);
+            // start screen loop immediately using per-screen durations
+            try { startScreenLoop(); } catch (err) { console.warn('failed to start screen loop', err); }
+            // initial brightness check in case background already set
+            setTimeout(() => { try { checkBackgroundBrightnessAndApply(); } catch (e) {} }, 200);
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
