@@ -17,6 +17,43 @@
             transition: background 0.5s ease;
         }
 
+        /* --- [추가됨] 기본 애니메이션 배경 효과 --- */
+        #default-animated-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            background-color: #000;
+            overflow: hidden;
+            pointer-events: none; /* 클릭 방해 금지 */
+        }
+        .glow-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.6;
+            animation: floatGlow 12s infinite alternate ease-in-out;
+        }
+        .glow-green {
+            width: 50vw; height: 50vw;
+            background: radial-gradient(circle, rgba(0, 255, 128, 0.35) 0%, transparent 70%);
+            top: -10%; left: -10%;
+            animation-duration: 14s;
+            animation-delay: 0s;
+        }
+        .glow-blue {
+            width: 60vw; height: 60vw;
+            background: radial-gradient(circle, rgba(0, 128, 255, 0.3) 0%, transparent 70%);
+            bottom: -20%; right: -10%;
+            animation-duration: 18s;
+            animation-delay: -5s;
+        }
+        @keyframes floatGlow {
+            0% { transform: translate(0, 0) scale(0.8); opacity: 0.3; }
+            50% { opacity: 0.8; }
+            100% { transform: translate(15vw, 10vh) scale(1.2); opacity: 0.2; }
+        }
+        /* -------------------------------------- */
+
         .screen {
             /* 기본 모드 (화면 전환) 스타일 */
             position: absolute;
@@ -36,8 +73,8 @@
                 "area1 area3";
             gap: 1.5rem;
             padding: 2rem;
-            height: 100vh; /* 화면 꽉 채움 */
-            overflow: hidden; /* 스크롤 방지 */
+            height: 100vh;
+            overflow: hidden;
             box-sizing: border-box;
         }
         
@@ -360,87 +397,92 @@
 
         /* --- [새로 추가됨] 위젯 모드 및 글래스 UI 스타일 --- */
 
-        /* [수정됨] 체크박스: 완전한 흰색 베이스 디자인 */
+        /* [수정됨] 체크박스: 흰색(White) 베이스 디자인 */
         .glass-checkbox-input:checked + .glass-checkbox-box {
-            background: #ffffff; /* 순백색 */
-            border-color: #ffffff;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
-        }
-        /* 체크 표시 색상을 검정으로 변경하여 가시성 확보 */
-        .glass-checkbox-input:checked + .glass-checkbox-box::after {
-            border-color: #000000; 
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+            border-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3), inset 1px 1px 3px rgba(255,255,255,0.4);
         }
 
-        /* 위젯 모드 레이아웃 고정 (스크롤 제거) */
-        body.widget-mode {
-            display: grid !important;
-            grid-template-columns: 1.6fr 1fr; 
-            grid-template-rows: 1fr 1fr;
-            grid-template-areas: 
-                "area1 area2"
-                "area1 area3";
-            gap: 1.5rem;
-            padding: 2rem;
-            height: 100vh; /* 화면 꽉 채움 */
-            overflow: hidden; /* 스크롤 방지 */
-            box-sizing: border-box;
+        /* [수정됨] 드래그 가능한 아이템 스타일 (설정창용) */
+        .draggable-item {
+            cursor: grab;
+            transition: transform 0.2s, box-shadow 0.2s;
+            user-select: none;
+        }
+        .draggable-item:active {
+            cursor: grabbing;
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        .draggable-item.dragging {
+            opacity: 0.5;
+            border: 2px dashed rgba(255,255,255,0.5);
         }
 
-        /* 드래그 앤 드롭 레이아웃 에디터 스타일 */
-        .layout-editor {
-            display: grid;
-            grid-template-columns: 1.6fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            grid-template-areas: 
-                "preview1 preview2"
-                "preview1 preview3";
-            gap: 10px;
-            aspect-ratio: 16/9;
-            background: rgba(0,0,0,0.2);
-            padding: 10px;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-        }
-        .layout-slot {
-            background: rgba(255,255,255,0.05);
-            border: 2px dashed rgba(255,255,255,0.2);
-            border-radius: 8px;
+        /* 위젯 모드 개별 스크린 스타일 재정의 */
+        body.widget-mode .screen {
+            position: relative !important;
+            width: 100% !important;
+            height: 100% !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            top: auto !important; 
+            left: auto !important;
+            transform: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            transition: all 0.3s;
+            z-index: 10 !important;
         }
-        .layout-slot.hovered {
-            background: rgba(255,255,255,0.15);
-            border-color: rgba(255,255,255,0.8);
-        }
-        .layout-slot[data-slot="area1"] { grid-area: preview1; }
-        .layout-slot[data-slot="area2"] { grid-area: preview2; }
-        .layout-slot[data-slot="area3"] { grid-area: preview3; }
 
-        .layout-card {
-            width: 90%;
-            height: 90%;
-            background: radial-gradient(125% 125% at 50% 20%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%);
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 8px;
+        /* 위젯 모드에서 카드 크기 최적화 */
+        body.widget-mode .glass-card {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: none !important;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            cursor: grab;
-            user-select: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: white;
+            align-items: center;
+            margin: 0;
+            border-radius: 24px;
+            overflow: hidden;
         }
-        .layout-card:active { cursor: grabbing; transform: scale(0.98); }
-        .layout-card .icon { font-size: 1.5rem; margin-bottom: 0.25rem; }
+
+        /* 위젯 모드에서 중복되는 보조 시계 숨김 */
+        body.widget-mode .aux-clock {
+            display: none !important;
+        }
+        
+        /* 위젯 모드에서 폰트 크기 반응형 조절 */
+        body.widget-mode h1 { font-size: 3rem; }
+        body.widget-mode h2 { font-size: 2rem; }
+        body.widget-mode .text-6xl { font-size: 2.5rem; }
+        
+        /* 모바일 대응: 세로로 쌓기 */
+        @media (max-width: 1024px) {
+            body.widget-mode {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1.2fr 1fr 1fr;
+                grid-template-areas: 
+                    "area1"
+                    "area2"
+                    "area3";
+                padding: 1rem;
+                overflow-y: auto;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen text-white overflow-hidden">
+
+    <div id="default-animated-bg">
+        <div class="glow-circle glow-green"></div>
+        <div class="glow-circle glow-blue"></div>
+    </div>
 
     <div class="settings-container">
         <button id="settings-btn" class="edit-btn">
@@ -457,13 +499,11 @@
             <button id="close-settings-btn" class="text-2xl text-white hover:text-sky-300 transition-colors">&times;</button>
         </div>
 
-        <!-- Galaxy-style two column layout: left sidebar + right detail panel -->
         <div id="settings-content-wrapper" class="overflow-hidden">
             <div class="settings-layout flex gap-4">
-                <!-- Sidebar -->
                 <aside class="settings-sidebar w-56 p-3 space-y-3 glass-section" aria-label="설정 사이드바">
                     <div id="sidebar-profile" class="sidebar-profile flex items-center gap-3 p-2" data-view="profile" tabindex="0" role="button" aria-pressed="false">
-                        <img id="sidebar-logo" src="image_5c43d9.png" alt="학교 로고" class="w-14 h-14 rounded-full object-cover border border-white/10">
+                        <img id="sidebar-logo" src="https://daeryun.dge.hs.kr/images/schl/web/daeryunh/common/logo.png" alt="학교 로고" class="w-14 h-14 rounded-full object-cover border border-white/10">
                         <div>
                             <div id="sidebar-school-name" class="font-semibold">대륜고등학교</div>
                             <div class="text-xs text-gray-400">학교 계정</div>
@@ -508,35 +548,29 @@
                     
                 </aside>
 
-                <!-- Right detail panel -->
                 <section class="settings-details flex-1 p-3">
                     <div class="glass-section p-4 h-full overflow-hidden" style="min-height:320px;">
-                        <!-- Existing views are moved into the right panel -->
                         <div id="main-menu-view" class="settings-view space-y-4">
                             <div class="p-4 space-y-5">
                                 <h3 class="text-lg font-semibold border-b border-white/30 pb-2 flex items-center gap-2">
-                                    <span class="text-xl">📺</span> 화면 표시 모드 설정
+                                    <span class="text-xl">📺</span> 화면 모드
                                 </h3>
                                 
-                                <div class="flex p-1 bg-black/20 rounded-xl border border-white/10 backdrop-blur-md">
-                                    <button id="mode-transition" class="flex-1 py-3 rounded-lg text-sm transition-all duration-300 font-bold shadow-sm bg-white/20 text-white" onclick="setDisplayMode('transition')">
-                                        🖥️ 화면 전환 (슬라이드)
+                                <div class="glass-toggle-container">
+                                    <button id="mode-transition" class="glass-toggle-btn active" onclick="setDisplayMode('transition')">
+                                        화면 전환
                                     </button>
-                                    <button id="mode-widget" class="flex-1 py-3 rounded-lg text-sm transition-all duration-300 text-gray-400 hover:text-white hover:bg-white/5" onclick="setDisplayMode('widget')">
-                                        📑 위젯 모드 (한눈에)
+                                    <button id="mode-widget" class="glass-toggle-btn" onclick="setDisplayMode('widget')">
+                                        위젯 모드
                                     </button>
                                 </div>
-                                <p class="text-xs text-gray-400 text-center mt-1">
-                                    <span id="mode-desc-transition">일정 시간마다 화면이 자동으로 전환됩니다.</span>
-                                    <span id="mode-desc-widget" class="hidden">모든 정보를 한 화면에서 동시에 확인합니다.</span>
-                                </p>
 
                                 <div id="transition-settings-container" class="space-y-4 transition-all duration-300">
                                     <h4 class="text-sm text-gray-400 font-bold uppercase tracking-wider mt-2">전환 타이밍 설정</h4>
                                     
                                     <div class="space-y-2">
                                         <label for="weather-duration-slider" class="flex justify-between text-sm text-gray-200">
-                                            <span>날씨/시계 화면</span>
+                                            <span>날씨 및 시계</span>
                                             <span><span id="weather-duration-value" class="font-bold text-white">8</span>초</span>
                                         </label>
                                         <input type="range" id="weather-duration-slider" min="5" max="60" value="8" class="glass-input w-full">
@@ -544,7 +578,7 @@
 
                                     <div class="space-y-2">
                                         <label for="schedule-duration-slider" class="flex justify-between text-sm text-gray-200">
-                                            <span>학사 일정 화면</span>
+                                            <span>학사 일정</span>
                                             <span><span id="schedule-duration-value" class="font-bold text-white">6</span>초</span>
                                         </label>
                                         <input type="range" id="schedule-duration-slider" min="5" max="60" value="6" class="glass-input w-full">
@@ -552,56 +586,64 @@
 
                                     <div class="space-y-2">
                                         <label for="custom-duration-slider" class="flex justify-between text-sm text-gray-200">
-                                            <span>커스텀 메시지 화면</span>
+                                            <span>커스텀 메시지</span>
                                             <span><span id="custom-duration-value" class="font-bold text-white">8</span>초</span>
                                         </label>
                                         <input type="range" id="custom-duration-slider" min="2" max="30" value="8" class="glass-input w-full">
                                     </div>
                                     
                                     <div class="pt-2 border-t border-white/10">
-                                        <label class="glass-checkbox-label flex items-center gap-2 cursor-pointer mb-2">
+                                        <label class="glass-checkbox-label">
                                             <input type="checkbox" id="always-show-clock" class="glass-checkbox-input" /> 
                                             <span class="glass-checkbox-box"></span>
                                             <span class="text-sm text-gray-200">모든 화면에 시계 표시</span>
                                         </label>
                                         
-                                        <label class="glass-checkbox-label flex items-center gap-2 cursor-pointer">
+                                        <label class="glass-checkbox-label">
                                             <input type="checkbox" id="auto-darken-bg" class="glass-checkbox-input" /> 
                                             <span class="glass-checkbox-box"></span>
-                                            <span class="text-sm text-gray-200">밝은 배경 자동 감지 (어둡게 처리)</span>
+                                            <span class="text-sm text-gray-200">밝은 배경 어둡게 처리</span>
                                         </label>
                                     </div>
                                 </div>
 
                                 <div id="widget-settings-container" class="hidden space-y-4 transition-all duration-300">
-                                    <h4 class="text-sm text-gray-400 font-bold uppercase tracking-wider mt-2">화면 배치 설정</h4>
-                                    <p class="text-xs text-gray-400 mb-2">박스를 드래그하여 원하는 위치에 놓으세요.</p>
+                                    <h4 class="text-sm text-gray-400 font-bold uppercase tracking-wider mt-2">위젯 선택 및 배열</h4>
+                                    <p class="text-xs text-gray-400 mb-2">체크하여 위젯을 활성화하고, 숫자로 표시될 순서를 지정하세요.</p>
 
-                                    <div class="layout-editor">
-                                        <div class="layout-slot" data-slot="area1"></div>
-                                        <div class="layout-slot" data-slot="area2"></div>
-                                        <div class="layout-slot" data-slot="area3"></div>
+                                    <div class="flex items-center justify-between glass-section p-3 bg-white/5 rounded-xl">
+                                        <label class="glass-checkbox-label mb-0">
+                                            <input type="checkbox" id="show-weather-widget" class="glass-checkbox-input" onchange="updateWidgetSettings()"> 
+                                            <span class="glass-checkbox-box"></span>
+                                            <span class="text-white font-medium">날씨 및 시계</span>
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs text-gray-400">순서</span>
+                                            <input type="number" id="order-weather-widget" value="1" min="1" max="9" class="glass-input text-center p-1 w-12 h-8" onchange="updateWidgetSettings()">
+                                        </div>
                                     </div>
 
-                                    <div class="flex justify-end">
-                                        <button class="glass-button text-sm py-2 px-4" onclick="resetWidgetLayout()">초기화</button>
+                                    <div class="flex items-center justify-between glass-section p-3 bg-white/5 rounded-xl">
+                                        <label class="glass-checkbox-label mb-0">
+                                            <input type="checkbox" id="show-schedule-widget" class="glass-checkbox-input" onchange="updateWidgetSettings()"> 
+                                            <span class="glass-checkbox-box"></span>
+                                            <span class="text-white font-medium">학사 일정</span>
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs text-gray-400">순서</span>
+                                            <input type="number" id="order-schedule-widget" value="2" min="1" max="9" class="glass-input text-center p-1 w-12 h-8" onchange="updateWidgetSettings()">
+                                        </div>
                                     </div>
-                                    
-                                    <div class="border-t border-white/10 pt-3 mt-2">
-                                        <p class="text-xs text-gray-400 mb-2">표시 여부:</p>
-                                        <div class="flex gap-4">
-                                            <label class="flex items-center gap-2 cursor-pointer">
-                                                <input type="checkbox" id="check-weather" class="glass-checkbox-input" checked onchange="toggleWidgetVisibility('weather-screen', this.checked)">
-                                                <span class="glass-checkbox-box"></span> <span class="text-sm">날씨</span>
-                                            </label>
-                                            <label class="flex items-center gap-2 cursor-pointer">
-                                                <input type="checkbox" id="check-schedule" class="glass-checkbox-input" checked onchange="toggleWidgetVisibility('schedule-screen', this.checked)">
-                                                <span class="glass-checkbox-box"></span> <span class="text-sm">일정</span>
-                                            </label>
-                                            <label class="flex items-center gap-2 cursor-pointer">
-                                                <input type="checkbox" id="check-message" class="glass-checkbox-input" checked onchange="toggleWidgetVisibility('custom-text-screen', this.checked)">
-                                                <span class="glass-checkbox-box"></span> <span class="text-sm">메시지</span>
-                                            </label>
+
+                                    <div class="flex items-center justify-between glass-section p-3 bg-white/5 rounded-xl">
+                                        <label class="glass-checkbox-label mb-0">
+                                            <input type="checkbox" id="show-message-widget" class="glass-checkbox-input" onchange="updateWidgetSettings()"> 
+                                            <span class="glass-checkbox-box"></span>
+                                            <span class="text-white font-medium">커스텀 메시지</span>
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs text-gray-400">순서</span>
+                                            <input type="number" id="order-message-widget" value="3" min="1" max="9" class="glass-input text-center p-1 w-12 h-8" onchange="updateWidgetSettings()">
                                         </div>
                                     </div>
                                 </div>
@@ -628,6 +670,33 @@
                                 </h3>
                                 <label for="bg-upload-modal" class="glass-button w-full text-center cursor-pointer">배경화면 변경</label>
                                 <input type="file" id="bg-upload-modal" class="hidden" accept="image/*">
+                            </div>
+
+                            <div class="p-4 space-y-3 bg-white/5 rounded-xl border border-white/10 mt-2">
+                                <h3 class="text-lg font-semibold flex items-center">
+                                    <span class="mr-2">🖥️</span> 화면 표시 모드
+                                </h3>
+                                <div class="flex gap-2 p-1 bg-black/20 rounded-lg">
+                                    <button id="mode-transition" class="flex-1 py-2 rounded-md text-sm transition-all bg-white/20 font-bold shadow-sm">화면 전환 (기본)</button>
+                                    <button id="mode-widget" class="flex-1 py-2 rounded-md text-sm transition-all hover:bg-white/10 text-gray-400">위젯 모드 (한눈에)</button>
+                                </div>
+                                <p class="text-xs text-gray-400">위젯 모드에서는 모든 인포메이션 보드가 한 화면에 배치됩니다.</p>
+                                
+                                <div id="widget-visibility-settings" class="mt-3 space-y-2 hidden border-t border-white/10 pt-3">
+                                    <p class="text-sm font-semibold mb-2">표시할 박스 선택:</p>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" id="show-weather-widget" checked class="glass-input w-4 h-4">
+                                        <span class="text-sm">날씨/시계</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" id="show-schedule-widget" checked class="glass-input w-4 h-4">
+                                        <span class="text-sm">일정</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" id="show-message-widget" checked class="glass-input w-4 h-4">
+                                        <span class="text-sm">메시지</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
@@ -676,12 +745,11 @@
                         <div id="schedule-edit-view" class="settings-view hidden space-y-4">
                             <h4 class="text-xl font-semibold border-b border-white/30 pb-2">학사 일정 관리 및 편집</h4>
 
-                            <!-- 일정 추가 폼에 D-Day 체크박스 추가 -->
                             <form id="schedule-form-modal" class="flex flex-col sm:flex-row gap-4">
                                 <input type="date" id="schedule-date-modal" class="glass-input flex-grow" required>
                                 <input type="text" id="schedule-event-modal" placeholder="일정 내용을 입력하세요..." class="glass-input flex-grow-[2]" required>
                                 <label class="glass-input flex items-center gap-2 justify-center">
-                                    <input type="checkbox" id="schedule-dday-modal"> D-Day 표시
+                                    <input type="checkbox" id="schedule-dday-modal"> 디데이 표시
                                 </label>
                                 <button type="submit" class="glass-button">일정 추가</button>
                             </form>
@@ -693,7 +761,6 @@
                             <button id="save-schedule-edit-btn" class="glass-button w-full mt-2">편집 완료 및 저장</button>
                         </div>
 
-                        <!-- Profile view: edit school name and logo (saved like other settings) -->
                         <div id="profile-view" class="settings-view hidden space-y-4">
                             <h4 class="text-xl font-semibold border-b border-white/30 pb-2">계정 설정</h4>
                             <label for="profile-school-name-input" class="block text-sm font-medium text-gray-200">이름</label>
@@ -702,7 +769,7 @@
                             <label class="block text-sm font-medium text-gray-200">로고</label>
                             <div class="flex items-center gap-4">
                                 <div class="w-28 h-28 rounded-full overflow-hidden border border-white/10 flex items-center justify-center bg-white/3">
-                                    <img id="profile-logo-preview" src="image_5c43d9.png" alt="로고 미리보기" class="object-contain max-h-full max-w-full">
+                                    <img id="profile-logo-preview" src="https://daeryun.dge.hs.kr/images/schl/web/daeryunh/common/logo.png" alt="로고 미리보기" class="object-contain max-h-full max-w-full">
                                 </div>
                                 <div class="flex-1">
                                     <label for="profile-logo-input" class="glass-button cursor-pointer">로고 업로드</label>
@@ -717,7 +784,6 @@
                             </div>
                         </div>
 
-                        <!-- Background view: reuses file inputs above but provides quick preview -->
                         <div id="background-view" class="settings-view hidden space-y-4">
                             <h4 class="text-xl font-semibold border-b border-white/30 pb-2">배경 및 로고 미리보기</h4>
                             <div class="flex flex-col sm:flex-row gap-4 items-start">
@@ -725,8 +791,7 @@
                                     <label class="block text-sm font-medium text-gray-200 mb-2">현재 배경</label>
                                     <div id="bg-preview" class="w-full h-40 bg-cover bg-center rounded-lg border border-white/10"></div>
                                 </div>
-                                <!-- removed logo preview column (logo can be edited in 학교 계정 설정) -->
-                            </div>
+                                </div>
                             <div class="flex gap-2">
                                 <label for="bg-upload-modal-2" class="glass-button cursor-pointer">배경 업로드</label>
                             </div>
@@ -742,8 +807,8 @@
                                 </div>
 
                                 <div id="info-developer" class="info-tab-content">
-                                    <h5 class="font-semibold">개발자 도구</h5>
-                                    <p class="text-sm text-gray-300">ADK</p>
+                                    <h5 class="font-semibold">개발자</h5>
+                                    <p class="text-sm text-gray-300">ADK(andogyeong090612@gmail.com)</p>
                                 </div>
 
                                 <div id="info-languages" class="info-tab-content hidden">
@@ -757,7 +822,7 @@
 
                                 <div id="info-version" class="info-tab-content hidden">
                                     <h5 class="font-semibold">버전</h5>
-                                    <p class="text-gray-300">1.0.4</p>
+                                    <p class="text-gray-300">1.1.2</p>
                                 </div>
                             </div>
                     </div>
@@ -766,7 +831,6 @@
         </div>
     </div>
 
-    <!-- D-Day 배너 (좌측 상단) -->
     <div id="dday-banner" aria-hidden="true">
         <span class="dday-count"></span>
         <span class="dday-title"></span>
@@ -796,8 +860,7 @@
                 </div>
             </div>
 
-            <!-- initial wait removed; slides start immediately based on per-screen durations -->
-        </div>
+            </div>
     </div>
 
     <div id="schedule-screen" class="screen p-4 sm:p-8">
@@ -823,15 +886,15 @@
                 <div class="aux-date aux-date-el">00월 00일(요일)</div>
             </div>
             <div class="glass-card no-initial-blur p-8 sm:p-12 rounded-[40px] shadow-2xl w-full">
-                <h2 id="custom-title" class="text-4xl sm:text-5xl font-extrabold text-white mb-6">환영 메시지</h2>
-                <p id="custom-message" class="text-4xl font-light leading-relaxed whitespace-pre-wrap text-white">안녕하세요! 환영합니다.</p>
+                <h2 id="custom-title" class="text-4xl sm:text-5xl font-extrabold text-white mb-6">대륜고등학교 방송부</h2>
+                <p id="custom-message" class="text-4xl font-light leading-relaxed whitespace-pre-wrap text-white">지금은 방송 시간이 아닙니다.</p>
                 <p id="custom-message-placeholder" class="text-xl sm:text-2xl text-gray-400 italic mt-4 hidden">(설정에서 원하는 메시지를 입력하여 표시할 수 있습니다.)</p>
             </div>
         </div>
     </div>
 
     <div id="school-logo-container" class="glass-card fixed bottom-5 left-1/2 -translate-x-1/2 py-3 px-6 flex items-center gap-4 z-20" style="border-radius: 999px;">
-        <img id="school-logo-img" src="image_5c43d9.png" alt="학교 로고" class="h-10 w-auto">
+        <img id="school-logo-img" src="https://daeryun.dge.hs.kr/images/schl/web/daeryunh/common/logo.png" alt="학교 로고" class="h-10 w-auto">
         <span id="school-name-bottom" class="text-white text-lg font-semibold">대륜고등학교</span>
     </div>
 
@@ -841,7 +904,7 @@
     let screenDurations = [...DEFAULT_DURATIONS];
     let slideTimeout = null;
         const TRANSITION_DURATION = 1000;
-        const DEFAULT_LOGO_URL = 'image_5c43d9.png';
+        const DEFAULT_LOGO_URL = 'https://daeryun.dge.hs.kr/images/schl/web/daeryunh/common/logo.png';
 
         const SCREENS = ['weather-screen', 'schedule-screen', 'custom-text-screen'];
         let currentScreenIndex = 0;
@@ -1118,9 +1181,9 @@
                 }
             } else {
                 schedules = [
-                    { date: '2025-10-28', event: '2학기 중간고사 (~11/1)', dday: false },
-                    { date: '2025-11-15', event: '수강 철회 기간 마감일', dday: false },
-                    { date: '2025-12-01', event: '계절학기 수강 신청 시작', dday: false }
+                    { date: '1921.09.15', event: '애국지사 洪宙一, 金永瑞, 鄭雲騎가 友弦書樓를 임시교사로 嶠南學院을 설립', dday: false },
+                    { date: '1988.12.17', event: '만촌동 현교사로 신축 이전', dday: false },
+                    { date: '2021.09.15', event: '개교 100주년 기념식 거행', dday: false }
                 ];
             }
             schedules.sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -1334,7 +1397,15 @@
 
         function loadSettings() {
             const savedBg = localStorage.getItem('dashboardBackground');
-            if (savedBg) document.body.style.backgroundImage = `url(${savedBg})`; else document.body.style.backgroundImage = '';
+            const defaultAnimatedBg = document.getElementById('default-animated-bg');
+            if (savedBg) {
+                document.body.style.backgroundImage = `url(${savedBg})`;
+                if (defaultAnimatedBg) defaultAnimatedBg.style.display = 'none';
+            } else {
+                document.body.style.backgroundImage = '';
+                if (defaultAnimatedBg) defaultAnimatedBg.style.display = 'block';
+            }
+            
             const savedLogo = localStorage.getItem('dashboardLogo');
             schoolLogoImg.src = savedLogo || DEFAULT_LOGO_URL;
             schoolLogoImg.onerror = () => { schoolLogoImg.src = DEFAULT_LOGO_URL; };
@@ -1353,7 +1424,7 @@
             if (document.getElementById('sidebar-logo')) document.getElementById('sidebar-logo').src = logoUrl;
 
             const savedCustomText = localStorage.getItem('dashboardCustomText');
-            const savedCustomTitle = localStorage.getItem('dashboardCustomTitle') || '환영 메시지';
+            const savedCustomTitle = localStorage.getItem('dashboardCustomTitle') || '대륜고등학교 방송부';
             const savedTextSize = localStorage.getItem('dashboardTextSize') || 'text-4xl';
             const savedFontWeight = localStorage.getItem('dashboardFontWeight') || 'font-light';
             const savedFontFamily = localStorage.getItem('dashboardFontFamily') || 'font-system';
@@ -1365,7 +1436,7 @@
                 customTextInput.value = savedCustomText;
                 customMessagePlaceholder.classList.add('hidden');
             } else {
-                customMessageElement.textContent = "안녕하세요! 환영합니다.";
+                customMessageElement.textContent = "지금은 방송 시간이 아닙니다.";
                 customTextInput.value = '';
                 customMessagePlaceholder.classList.remove('hidden');
             }
@@ -1528,6 +1599,10 @@
             reader.onload = (event) => {
                 const imgDataUrl = event.target.result;
                 document.body.style.backgroundImage = `url(${imgDataUrl})`;
+                
+                const defaultAnimatedBg = document.getElementById('default-animated-bg');
+                if (defaultAnimatedBg) defaultAnimatedBg.style.display = 'none';
+
                 try { localStorage.setItem('dashboardBackground', imgDataUrl); } catch (error) { console.error("배경화면 저장 실패:", error); }
                 // re-check brightness for auto-darken
                 try { checkBackgroundBrightnessAndApply(); } catch (err) { console.warn(err); }
@@ -1549,269 +1624,148 @@
             reader.readAsDataURL(file);
         }
 
-        // --- 위젯 모드 및 설정 제어 로직 (개선됨) ---
+        // --- 위젯 모드 및 설정 제어 로직 ---
+    
+    // 현재 모드 상태 변수
+    let currentDisplayMode = 'transition'; // 'transition' or 'widget'
+    let widgetSettings = {
+        weather: { show: true, order: 1 },
+        schedule: { show: true, order: 2 },
+        message: { show: true, order: 3 }
+    };
 
-        let currentDisplayMode = 'transition'; 
-        // 기본 레이아웃 맵핑 (Area ID -> Screen Element ID)
-        let widgetLayout = {
-            'area1': 'weather-screen',      // 왼쪽 큰 화면
-            'area2': 'schedule-screen',     // 오른쪽 위
-            'area3': 'custom-text-screen'   // 오른쪽 아래
+    // 1. 모드 전환 함수
+    function setDisplayMode(mode) {
+        currentDisplayMode = mode;
+        const isWidget = (mode === 'widget');
+        
+        // 1-1. Body 클래스 토글
+        if (isWidget) {
+            document.body.classList.add('widget-mode');
+            // 위젯 모드 진입 시 루프 중지
+            if (slideTimeout) clearTimeout(slideTimeout);
+        } else {
+            document.body.classList.remove('widget-mode');
+            // 기본 모드 복귀 시 루프 재개
+            startScreenLoop();
+        }
+
+        // 1-2. UI 버튼 상태 업데이트 (Active 클래스)
+        const btnTrans = document.getElementById('mode-transition');
+        const btnWidget = document.getElementById('mode-widget');
+        if (isWidget) {
+            btnTrans.classList.remove('active');
+            btnWidget.classList.add('active');
+        } else {
+            btnTrans.classList.add('active');
+            btnWidget.classList.remove('active');
+        }
+
+        // 1-3. 설정 패널 표시/숨김 전환
+        const transSettings = document.getElementById('transition-settings-container');
+        const widSettings = document.getElementById('widget-settings-container');
+        
+        if (isWidget) {
+            transSettings.classList.add('hidden');
+            widSettings.classList.remove('hidden');
+            // 위젯 설정 적용 (화면 갱신)
+            updateWidgetSettings(); 
+        } else {
+            transSettings.classList.remove('hidden');
+            widSettings.classList.add('hidden');
+            // 기본 모드 복귀 시 모든 스크린 스타일 초기화
+            resetScreenStylesForTransition();
+        }
+
+        // 설정 저장
+        localStorage.setItem('displayMode', mode);
+    }
+
+    // 2. 위젯 설정 업데이트 (체크박스/순서 변경 시 호출)
+    function updateWidgetSettings() {
+        if (currentDisplayMode !== 'widget') return;
+
+        // 입력값 가져오기
+        const weatherShow = document.getElementById('show-weather-widget').checked;
+        const weatherOrder = document.getElementById('order-weather-widget').value;
+        
+        const scheduleShow = document.getElementById('show-schedule-widget').checked;
+        const scheduleOrder = document.getElementById('order-schedule-widget').value;
+        
+        const messageShow = document.getElementById('show-message-widget').checked;
+        const messageOrder = document.getElementById('order-message-widget').value;
+
+        // 상태 업데이트
+        widgetSettings = {
+            weather: { show: weatherShow, order: weatherOrder },
+            schedule: { show: scheduleShow, order: scheduleOrder },
+            message: { show: messageShow, order: messageOrder }
         };
+        localStorage.setItem('widgetSettings', JSON.stringify(widgetSettings));
 
-        // 1. 모드 전환 함수
-        function setDisplayMode(mode) {
-            currentDisplayMode = mode;
-            const isWidget = (mode === 'widget');
+        // 실제 화면(DOM)에 적용
+        applyWidgetStyles('weather-screen', widgetSettings.weather);
+        applyWidgetStyles('schedule-screen', widgetSettings.schedule);
+        applyWidgetStyles('custom-text-screen', widgetSettings.message);
+    }
+
+    // 개별 위젯 스타일 적용 헬퍼
+    function applyWidgetStyles(elementId, setting) {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+
+        if (setting.show) {
+            el.style.display = 'flex';
+            el.style.opacity = '1';
+            el.style.order = setting.order; // Flex 순서 적용
+            el.style.pointerEvents = 'auto';
+            el.style.zIndex = '10';
+        } else {
+            el.style.display = 'none';
+        }
+    }
+
+    // 3. 기본 모드로 복귀 시 스타일 초기화
+    function resetScreenStylesForTransition() {
+        const screens = ['weather-screen', 'schedule-screen', 'custom-text-screen'];
+        screens.forEach((id, index) => {
+            const el = document.getElementById(id);
+            if(el) {
+                el.style.display = 'flex'; // 기본 flex 유지
+                el.style.order = '0';      // 순서 초기화
+                // opacity 등은 startScreenLoop()에서 관리됨
+            }
+        });
+        // 현재 인덱스 화면만 보이게 재설정
+        transitionToScreen(currentScreenIndex); 
+    }
+
+    // 4. 초기 로드 시 저장된 설정 불러오기 (initApp 내 추가)
+    function loadSavedWidgetSettings() {
+        const savedMode = localStorage.getItem('displayMode') || 'transition';
+        const savedWidgetSet = localStorage.getItem('widgetSettings');
+        
+        if (savedWidgetSet) {
+            widgetSettings = JSON.parse(savedWidgetSet);
+            // 체크박스/인풋 값 복구
+            document.getElementById('show-weather-widget').checked = widgetSettings.weather.show;
+            document.getElementById('order-weather-widget').value = widgetSettings.weather.order;
             
-            const btnTrans = document.getElementById('mode-transition');
-            const btnWidget = document.getElementById('mode-widget');
-            const transSettings = document.getElementById('transition-settings-container');
-            const widSettings = document.getElementById('widget-settings-container');
-
-            // 설명 텍스트 토글용
-            const descTrans = document.getElementById('mode-desc-transition');
-            const descWidget = document.getElementById('mode-desc-widget');
-
-            if (isWidget) {
-                document.body.classList.add('widget-mode');
-                if (slideTimeout) clearTimeout(slideTimeout); // 슬라이드 정지
-                
-                // 버튼 스타일 변경 (Tailwind)
-                btnTrans.className = "flex-1 py-3 rounded-lg text-sm transition-all duration-300 text-gray-400 hover:text-white hover:bg-white/5";
-                btnWidget.className = "flex-1 py-3 rounded-lg text-sm transition-all duration-300 font-bold shadow-sm bg-white/20 text-white";
-
-                transSettings.classList.add('hidden');
-                widSettings.classList.remove('hidden');
-
-                if(descTrans) descTrans.classList.add('hidden');
-                if(descWidget) descWidget.classList.remove('hidden');
-
-                // 위젯 레이아웃 적용
-                applyWidgetLayout();
-                
-                // 설정창 내 에디터 초기화
-                initLayoutEditor(); 
-
-            } else {
-                document.body.classList.remove('widget-mode');
-
-                // 버튼 스타일 복구
-                btnTrans.className = "flex-1 py-3 rounded-lg text-sm transition-all duration-300 font-bold shadow-sm bg-white/20 text-white";
-                btnWidget.className = "flex-1 py-3 rounded-lg text-sm transition-all duration-300 text-gray-400 hover:text-white hover:bg-white/5";
-
-                transSettings.classList.remove('hidden');
-                widSettings.classList.add('hidden');
-
-                if(descTrans) descTrans.classList.remove('hidden');
-                if(descWidget) descWidget.classList.add('hidden');
-
-                // [중요 수정] 기본 모드 복귀 시 스타일 완벽 초기화
-                resetScreenStylesForTransition();
-                
-                // 슬라이드 루프 재개
-                startScreenLoop();
-            }
-            localStorage.setItem('displayMode', mode);
-        }
-
-        // 2. [버그 수정됨] 기본 모드로 복귀 시 스타일 초기화 함수
-        function resetScreenStylesForTransition() {
-            const screens = ['weather-screen', 'schedule-screen', 'custom-text-screen'];
+            document.getElementById('show-schedule-widget').checked = widgetSettings.schedule.show;
+            document.getElementById('order-schedule-widget').value = widgetSettings.schedule.order;
             
-            screens.forEach((id, index) => {
-                const el = document.getElementById(id);
-                if (!el) return;
-
-                // Grid 관련 속성 제거
-                el.style.gridArea = '';
-                el.style.display = 'flex'; 
-                el.style.position = 'absolute'; // screen 클래스 기본값 복구
-                el.style.width = '100%';
-                el.style.height = '100%';
-                
-                // 현재 인덱스에 따라 보이기/숨기기 명확히 설정 (겹침 방지)
-                if (index === currentScreenIndex) {
-                    el.style.opacity = '1';
-                    el.style.zIndex = '10';
-                    el.style.pointerEvents = 'auto';
-                    toggleCardBlur(index, true); // 블러 효과 켜기
-                } else {
-                    el.style.opacity = '0';
-                    el.style.zIndex = '5';
-                    el.style.pointerEvents = 'none';
-                    toggleCardBlur(index, false);
-                }
-            });
-            
-            // 보조 시계 다시 표시 (설정값 따름)
-            const showAux = localStorage.getItem('dashboardAlwaysShowClock') === '1';
-            applyAlwaysShowClock(showAux);
+            document.getElementById('show-message-widget').checked = widgetSettings.message.show;
+            document.getElementById('order-message-widget').value = widgetSettings.message.order;
         }
 
-        // 3. 위젯 레이아웃 적용 함수
-        function applyWidgetLayout() {
-            if (currentDisplayMode !== 'widget') return;
+        // 약간의 지연 후 모드 적용 (DOM 렌더링 확보)
+        setTimeout(() => {
+            setDisplayMode(savedMode);
+        }, 100);
+    }
 
-            // 각 영역(Area)에 할당된 스크린 ID를 찾아 배치
-            for (const [area, screenId] of Object.entries(widgetLayout)) {
-                const el = document.getElementById(screenId);
-                if (el) {
-                    el.style.display = 'flex';
-                    el.style.gridArea = area; // CSS Grid Area 할당
-                    el.style.opacity = '1';
-                    el.style.zIndex = '10';
-                    el.style.position = 'relative'; // absolute 해제
-                    el.style.width = '100%';
-                    el.style.height = '100%';
-                    el.style.pointerEvents = 'auto';
-                }
-            }
-
-            // 위젯 모드에서는 보조 시계 강제 숨김 (메인 시계만 표시)
-            const auxClocks = document.querySelectorAll('.aux-clock');
-            auxClocks.forEach(c => c.style.display = 'none');
-        }
-
-        // 4. 드래그 앤 드롭 레이아웃 에디터 초기화
-        function initLayoutEditor() {
-            const slots = document.querySelectorAll('.layout-slot');
-            const cardNames = {
-                'weather-screen': { icon: '🌤️', name: '날씨/시계' },
-                'schedule-screen': { icon: '📅', name: '일정' },
-                'custom-text-screen': { icon: '💬', name: '메시지' }
-            };
-
-            // 슬롯 비우기
-            slots.forEach(slot => slot.innerHTML = '');
-
-            // 현재 매핑에 따라 카드 생성 및 배치
-            for (const [area, screenId] of Object.entries(widgetLayout)) {
-                const slot = document.querySelector(`.layout-slot[data-slot="${area}"]`);
-                if (slot && cardNames[screenId]) {
-                    const card = document.createElement('div');
-                    card.className = 'layout-card';
-                    card.draggable = true;
-                    card.dataset.screenId = screenId;
-                    card.innerHTML = `<div class="icon">${cardNames[screenId].icon}</div><div>${cardNames[screenId].name}</div>`;
-                    
-                    // 드래그 이벤트 연결
-                    card.addEventListener('dragstart', handleDragStart);
-                    slot.appendChild(card);
-                }
-            }
-
-            // 슬롯 이벤트 연결
-            slots.forEach(slot => {
-                slot.addEventListener('dragover', handleDragOver);
-                slot.addEventListener('dragleave', handleDragLeave);
-                slot.addEventListener('drop', handleDrop);
-            });
-
-            // 체크박스 상태 동기화
-            const ids = ['weather-screen', 'schedule-screen', 'custom-text-screen'];
-            const checks = ['check-weather', 'check-schedule', 'check-message'];
-            ids.forEach((id, idx) => {
-                const el = document.getElementById(id);
-                const chk = document.getElementById(checks[idx]);
-                if(chk) chk.checked = (el.style.display !== 'none');
-            });
-        }
-
-        // --- 드래그 앤 드롭 이벤트 핸들러 ---
-        let draggedCard = null;
-
-        function handleDragStart(e) {
-            draggedCard = this;
-            e.dataTransfer.effectAllowed = 'move';
-            setTimeout(() => this.style.opacity = '0.5', 0);
-        }
-
-        function handleDragOver(e) {
-            e.preventDefault(); // 드롭 허용
-            this.classList.add('hovered');
-        }
-
-        function handleDragLeave(e) {
-            this.classList.remove('hovered');
-        }
-
-        function handleDrop(e) {
-            e.preventDefault();
-            this.classList.remove('hovered');
-
-            if (this.children.length > 0) {
-                // 이미 카드가 있다면 교환(Swap)
-                const existingCard = this.children[0];
-                const originalParent = draggedCard.parentNode;
-                originalParent.appendChild(existingCard);
-                this.appendChild(draggedCard);
-            } else {
-                // 빈 슬롯이면 이동
-                this.appendChild(draggedCard);
-            }
-
-            draggedCard.style.opacity = '1';
-            draggedCard = null;
-
-            // 변경된 레이아웃 저장 및 적용
-            saveLayoutFromEditor();
-        }
-
-        function saveLayoutFromEditor() {
-            const slots = document.querySelectorAll('.layout-slot');
-            const newLayout = {};
-            
-            slots.forEach(slot => {
-                const area = slot.dataset.slot;
-                const card = slot.querySelector('.layout-card');
-                if (card) {
-                    newLayout[area] = card.dataset.screenId;
-                }
-            });
-
-            widgetLayout = newLayout;
-            localStorage.setItem('widgetLayout', JSON.stringify(widgetLayout));
-            applyWidgetLayout(); // 즉시 화면에 반영
-        }
-
-        function resetWidgetLayout() {
-            widgetLayout = {
-                'area1': 'weather-screen',
-                'area2': 'schedule-screen',
-                'area3': 'custom-text-screen'
-            };
-            localStorage.setItem('widgetLayout', JSON.stringify(widgetLayout));
-            initLayoutEditor();
-            applyWidgetLayout();
-        }
-
-        function toggleWidgetVisibility(screenId, show) {
-            const el = document.getElementById(screenId);
-            if (el) {
-                el.style.display = show ? 'flex' : 'none';
-                // 설정 저장 로직 추가 가능
-            }
-        }
-
-        // 초기화 시 로드 로직 (initApp 내 호출)
-        function loadSavedWidgetSettings() {
-            const savedMode = localStorage.getItem('displayMode') || 'transition';
-            const savedLayout = localStorage.getItem('widgetLayout');
-
-            if (savedLayout) {
-                widgetLayout = JSON.parse(savedLayout);
-            }
-
-            // 약간의 지연 후 모드 적용 (DOM 렌더링 확보)
-            setTimeout(() => {
-                setDisplayMode(savedMode);
-            }, 100);
-        }
-
-        // window.onload 함수 맨 아래에 loadSavedWidgetSettings() 추가 필요
-        // initApp 함수 마지막 줄에 loadSavedWidgetSettings(); 추가
-
+    // window.onload에 loadSavedWidgetSettings() 호출을 추가해야 합니다.
+    // 예: window.onload = function() { initApp(); loadSavedWidgetSettings(); ... }
         function initApp() {
             updateTime();
             setInterval(updateTime, 1000);
@@ -1883,7 +1837,7 @@
                 switchSettingsView('main-menu');
             });
             if (cancelProfileBtn) cancelProfileBtn.addEventListener('click', () => {
-                // discard pending changes
+                // discard pending 지
                 pendingProfileLogoDataUrl = null;
                 // restore preview to saved logo
                 const savedLogo = localStorage.getItem('dashboardLogo') || DEFAULT_LOGO_URL;
@@ -1931,6 +1885,10 @@
                 reader.onload = (ev) => {
                     const imgDataUrl = ev.target.result;
                     document.body.style.backgroundImage = `url(${imgDataUrl})`;
+                    
+                    const defaultAnimatedBg = document.getElementById('default-animated-bg');
+                    if (defaultAnimatedBg) defaultAnimatedBg.style.display = 'none';
+
                     if (bgPreview) bgPreview.style.backgroundImage = `url(${imgDataUrl})`;
                     try { localStorage.setItem('dashboardBackground', imgDataUrl); } catch (err) { console.error(err); }
                 };
@@ -1951,98 +1909,6 @@
         }
 
         window.onload = initApp;
-
-        function renderWidgetMode() {
-            const app = document.getElementById('app');
-            app.innerHTML = '';
-            app.className = 'w-full h-full p-8 flex gap-8 relative z-10';
-
-            // 왼쪽 패널 (학교 정보 + 날씨 등)
-            const leftPanel = document.createElement('div');
-            leftPanel.className = 'w-1/3 h-full flex flex-col gap-6';
-            
-            // 학교 정보 (수정: 변수는 그대로 두되, 아래 조합 시 위치만 변경)
-            const schoolInfoHTML = `
-                <div class="bg-black/40 backdrop-blur-md rounded-3xl p-6 flex items-center gap-4 border border-white/10">
-                    ${schoolLogo ? `<img src="${schoolLogo}" class="w-16 h-16 object-contain">` : ''}
-                    <div>
-                        <h1 class="text-2xl font-bold text-white">${schoolName || '학교명을 설정하세요'}</h1>
-                        <p class="text-white/70">방송실 대기화면 시스템</p>
-                    </div>
-                </div>
-            `;
-
-            // 시계
-            const clockHTML = `
-                <div id="widget-clock-container" class="bg-black/40 backdrop-blur-md rounded-3xl p-6 border border-white/10 text-center">
-                    <div id="widget-clock" class="text-6xl font-black text-white tracking-tighter font-mono leading-none">00:00:00</div>
-                    <div id="widget-date" class="text-white/70 mt-2 text-lg">1월 1일 월요일</div>
-                </div>
-            `;
-
-            // 위젯 (급식/시간표/학사일정 중 택1)
-            let widgetContent = '';
-            const activeWidget = localStorage.getItem('activeWidget') || 'meal';
-            
-            if (activeWidget === 'meal') {
-                widgetContent = `
-                    <div class="bg-black/40 backdrop-blur-md rounded-3xl p-6 border border-white/10 flex-1 flex flex-col overflow-hidden">
-                        <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                            <span class="text-yellow-400">🍚</span> 오늘의 급식
-                        </h2>
-                        <div class="flex-1 overflow-y-auto custom-scrollbar text-white/90 whitespace-pre-line leading-relaxed text-lg">
-                            ${cachedMealData || '급식 정보 로딩중...'}
-                        </div>
-                    </div>
-                `;
-            } else if (activeWidget === 'timetable') {
-                widgetContent = `
-                    <div class="bg-black/40 backdrop-blur-md rounded-3xl p-6 border border-white/10 flex-1 flex flex-col overflow-hidden">
-                        <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                            <span class="text-blue-400">📅</span> 오늘의 시간표
-                        </h2>
-                        <div class="flex-1 overflow-y-auto custom-scrollbar text-white/90 whitespace-pre-line leading-relaxed text-lg">
-                            ${cachedTimetableData || '시간표 정보 로딩중...'}
-                        </div>
-                    </div>
-                `;
-            } else if (activeWidget === 'schedule') {
-                widgetContent = `
-                    <div class="bg-black/40 backdrop-blur-md rounded-3xl p-6 border border-white/10 flex-1 flex flex-col overflow-hidden">
-                        <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                            <span class="text-green-400">📆</span> 학사일정
-                        </h2>
-                        <div class="flex-1 overflow-y-auto custom-scrollbar text-white/90 whitespace-pre-line leading-relaxed text-lg">
-                            ${cachedScheduleData || '학사일정 정보 로딩중...'}
-                        </div>
-                    </div>
-                `;
-            }
-
-            // [수정됨] 순서 변경: 시계(Top) -> 위젯(Middle) -> 학교정보(Bottom)
-            // 기존: schoolInfoHTML + widgetContent + clockHTML
-            leftPanel.innerHTML = clockHTML + widgetContent + schoolInfoHTML;
-            
-            // 오른쪽 패널 (공지사항/안내문구)
-            const rightPanel = document.createElement('div');
-            rightPanel.className = 'flex-1 h-full bg-black/40 backdrop-blur-md rounded-3xl p-8 border border-white/10 flex flex-col justify-center items-center text-center relative overflow-hidden';
-            
-            const message = localStorage.getItem('customMessage') || '방송 준비 중입니다\n잠시만 기다려주세요';
-            rightPanel.innerHTML = `
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 pointer-events-none"></div>
-                <div class="relative z-10">
-                    <div class="text-5xl md:text-7xl font-black text-white leading-tight drop-shadow-2xl whitespace-pre-line animate-fade-in-up">
-                        ${message}
-                    </div>
-                </div>
-            `;
-
-            app.appendChild(leftPanel);
-            app.appendChild(rightPanel);
-
-            // 시계 즉시 업데이트 (중복 방지를 위해 기존 인터벌 확인 등은 updateWidgetClock 내부에서 처리 권장)
-            updateWidgetClock();
-        }
     </script>
 </body>
 </html>
