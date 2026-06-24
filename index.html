@@ -306,6 +306,11 @@
 </head>
 <body class="min-h-screen text-white overflow-hidden">
 
+    <div id="update-notification" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden cursor-pointer bg-blue-600/80 backdrop-blur-md border border-blue-400 text-white px-4 py-2 rounded-full shadow-lg items-center gap-2 hover:bg-blue-500 transition-colors">
+        <span class="animate-spin" style="animation-duration: 3s; display: inline-block;">🔄</span>
+        <span class="font-semibold text-sm">새로운 업데이트 가능</span>
+    </div>
+
     <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" aria-hidden="true">
         <defs>
             <filter id="glass-refraction" color-interpolation-filters="sRGB">
@@ -389,6 +394,13 @@
                             <div class="text-xs text-gray-300">설정 초기화 및 급식</div>
                         </div>
                     </div>
+                    <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center gap-3" data-view="update" tabindex="0" role="button" aria-pressed="false">
+                        <span class="w-10 h-10 rounded-md bg-white/6 flex items-center justify-center text-xl">🔄</span>
+                        <div class="text-sm">
+                            <div class="font-semibold">업데이트</div>
+                            <div class="text-xs text-gray-300">최신 버전 확인</div>
+                        </div>
+                    </div>
                     <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center gap-3" data-view="info" tabindex="0" role="button" aria-pressed="false">
                         <span class="w-10 h-10 rounded-md bg-white/6 flex items-center justify-center text-xl">ℹ️</span>
                         <div class="text-sm">
@@ -400,6 +412,20 @@
 
                 <section class="settings-details flex-1 p-3">
                     <div class="glass-section p-4 h-full overflow-hidden" style="min-height:320px;">
+                        
+                        <div id="update-view" class="settings-view hidden space-y-4">
+                            <h4 class="text-xl font-semibold border-b border-white/30 pb-2">업데이트 확인</h4>
+                            <div class="glass-card w-full p-6 space-y-4 text-center">
+                                <div class="text-4xl mb-2">🔄</div>
+                                <p id="update-status-text" class="text-lg text-gray-200">현재 버전 상태를 확인하는 중입니다...</p>
+                                
+                                <button id="install-update-btn" class="glass-button w-full hidden mt-4 bg-blue-500/30 border-blue-400/50 hover:bg-blue-500/50 text-white font-bold transition-all shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+                                    업데이트 설치 및 새로고침
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-2 text-center">* 깃허브 저장소(adk090612.github.io/cast_stanby/)의 원본 코드와 비교하여 업데이트를 확인합니다.</p>
+                        </div>
+
                         <div id="main-menu-view" class="settings-view space-y-4">
                             <div class="p-4 space-y-5">
                                 <h3 class="text-lg font-semibold border-b border-white/30 pb-2 flex items-center gap-2">
@@ -634,7 +660,7 @@
 
                             <div id="info-version" class="info-tab-content hidden">
                                 <h5 class="font-semibold">버전</h5>
-                                <p class="text-gray-300">2.1.2 [주요 변경 사항: 급식 정보 추가, 초기화 기능 및 기본 배경 변경 기능 추가]</p>
+                                <p class="text-gray-300">2.2.0 [주요 변경 사항: 업데이트 확인 탭 추가]</p>
                             </div>
                         </div>
                     </div>
@@ -751,6 +777,74 @@
     </div>
 
     <script>
+        // --- 업데이트 로직 ---
+        const UPDATE_URL = 'https://adk090612.github.io/cast_stanby/';
+        const REPO_URL = 'https://github.com/adk090612/cast_stanby';
+
+        async function checkForUpdates() {
+            try {
+                // 깃허브 원본 파일 텍스트 가져오기 (캐시 방지 파라미터 추가)
+                const remoteRes = await fetch(UPDATE_URL + '?t=' + new Date().getTime());
+                if (!remoteRes.ok) throw new Error('Remote fetch failed');
+                const remoteHtml = await remoteRes.text();
+
+                // 현재 사용 중인 로컬 파일의 원본 텍스트 가져오기
+                let localHtml = "";
+                try {
+                    const localRes = await fetch(window.location.href);
+                    localHtml = await localRes.text();
+                } catch(e) {
+                    // file:// 프로토콜 등에서 fetch가 막히면 현재 DOM의 상태를 가져오지만
+                    // 시계/날씨 등으로 인해 DOM이 이미 변형되어 정확한 비교가 어려울 수 있습니다.
+                    localHtml = document.documentElement.outerHTML; 
+                }
+
+                // 줄바꿈과 띄어쓰기를 모두 제거한 후 글자 하나하나 정확히 비교 (정규식 활용)
+                const normalize = (str) => str.replace(/\s+/g, '').trim();
+                
+                const isUpdateAvailable = normalize(remoteHtml) !== normalize(localHtml);
+
+                if (isUpdateAvailable) {
+                    document.getElementById('update-notification').classList.remove('hidden');
+                    document.getElementById('update-notification').classList.add('flex');
+                    
+                    const statusText = document.getElementById('update-status-text');
+                    if(statusText) statusText.innerHTML = '<span class="text-blue-300 font-bold text-xl">새로운 업데이트가 발견되었습니다!</span>';
+                    
+                    const installBtn = document.getElementById('install-update-btn');
+                    if(installBtn) installBtn.classList.remove('hidden');
+                } else {
+                    const statusText = document.getElementById('update-status-text');
+                    if(statusText) statusText.textContent = '현재 최신 버전을 사용 중입니다.';
+                }
+            } catch (error) {
+                console.error("업데이트 확인 실패:", error);
+                const statusText = document.getElementById('update-status-text');
+                if(statusText) statusText.textContent = '업데이트 서버에 연결할 수 없습니다.';
+            }
+        }
+
+        // 업데이트 알림 배너 클릭 이벤트
+        document.getElementById('update-notification').addEventListener('click', () => {
+            settingsModal.classList.remove('hidden');
+            settingsContainer.style.opacity = '0';
+            switchSettingsView('update');
+        });
+
+        // 업데이트 설치 및 새로고침 버튼 이벤트
+        document.getElementById('install-update-btn').addEventListener('click', () => {
+            if (window.location.protocol === 'file:') {
+                // 내 컴퓨터(로컬)에서 실행 중일 경우 덮어쓰기 불가능하므로 깃허브로 안내
+                alert("현재 내 컴퓨터(로컬 파일)에서 실행 중이므로 자동 덮어쓰기가 불가능합니다.\n확인을 누르시면 최신 버전 다운로드 페이지(GitHub)로 이동합니다.");
+                window.location.href = REPO_URL;
+            } else {
+                // 웹에서 호스팅 중일 경우 최신 캐시를 무시하고 강력 새로고침
+                alert("최신 버전으로 새로고침을 진행합니다.");
+                window.location.reload(true);
+            }
+        });
+        // --- 업데이트 로직 끝 ---
+
         const DEFAULT_DURATIONS = [8000, 8000, 6000, 8000];
         let screenDurations = [...DEFAULT_DURATIONS];
         let slideTimeout = null;
@@ -821,12 +915,13 @@
         const saveScheduleEditBtn = document.getElementById('save-schedule-edit-btn');
 
         const systemView = document.getElementById('system-view');
+        const updateView = document.getElementById('update-view');
 
         let schedules = [];
         const currentScreenElements = [weatherScreen, mealScreen, scheduleScreen, customTextScreen];
 
         const OPENWEATHER_API_KEY = 'af8f2f48035d25a72c21fb5c4a576d5b';
-        const NEIS_API_KEY = '9415686e1ade498d8755f0d28aa7489e'; // 여기에 나이스 API 키를 입력하세요.
+        const NEIS_API_KEY = '9415686e1ade498d8755f0d28aa7489e';
         
         const weatherCard = weatherScreen.querySelector('.glass-card.no-initial-blur');
 
@@ -886,7 +981,6 @@
             `;
         }
 
-        // 오늘의 급식 정보 가져오기 (NEIS Open API)
         async function fetchTodayMeal() {
             const mealContent = document.getElementById('meal-content');
             if (!mealContent) return;
@@ -919,7 +1013,6 @@
                     const row = data.mealServiceDietInfo[1].row[0];
                     let mealText = row.DDISH_NM;
                     
-                    // <br/> 태그를 기준으로 배열로 변환
                     const menuItems = mealText.split('<br/>').map(item => item.trim()).filter(item => item.length > 0);
                     
                     mealContent.innerHTML = menuItems.map(item => `<p class="text-[20px] leading-tight">${item}</p>`).join('');
@@ -992,7 +1085,8 @@
             const backgroundView = document.getElementById('background-view');
             const profileViewEl = document.getElementById('profile-view');
             const infoViewEl = document.getElementById('info-view');
-            [mainMenuView, customTextView, scheduleEditView, backgroundView, profileViewEl, infoViewEl, systemView].forEach(view => view && view.classList.add('hidden'));
+            [mainMenuView, customTextView, scheduleEditView, backgroundView, profileViewEl, infoViewEl, systemView, updateView].forEach(view => view && view.classList.add('hidden'));
+            
             let titleText = '대시보드 설정';
             let showBackButton = false;
             let targetView = mainMenuView;
@@ -1014,6 +1108,8 @@
                 titleText = '시스템 / 급식 설정'; showBackButton = true; targetView = systemView;
             } else if (viewName === 'info') {
                 titleText = '정보'; showBackButton = true; targetView = infoViewEl;
+            } else if (viewName === 'update') {
+                titleText = '업데이트'; showBackButton = true; targetView = updateView;
             }
 
             settingsTitle.textContent = titleText;
@@ -1473,6 +1569,7 @@
             loadSchedules();
             fetchManchon3DongWeather();
             fetchTodayMeal();
+            checkForUpdates(); // 처음 시작 시 업데이트 확인
 
             const ONE_HOUR = 60 * 60 * 1000;
             setInterval(fetchManchon3DongWeather, ONE_HOUR);
