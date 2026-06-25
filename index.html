@@ -308,6 +308,14 @@
             border-color: rgba(255, 255, 255, 0.3);
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.3), inset 1px 1px 3px rgba(255,255,255,0.4);
         }
+        
+        @keyframes bounceShort {
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, -4px); }
+        }
+        .animate-bounce-short {
+            animation: bounceShort 2s infinite ease-in-out;
+        }
     </style>
 </head>
 <body class="min-h-screen text-white overflow-hidden">
@@ -373,7 +381,7 @@
                         <img id="sidebar-logo" src="https://daeryun.dge.hs.kr/images/schl/web/daeryunh/common/logo.png" alt="학교 로고" class="w-14 h-14 rounded-full object-cover border border-white/10">
                         <div>
                             <div id="sidebar-school-name" class="font-semibold">대륜고등학교</div>
-                            <div class="text-xs text-gray-400">학교 계정</div>
+                            <div class="text-xs text-gray-400">계정 / 시스템 정보</div>
                         </div>
                     </div>
 
@@ -408,8 +416,8 @@
                     <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center gap-3" data-view="system" tabindex="0" role="button" aria-pressed="false">
                         <span class="w-10 h-10 rounded-md bg-white/6 flex items-center justify-center text-xl">💻</span>
                         <div class="text-sm">
-                            <div class="font-semibold">시스템 / 급식</div>
-                            <div class="text-xs text-gray-300">설정 초기화 및 급식</div>
+                            <div class="font-semibold">초기화</div>
+                            <div class="text-xs text-gray-300">설정 전체 초기화</div>
                         </div>
                     </div>
                     <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center gap-3" data-view="update" tabindex="0" role="button" aria-pressed="false">
@@ -475,20 +483,19 @@
                             </h4>
                             <div class="glass-section p-4 max-h-[50vh] overflow-y-auto space-y-6">
                                 <div>
-                                    <h5 class="font-bold text-blue-300 text-lg">v2.2.0</h5>
+                                    <h5 class="font-bold text-blue-300 text-lg">v2.3.0</h5>
                                     <ul class="list-disc pl-5 text-sm text-gray-300 mt-2 space-y-1">
-                                        <li>업데이트 확인 탭 및 릴리즈 노트 추가</li>
-                                        <li>디자인 요소 통일(Glassmorphism) 및 UI 디테일 개선</li>
-                                        <li>마우스 호버 시 확장되는 새로운 업데이트 알림창 적용</li>
-                                        <li>설정에서 업데이트 알림 일시 중지 기능 추가</li>
-                                        <li>설정 뒤로가기 버튼 화살표 디자인 변경</li>
+                                        <li>버전 확인 로직 고도화 (A.B.C 체계 적용)</li>
+                                        <li>나이스(NEIS) 학사일정 오픈 API 연동 적용</li>
+                                        <li>학교 정보 및 시스템 설정(지역, 학교코드) 메뉴를 계정 탭으로 병합</li>
+                                        <li>커스텀 알림창(팝업) 디자인을 Glassmorphism 테마와 통일</li>
                                     </ul>
                                 </div>
                                 <div class="pt-2 border-t border-white/10">
-                                    <h5 class="font-bold text-gray-200 text-lg">v2.1.0</h5>
+                                    <h5 class="font-bold text-gray-200 text-lg">v2.2.0</h5>
                                     <ul class="list-disc pl-5 text-sm text-gray-400 mt-2 space-y-1">
-                                        <li>배경 및 커스텀 메시지 설정 기능 고도화</li>
-                                        <li>날씨 및 급식 API 연동 안정화 작업</li>
+                                        <li>업데이트 확인 탭 및 릴리즈 노트 추가</li>
+                                        <li>디자인 요소 통일 및 UI 디테일 개선</li>
                                     </ul>
                                 </div>
                             </div>
@@ -626,8 +633,9 @@
                                 </label>
                                 <button type="submit" class="glass-button">일정 추가</button>
                             </form>
+                            <p class="text-xs text-gray-400 mt-1">* 나이스(NEIS) 연동 데이터는 자동으로 표시되며 수동 일정과 병합됩니다. 체크박스를 통해 개별 D-Day 설정이 가능합니다.</p>
 
-                            <div class="p-4 max-h-64 overflow-y-auto schedule-list-container">
+                            <div class="p-4 max-h-64 overflow-y-auto schedule-list-container border border-white/10 rounded-xl bg-white/5">
                                 <div id="schedule-list-modal" class="space-y-3"></div>
                             </div>
 
@@ -635,11 +643,11 @@
                         </div>
 
                         <div id="profile-view" class="settings-view hidden space-y-4">
-                            <h4 class="text-xl font-semibold border-b border-white/30 pb-2">계정 설정</h4>
-                            <label for="profile-school-name-input" class="block text-sm font-medium text-gray-200">이름</label>
+                            <h4 class="text-xl font-semibold border-b border-white/30 pb-2">학교 계정 및 시스템 정보 설정</h4>
+                            <label for="profile-school-name-input" class="block text-sm font-medium text-gray-200">학교 이름</label>
                             <input id="profile-school-name-input" type="text" class="glass-input w-full" maxlength="60" placeholder="학교 이름을 입력하세요">
 
-                            <label class="block text-sm font-medium text-gray-200">로고</label>
+                            <label class="block text-sm font-medium text-gray-200 mt-4">로고 이미지</label>
                             <div class="flex items-center gap-4">
                                 <div class="w-28 h-28 rounded-full overflow-hidden border border-white/10 flex items-center justify-center bg-white/3">
                                     <img id="profile-logo-preview" src="https://daeryun.dge.hs.kr/images/schl/web/daeryunh/common/logo.png" alt="로고 미리보기" class="object-contain max-h-full max-w-full">
@@ -651,8 +659,20 @@
                                 </div>
                             </div>
 
-                            <div class="flex gap-2 mt-3">
-                                <button id="save-profile-btn" class="glass-button flex-1">저장</button>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 pt-4 border-t border-white/10">
+                                <div>
+                                    <label for="region-code-input" class="block text-sm font-medium text-gray-200">시도교육청 코드</label>
+                                    <input type="text" id="region-code-input" class="glass-input w-full mt-1" placeholder="예: D10">
+                                </div>
+                                <div>
+                                    <label for="school-code-input" class="block text-sm font-medium text-gray-200">행정표준코드 (학교코드)</label>
+                                    <input type="text" id="school-code-input" class="glass-input w-full mt-1" placeholder="예: 7240085">
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">* 기본값: 대구광역시교육청(D10), 대륜고등학교(7240085). 나이스 급식 및 학사일정 연동에 사용됩니다.</p>
+
+                            <div class="flex gap-2 mt-4">
+                                <button id="save-profile-btn" class="glass-button flex-1 bg-blue-500/30 hover:bg-blue-500/50">저장 및 연동 새로고침</button>
                                 <button id="cancel-profile-btn" class="glass-button bg-white/6 flex-1" type="button">취소</button>
                             </div>
                         </div>
@@ -673,25 +693,11 @@
                         </div>
 
                         <div id="system-view" class="settings-view hidden space-y-4">
-                            <h4 class="text-xl font-semibold border-b border-white/30 pb-2">급식 정보 설정</h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label for="region-code-input" class="block text-sm font-medium text-gray-200">시도교육청 코드</label>
-                                    <input type="text" id="region-code-input" class="glass-input w-full mt-1" placeholder="예: D10">
-                                </div>
-                                <div>
-                                    <label for="school-code-input" class="block text-sm font-medium text-gray-200">행정표준코드 (학교코드)</label>
-                                    <input type="text" id="school-code-input" class="glass-input w-full mt-1" placeholder="예: 7240085">
-                                </div>
-                            </div>
-                            <p class="text-xs text-gray-400 mt-1">* 기본값: 대구광역시교육청(D10), 대륜고등학교(7240085)</p>
-                            <button id="save-meal-settings-btn" class="glass-button w-full mt-2">급식 설정 저장 및 새로고침</button>
-
-                            <h4 class="text-xl font-semibold border-b border-white/30 pb-2 mt-8">시스템 초기화</h4>
+                            <h4 class="text-xl font-semibold border-b border-white/30 pb-2 mt-2">시스템 초기화</h4>
                             <div class="space-y-3">
                                 <button id="reset-schedule-btn" class="glass-button w-full flex justify-between items-center text-left">
-                                    <span>일정 초기화</span>
-                                    <span class="text-sm text-gray-300 font-normal">학사 일정을 기본값으로 되돌림</span>
+                                    <span>수동 일정 초기화</span>
+                                    <span class="text-sm text-gray-300 font-normal">사용자가 수동으로 입력한 학사 일정을 모두 지웁니다.</span>
                                 </button>
                                 <button id="reset-message-btn" class="glass-button w-full flex justify-between items-center text-left">
                                     <span>메시지 초기화</span>
@@ -728,7 +734,7 @@
 
                             <div id="info-version" class="info-tab-content hidden">
                                 <h5 class="font-semibold">버전</h5>
-                                <p class="text-gray-300">2.2.0</p>
+                                <p id="app-version-text" class="text-gray-300" data-version="2.4.0">2.4.0</p>
                             </div>
                         </div>
                     </div>
@@ -845,7 +851,6 @@
     </div>
 
     <script>
-        // DOM 요소 선언 추가 (업데이트 뷰 관련)
         const updateNotification = document.getElementById('update-notification');
         const goToUpdateBtn = document.getElementById('go-to-update-btn');
         const remindLaterBtn = document.getElementById('remind-later-btn');
@@ -856,42 +861,46 @@
         const saveUpdateSettingsBtn = document.getElementById('save-update-settings-btn');
         const releaseNotesView = document.getElementById('release-notes-view');
 
-        // --- 업데이트 로직 ---
         const UPDATE_URL = 'https://adk090612.github.io/cast_stanby/';
         const REPO_URL = 'https://github.com/adk090612/cast_stanby';
 
         async function checkForUpdates(manual = false) {
-            // 수동 확인이 아닐 경우, 알림 중지 기간 체크
             if (!manual) {
                 const snoozeUntil = parseInt(localStorage.getItem('dashboardUpdateSnooze') || '0', 10);
                 if (snoozeUntil === -1 || Date.now() < snoozeUntil) {
-                    return; // 알림 중지 상태
+                    return; 
                 }
             }
 
             try {
-                // 깃허브 원본 파일 텍스트 가져오기 (캐시 방지 파라미터 추가)
                 const remoteRes = await fetch(UPDATE_URL + '?t=' + new Date().getTime());
                 if (!remoteRes.ok) throw new Error('Remote fetch failed');
                 const remoteHtml = await remoteRes.text();
 
-                // 현재 사용 중인 로컬 파일의 원본 텍스트 가져오기
-                let localHtml = "";
-                try {
-                    const localRes = await fetch(window.location.href);
-                    localHtml = await localRes.text();
-                } catch(e) {
-                    localHtml = document.documentElement.outerHTML; 
-                }
-
-                // 줄바꿈과 띄어쓰기를 모두 제거한 후 글자 하나하나 정확히 비교 (정규식 활용)
-                const normalize = (str) => str.replace(/\s+/g, '').trim();
+                const versionRegex = /<p[^>]*id="app-version-text"[^>]*data-version="([^"]+)"[^>]*>/;
+                const remoteMatch = remoteHtml.match(versionRegex);
                 
-                const isUpdateAvailable = normalize(remoteHtml) !== normalize(localHtml);
+                const localVersionEl = document.getElementById('app-version-text');
+                const localVersion = localVersionEl ? localVersionEl.getAttribute('data-version') : "0.0.0";
+                const remoteVersion = remoteMatch ? remoteMatch[1] : null;
+
+                let isUpdateAvailable = false;
+
+                if (remoteVersion && remoteVersion !== localVersion) {
+                    const localParts = localVersion.split('.').map(Number);
+                    const remoteParts = remoteVersion.split('.').map(Number);
+
+                    for (let i = 0; i < Math.max(localParts.length, remoteParts.length); i++) {
+                        const l = localParts[i] || 0;
+                        const r = remoteParts[i] || 0;
+                        if (r > l) { isUpdateAvailable = true; break; }
+                        if (r < l) { break; }
+                    }
+                }
 
                 if (isUpdateAvailable) {
                     const statusText = document.getElementById('update-status-text');
-                    if(statusText) statusText.innerHTML = '<span class="text-blue-300 font-bold text-xl">새로운 업데이트가 발견되었습니다!</span>';
+                    if(statusText) statusText.innerHTML = `<span class="text-blue-300 font-bold text-xl">새로운 업데이트(v${remoteVersion})가 발견되었습니다!</span>`;
                     
                     const installBtn = document.getElementById('install-update-btn');
                     if(installBtn) installBtn.classList.remove('hidden');
@@ -900,12 +909,12 @@
                         updateNotification.classList.remove('hidden');
                         updateNotification.classList.add('flex');
                     } else {
-                        alert("새로운 업데이트가 발견되었습니다. 설치 버튼을 눌러주세요.");
+                        alert(`새로운 업데이트(v${remoteVersion})가 발견되었습니다. 설치 버튼을 눌러주세요.`);
                     }
                 } else {
                     const statusText = document.getElementById('update-status-text');
-                    if(statusText) statusText.textContent = '현재 최신 버전을 사용 중입니다.';
-                    if (manual) alert("현재 최신 버전을 사용 중입니다.");
+                    if(statusText) statusText.textContent = `현재 최신 버전(v${localVersion})을 사용 중입니다.`;
+                    if (manual) alert(`현재 최신 버전(v${localVersion})을 사용 중입니다.`);
                 }
             } catch (error) {
                 console.error("업데이트 확인 실패:", error);
@@ -915,7 +924,6 @@
             }
         }
 
-        // 업데이트 알림 버튼 이벤트
         updateNotificationHeader.addEventListener('click', () => {
             updateNotification.classList.add('hidden');
             settingsModal.classList.remove('hidden');
@@ -934,24 +942,19 @@
         remindLaterBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             updateNotification.classList.add('hidden');
-            // 나중에 다시 알림 (임시로 12시간 후로 설정)
             localStorage.setItem('dashboardUpdateSnooze', Date.now() + (12 * 60 * 60 * 1000));
         });
 
-        // 수동 업데이트 확인
         manualCheckUpdateBtn.addEventListener('click', () => {
             const statusText = document.getElementById('update-status-text');
             if(statusText) statusText.textContent = "확인 중...";
             checkForUpdates(true);
         });
 
-        // 업데이트 설치 및 새로고침 버튼 이벤트
         document.getElementById('install-update-btn').addEventListener('click', () => {
             if (window.location.protocol === 'file:') {
-                // 내 컴퓨터(로컬)에서 실행 중일 경우 덮어쓰기 불가능하므로 알림 띄워서 선택하게 함
                 alert("현재 내 컴퓨터(로컬 파일)에서 실행 중이므로 자동 덮어쓰기가 불가능합니다.\n오른쪽 상단 알림 메뉴에서 [새 HTML 다운로드] 또는 [GitHub로 이동]을 선택해주세요.");
             } else {
-                // 웹에서 호스팅 중일 경우 최신 캐시를 무시하고 강력 새로고침
                 alert("최신 버전으로 새로고침을 진행합니다.");
                 setTimeout(() => {
                     window.location.reload(true);
@@ -959,27 +962,23 @@
             }
         });
 
-        // 업데이트 알림 설정 저장
         saveUpdateSettingsBtn.addEventListener('click', () => {
             const mode = parseInt(updateSnoozeSelect.value, 10);
             localStorage.setItem('dashboardUpdateSnoozeMode', mode);
             
             if (mode === 0) {
-                localStorage.setItem('dashboardUpdateSnooze', '0'); // 계속 받기
+                localStorage.setItem('dashboardUpdateSnooze', '0'); 
             } else if (mode === -1) {
-                localStorage.setItem('dashboardUpdateSnooze', '-1'); // 계속 중지
+                localStorage.setItem('dashboardUpdateSnooze', '-1'); 
             } else {
                 localStorage.setItem('dashboardUpdateSnooze', Date.now() + (mode * 24 * 60 * 60 * 1000));
             }
             alert("알림 설정이 저장되었습니다.");
         });
 
-        // 릴리즈 노트 보기
         viewReleaseNotesBtn.addEventListener('click', () => {
             switchSettingsView('release-notes');
         });
-
-        // --- 업데이트 로직 끝 ---
 
         const DEFAULT_DURATIONS = [8000, 8000, 6000, 8000];
         let screenDurations = [...DEFAULT_DURATIONS];
@@ -1054,6 +1053,7 @@
         const updateView = document.getElementById('update-view');
 
         let schedules = [];
+        let apiSchedules = []; 
         const currentScreenElements = [weatherScreen, mealScreen, scheduleScreen, customTextScreen];
 
         const OPENWEATHER_API_KEY = 'af8f2f48035d25a72c21fb5c4a576d5b';
@@ -1161,6 +1161,86 @@
             }
         }
 
+        async function fetchApiSchedules() {
+            const regionCode = localStorage.getItem('dashboardRegionCode') || 'D10'; 
+            const schoolCode = localStorage.getItem('dashboardSchoolCode') || '7240085';
+            
+            const now = new Date();
+            const yyyy = now.getFullYear();
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const fromYMD = `${yyyy}${mm}01`;
+            const toYMD = `${yyyy}1231`;
+
+            let apiUrl = `https://open.neis.go.kr/hub/SchoolSchedule?Type=json&pIndex=1&pSize=100&ATPT_OFCDC_SC_CODE=${regionCode}&SD_SCHUL_CODE=${schoolCode}&AA_FROM_YMD=${fromYMD}&AA_TO_YMD=${toYMD}`;
+            
+            if (NEIS_API_KEY && NEIS_API_KEY !== '(9415686e1ade498d8755f0d28aa7489e)') {
+                apiUrl += `&KEY=${NEIS_API_KEY}`;
+            }
+
+            try {
+                const res = await fetch(apiUrl);
+                const data = await res.json();
+                
+                if (data.SchoolSchedule && data.SchoolSchedule[1].row) {
+                    let rawEvents = data.SchoolSchedule[1].row.filter(r => r.EVENT_NM !== '토요휴업일');
+                    rawEvents.sort((a, b) => a.AA_YMD.localeCompare(b.AA_YMD));
+
+                    let merged = [];
+                    for(let i=0; i<rawEvents.length; i++) {
+                        let current = rawEvents[i];
+                        if(merged.length === 0) {
+                            merged.push({ start: current.AA_YMD, end: current.AA_YMD, event: current.EVENT_NM });
+                            continue;
+                        }
+                        let last = merged[merged.length - 1];
+
+                        let lastDate = new Date(last.end.substring(0,4), parseInt(last.end.substring(4,6))-1, last.end.substring(6,8));
+                        lastDate.setDate(lastDate.getDate() + 1);
+                        let nextDayStr = lastDate.getFullYear() +
+                                         String(lastDate.getMonth()+1).padStart(2,'0') +
+                                         String(lastDate.getDate()).padStart(2,'0');
+
+                        if(current.EVENT_NM === last.event && current.AA_YMD === nextDayStr) {
+                            last.end = current.AA_YMD;
+                        } else {
+                            merged.push({ start: current.AA_YMD, end: current.AA_YMD, event: current.EVENT_NM });
+                        }
+                    }
+
+                    let apiDdayList = JSON.parse(localStorage.getItem('apiDdays') || '[]');
+
+                    apiSchedules = merged.map(m => {
+                        let startF = `${m.start.substring(0,4)}.${m.start.substring(4,6)}.${m.start.substring(6,8)}`;
+                        let endF = m.start === m.end ? null : `${m.end.substring(0,4)}.${m.end.substring(4,6)}.${m.end.substring(6,8)}`;
+                        let isDday = apiDdayList.includes(startF + '-' + m.event);
+
+                        return { date: startF, endDate: endF, event: m.event, dday: isDday, isApi: true };
+                    });
+                } else {
+                    apiSchedules = [];
+                }
+            } catch (error) {
+                console.error("학사일정 API 호출 실패:", error);
+            }
+            renderDisplaySchedules();
+            renderModalSchedules();
+        }
+
+        function getCombinedSchedules() {
+            const combined = [...schedules, ...apiSchedules];
+            const unique = [];
+            const seen = new Set();
+            for (const s of combined) {
+                const key = `${s.date}-${s.event}`;
+                if (!seen.has(key)) {
+                    seen.add(key);
+                    unique.push(s);
+                }
+            }
+            unique.sort((a, b) => new Date(a.date.replace(/\./g, '/')) - new Date(b.date.replace(/\./g, '/')));
+            return unique;
+        }
+
         function updateTime() {
             const now = new Date();
             const dateOptions = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long', timeZone: 'Asia/Seoul' };
@@ -1240,9 +1320,9 @@
                     if (bgPrev) bgPrev.style.backgroundImage = savedBg ? `url(${savedBg})` : '';
                 } catch (err) {}
             } else if (viewName === 'profile') {
-                titleText = '학교 계정 설정'; showBackButton = true; targetView = profileViewEl;
+                titleText = '학교 계정 및 시스템 설정'; showBackButton = true; targetView = profileViewEl;
             } else if (viewName === 'system') {
-                titleText = '시스템 / 급식 설정'; showBackButton = true; targetView = systemView;
+                titleText = '초기화 설정'; showBackButton = true; targetView = systemView;
             } else if (viewName === 'info') {
                 titleText = '정보'; showBackButton = true; targetView = infoViewEl;
             } else if (viewName === 'update') {
@@ -1257,7 +1337,7 @@
 
             document.querySelectorAll('[data-view]').forEach(item => {
                 const v = item.dataset.view;
-                const active = v === (viewName === 'release-notes' ? 'update' : viewName); // 릴리즈 노트 탭일때도 업데이트 메뉴가 활성화되어 보이도록
+                const active = v === (viewName === 'release-notes' ? 'update' : viewName); 
                 item.classList.toggle('active', active);
                 item.setAttribute('aria-pressed', active ? 'true' : 'false');
             });
@@ -1284,19 +1364,19 @@
                     { date: '2021.09.15', event: '개교 100주년 기념식 거행', dday: false }
                 ];
             }
-            schedules.sort((a, b) => new Date(a.date) - new Date(b.date));
             renderDisplaySchedules();
         }
 
         function saveSchedules() {
-            schedules.sort((a, b) => new Date(a.date) - new Date(b.date));
+            schedules.sort((a, b) => new Date(a.date.replace(/\./g, '/')) - new Date(b.date.replace(/\./g, '/')));
             localStorage.setItem('daeryunSchedules', JSON.stringify(schedules));
             updateDdayBanner();
         }
 
         function calcDdayDiffDays(targetDateStr) {
             const today = new Date();
-            const t = new Date(targetDateStr);
+            const safeDateStr = targetDateStr.replace(/\./g, '/');
+            const t = new Date(safeDateStr);
             const todayMid = new Date(new Date(today.toLocaleDateString('ko-KR')).getTime());
             const targetMid = new Date(new Date(t.toLocaleDateString('ko-KR')).getTime());
             return Math.round((targetMid - todayMid) / (24 * 3600 * 1000));
@@ -1307,7 +1387,8 @@
             const countEl = banner.querySelector('.dday-count');
             const titleEl = banner.querySelector('.dday-title');
 
-            const ddaySchedules = schedules.filter(s => s.dday);
+            const allSchedules = getCombinedSchedules();
+            const ddaySchedules = allSchedules.filter(s => s.dday);
             if (ddaySchedules.length === 0) { banner.style.display = 'none'; banner.classList.remove('red'); return; }
 
             let best = null;
@@ -1326,53 +1407,102 @@
             if (diff > 0) countText = `D-${diff}`; else if (diff === 0) countText = `D-Day`; else countText = `D+${Math.abs(diff)}`;
             if (diff >= 0 && diff <= 7) banner.classList.add('red'); else banner.classList.remove('red');
 
-            const formattedDate = new Date(best.date).toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' });
+            const formattedDate = new Date(best.date.replace(/\./g, '/')).toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' });
+            let displayDateText = formattedDate;
+            if (best.endDate) {
+                displayDateText = `${parseInt(best.date.split('.')[1])}.${parseInt(best.date.split('.')[2])} ~ ${parseInt(best.endDate.split('.')[1])}.${parseInt(best.endDate.split('.')[2])}`;
+            }
+
             countEl.textContent = countText;
-            titleEl.textContent = `${best.event} · ${formattedDate}`;
+            titleEl.textContent = `${best.event} · ${displayDateText}`;
             banner.style.display = 'flex';
         }
 
-        function createScheduleElement(date, eventText, targetList, isEditable) {
+        function createScheduleElement(scheduleObj, targetList, isEditable) {
+            const { date, endDate, event: eventText, dday, isApi } = scheduleObj;
+
             const li = document.createElement('li');
             li.className = 'flex items-center justify-between bg-white/6 bg-clip-padding p-3 rounded-lg text-white';
 
             const left = document.createElement('div');
-            left.className = 'flex items-center gap-3';
+            left.className = 'flex items-center gap-3 shrink-0';
             const diff = calcDdayDiffDays(date);
             const ddaySpan = document.createElement('span');
-            ddaySpan.className = 'inline-block font-extrabold py-1 px-3 rounded-full';
+            ddaySpan.className = 'inline-block font-extrabold py-1 px-3 rounded-full text-sm';
             if (diff > 0) ddaySpan.textContent = `D-${diff}`; else if (diff === 0) ddaySpan.textContent = 'D-Day'; else ddaySpan.textContent = `D+${Math.abs(diff)}`;
             ddaySpan.style.background = 'rgba(255,255,255,0.06)'; ddaySpan.style.color = '#ffffff'; ddaySpan.style.border = '1px solid rgba(255,255,255,0.06)';
             if (diff >= 0 && diff <= 7) { ddaySpan.style.background = 'rgba(255,40,40,0.12)'; ddaySpan.style.border = '1px solid rgba(255,40,40,0.6)'; }
             left.appendChild(ddaySpan);
 
+            if (isApi) {
+                const apiBadge = document.createElement('span');
+                apiBadge.className = 'text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30 px-2 py-0.5 rounded-md whitespace-nowrap';
+                apiBadge.textContent = '자동';
+                left.appendChild(apiBadge);
+            }
+
             const middle = document.createElement('div');
-            middle.className = 'flex-1 px-4';
+            middle.className = 'flex-1 px-4 truncate';
             const eventEl = document.createElement('div');
-            eventEl.className = 'text-white'; eventEl.textContent = eventText;
+            eventEl.className = 'text-white truncate'; eventEl.textContent = eventText;
             middle.appendChild(eventEl);
 
             const right = document.createElement('div');
-            right.className = 'text-sm text-white opacity-90';
-            right.textContent = new Date(date).toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' });
+            right.className = 'text-sm text-white opacity-90 text-right whitespace-nowrap shrink-0';
+            
+            let dateDisplay;
+            if (endDate) {
+                dateDisplay = `${parseInt(date.split('.')[1])}.${parseInt(date.split('.')[2])} ~ ${parseInt(endDate.split('.')[1])}.${parseInt(endDate.split('.')[2])}`;
+            } else {
+                dateDisplay = new Date(date.replace(/\./g, '/')).toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' });
+            }
+            right.textContent = dateDisplay;
 
             if (isEditable) {
                 const controls = document.createElement('div');
-                controls.className = 'flex items-center gap-2';
+                controls.className = 'flex items-center gap-2 ml-4 shrink-0';
+                
                 const ddayLabel = document.createElement('label');
-                ddayLabel.className = 'text-sm flex items-center gap-2 text-white';
+                ddayLabel.className = 'text-sm flex items-center gap-2 text-white cursor-pointer';
                 const ddayCheckbox = document.createElement('input');
                 ddayCheckbox.type = 'checkbox';
-                const sched = schedules.find(s => s.date === date && s.event === eventText);
-                ddayCheckbox.checked = !!(sched && sched.dday);
-                ddayCheckbox.addEventListener('change', () => { if (sched) sched.dday = ddayCheckbox.checked; saveSchedules(); renderDisplaySchedules(); renderModalSchedules(); });
-                ddayLabel.appendChild(ddayCheckbox); ddayLabel.appendChild(document.createTextNode('D-Day')); controls.appendChild(ddayLabel);
+                ddayCheckbox.checked = !!dday;
+                ddayCheckbox.addEventListener('change', () => { 
+                    if (isApi) {
+                        let apiDdayList = JSON.parse(localStorage.getItem('apiDdays') || '[]');
+                        let key = date + '-' + eventText;
+                        if (ddayCheckbox.checked) {
+                            if (!apiDdayList.includes(key)) apiDdayList.push(key);
+                        } else {
+                            apiDdayList = apiDdayList.filter(k => k !== key);
+                        }
+                        localStorage.setItem('apiDdays', JSON.stringify(apiDdayList));
+                        scheduleObj.dday = ddayCheckbox.checked;
+                    } else {
+                        const sched = schedules.find(s => s.date === date && s.event === eventText);
+                        if (sched) sched.dday = ddayCheckbox.checked;
+                        saveSchedules(); 
+                    }
+                    renderDisplaySchedules(); 
+                    renderModalSchedules(); 
+                });
+                
+                ddayLabel.appendChild(ddayCheckbox); 
+                ddayLabel.appendChild(document.createTextNode('D-Day')); 
+                controls.appendChild(ddayLabel);
 
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = '삭제';
-                deleteButton.className = 'text-xs bg-red-500/70 hover:bg-red-500/90 text-white py-1 px-3 rounded-md transition-colors';
-                deleteButton.onclick = () => { removeSchedule(date, eventText); };
-                controls.appendChild(deleteButton);
+                if (!isApi) {
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = '삭제';
+                    deleteButton.className = 'text-xs bg-red-500/70 hover:bg-red-500/90 text-white py-1.5 px-3 rounded-md transition-colors font-semibold ml-2';
+                    deleteButton.onclick = () => { removeSchedule(date, eventText); };
+                    controls.appendChild(deleteButton);
+                } else {
+                    const noticeSpan = document.createElement('span');
+                    noticeSpan.className = 'text-xs text-gray-400 px-2';
+                    noticeSpan.textContent = '자동';
+                    controls.appendChild(noticeSpan);
+                }
 
                 li.appendChild(left); li.appendChild(middle); li.appendChild(right); li.appendChild(controls);
             } else {
@@ -1383,23 +1513,36 @@
 
         function renderDisplaySchedules() {
             scheduleList.innerHTML = '';
-            if (schedules.length === 0) { scheduleList.innerHTML = '<p class="text-gray-300">추가된 일정이 없습니다.</p>'; updateDdayBanner(); return; }
-            schedules.forEach(schedule => createScheduleElement(schedule.date, schedule.event, scheduleList, false));
+            const allSchedules = getCombinedSchedules();
+            const todayMid = new Date(new Date().toLocaleDateString('ko-KR')).getTime();
+            const futureSchedules = allSchedules.filter(s => new Date(s.date.replace(/\./g, '/')).getTime() >= todayMid - (24 * 3600 * 1000 * 7));
+
+            if (futureSchedules.length === 0) { 
+                scheduleList.innerHTML = '<p class="text-gray-300">추가된 일정이 없습니다.</p>'; 
+            } else {
+                futureSchedules.forEach(schedule => createScheduleElement(schedule, scheduleList, false));
+            }
             updateDdayBanner();
         }
 
         function renderModalSchedules() {
             scheduleListModal.innerHTML = '';
-            if (schedules.length === 0) { scheduleListModal.innerHTML = '<p class="text-gray-300">추가된 일정이 없습니다.</p>'; return; }
-            schedules.forEach(schedule => createScheduleElement(schedule.date, schedule.event, scheduleListModal, true));
+            const allSchedules = getCombinedSchedules();
+            if (allSchedules.length === 0) { 
+                scheduleListModal.innerHTML = '<p class="text-gray-300 text-center py-4">추가된 일정이 없습니다.</p>'; 
+                return; 
+            }
+            allSchedules.forEach(schedule => createScheduleElement(schedule, scheduleListModal, true));
         }
 
         function handleAddSchedule(e) {
             e.preventDefault();
-            const date = scheduleDateInputModal.value;
+            const rawDate = scheduleDateInputModal.value; 
             const eventText = scheduleEventInputModal.value;
             const ddayFlag = !!(scheduleDdayModal && scheduleDdayModal.checked);
-            if (!date || !eventText) return;
+            if (!rawDate || !eventText) return;
+
+            const date = rawDate.replace(/-/g, '.');
 
             schedules.push({ date, event: eventText, dday: ddayFlag });
             saveSchedules(); renderDisplaySchedules(); renderModalSchedules();
@@ -1510,7 +1653,6 @@
             if (regionInput) regionInput.value = savedRegionCode;
             if (schoolInput) schoolInput.value = savedSchoolCode;
 
-            // 업데이트 스누즈 설정 불러오기
             const snoozeVal = localStorage.getItem('dashboardUpdateSnoozeMode') || '0';
             if (updateSnoozeSelect) updateSnoozeSelect.value = snoozeVal;
         }
@@ -1710,13 +1852,15 @@
             setInterval(updateTime, 1000);
             loadSettings();
             loadSchedules();
+            fetchApiSchedules();
             fetchManchon3DongWeather();
             fetchTodayMeal();
-            checkForUpdates(); // 처음 시작 시 업데이트 확인
+            checkForUpdates(); 
 
             const ONE_HOUR = 60 * 60 * 1000;
             setInterval(fetchManchon3DongWeather, ONE_HOUR);
             setInterval(fetchTodayMeal, ONE_HOUR);
+            setInterval(fetchApiSchedules, ONE_HOUR);
             setInterval(() => { renderDisplaySchedules(); }, ONE_HOUR);
 
             document.getElementById('settings-btn').addEventListener('click', () => { settingsModal.classList.remove('hidden'); settingsContainer.style.opacity = '0'; switchSettingsView('main-menu'); });
@@ -1763,6 +1907,12 @@
                     if (sidebarName) sidebarName.textContent = newName;
                     if (bottomName) bottomName.textContent = newName;
                 }
+                
+                const rCode = document.getElementById('region-code-input').value.trim();
+                const sCode = document.getElementById('school-code-input').value.trim();
+                if (rCode) localStorage.setItem('dashboardRegionCode', rCode);
+                if (sCode) localStorage.setItem('dashboardSchoolCode', sCode);
+
                 if (pendingProfileLogoDataUrl) {
                     try { localStorage.setItem('dashboardLogo', pendingProfileLogoDataUrl); } catch (err) {}
                     if (profileLogoPreview) profileLogoPreview.src = pendingProfileLogoDataUrl;
@@ -1770,6 +1920,10 @@
                     if (schoolLogoImg) schoolLogoImg.src = pendingProfileLogoDataUrl;
                     pendingProfileLogoDataUrl = null;
                 }
+                
+                alert("학교 계정 및 시스템 정보가 저장되었습니다. 연동 정보를 업데이트합니다.");
+                fetchTodayMeal();
+                fetchApiSchedules();
                 switchSettingsView('main-menu');
             });
             
@@ -1796,26 +1950,14 @@
                 });
             }
 
-            const saveMealSettingsBtn = document.getElementById('save-meal-settings-btn');
-            if (saveMealSettingsBtn) {
-                saveMealSettingsBtn.addEventListener('click', () => {
-                    const rCode = document.getElementById('region-code-input').value.trim();
-                    const sCode = document.getElementById('school-code-input').value.trim();
-                    if (rCode) localStorage.setItem('dashboardRegionCode', rCode);
-                    if (sCode) localStorage.setItem('dashboardSchoolCode', sCode);
-                    alert("급식 설정이 저장되었습니다.");
-                    fetchTodayMeal();
-                });
-            }
-
             const resetScheduleBtn = document.getElementById('reset-schedule-btn');
             if (resetScheduleBtn) {
                 resetScheduleBtn.addEventListener('click', () => {
-                    if (confirm("모든 학사 일정을 초기화하시겠습니까?")) {
+                    if (confirm("수동으로 입력한 학사 일정을 모두 지우시겠습니까?\n(나이스 연동 자동 일정은 유지됩니다.)")) {
                         localStorage.removeItem('daeryunSchedules');
                         loadSchedules();
                         renderModalSchedules();
-                        alert("일정이 초기화되었습니다.");
+                        alert("수동 일정이 초기화되었습니다.");
                     }
                 });
             }
@@ -1908,62 +2050,40 @@
     })();
     </script>
 
-    <!-- 커스텀 알림 시스템 HTML 시작 -->
     <div id="custom-notification-pill" class="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] hidden group animate-bounce-short">
-        <div class="bg-purple-600/90 backdrop-blur-md text-white px-5 py-2.5 rounded-full font-semibold shadow-xl flex items-center space-x-2.5 cursor-pointer hover:bg-purple-700 border border-purple-500/30 transition-all duration-300">
+        <div class="glass-card px-5 py-2.5 rounded-full font-semibold flex items-center space-x-2.5 cursor-pointer hover:bg-white/10 transition-all duration-300" style="border-radius: 999px;">
             <span class="flex h-2 w-2 relative">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-purple-200"></span>
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-200"></span>
             </span>
-            <span class="text-sm tracking-wide">알림</span>
-            <span id="custom-notif-count" class="bg-purple-900/80 text-xs px-2 py-0.5 rounded-full font-bold border border-purple-400/20">0</span>
+            <span class="text-sm tracking-wide text-white">알림</span>
+            <span id="custom-notif-count" class="bg-white/20 text-xs px-2 py-0.5 rounded-full font-bold border border-white/30 text-white">0</span>
         </div>
         
         <div class="absolute top-full left-1/2 -translate-x-1/2 pt-2 hidden group-hover:block w-48 z-[10000]">
-            <div class="bg-slate-900/95 backdrop-blur-md border border-slate-700/70 rounded-xl shadow-2xl p-1.5 flex space-x-1.5">
-                <button onclick="hideNotificationPill()" class="text-xs text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700/80 px-2.5 py-2 rounded-lg transition-all font-medium flex-1">숨김</button>
-                <button onclick="showAllNotifications()" class="text-xs text-white bg-purple-600 hover:bg-purple-500 px-2.5 py-2 rounded-lg transition-all font-bold flex-1 whitespace-nowrap">모든 알림 보기</button>
+            <div class="glass-section p-1.5 flex space-x-1.5 rounded-xl shadow-2xl">
+                <button onclick="hideNotificationPill()" class="text-xs text-gray-200 hover:text-white bg-white/10 hover:bg-white/20 px-2.5 py-2 rounded-lg transition-all font-medium flex-1">숨김</button>
+                <button onclick="showAllNotifications()" class="text-xs text-white glass-button px-2.5 py-2 rounded-lg transition-all font-bold flex-1 whitespace-nowrap !p-2">모든 알림 보기</button>
             </div>
         </div>
     </div>
 
     <div id="custom-notification-container" class="fixed top-20 left-6 z-[9998] flex flex-col space-y-3 max-w-sm pointer-events-none"></div>
-    
-    <style>
-        @keyframes bounceShort {
-            0%, 100% { transform: translate(-50%, 0); }
-            50% { transform: translate(-50%, -4px); }
-        }
-        .animate-bounce-short {
-            animation: bounceShort 2s infinite ease-in-out;
-        }
-    </style>
-    <!-- 커스텀 알림 시스템 HTML 끝 -->
 
     <script>
-    // ================= 커스텀 알림 시스템 로직 시작 =================
     let appNotifications = [];
     let isPillHidden = false;
 
-    /**
-     * 커스텀 알림 추가 함수
-     * @param {string} type - 'update', 'meal', 'network', 'general' 등
-     * @param {string} title - 알림 제목
-     * @param {string} message - 알림 세부 내용
-     * @param {string} githubUrl - 업데이트 실패 시 이동할 GitHub 주소 (선택사항)
-     */
     function addCustomNotification(type, title, message, githubUrl = 'https://github.com/adk090612/cast_stanby') {
-        // 이미 동일한 메시지의 알림이 있다면 중복 방지
         if (appNotifications.some(n => n.message === message)) return;
 
         const id = 'notif-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
         appNotifications.push({ id, type, title, message, githubUrl });
         
-        isPillHidden = false; // 새 알림이 오면 숨김 상태 해제
+        isPillHidden = false; 
         updateNotificationUI();
     }
 
-    // 알약(Pill) 상태 업데이트
     function updateNotificationUI() {
         const pill = document.getElementById('custom-notification-pill');
         const countEl = document.getElementById('custom-notif-count');
@@ -1977,47 +2097,42 @@
         pill.classList.remove('hidden');
     }
 
-    // [숨김] 옵션 선택 시
     function hideNotificationPill() {
         isPillHidden = true;
         document.getElementById('custom-notification-pill').classList.add('hidden');
         document.getElementById('custom-notification-container').innerHTML = '';
     }
 
-    // [모든 알림 보기] 옵션 선택 시 -> 왼쪽에서부터 차례대로 알림 생성 및 애니메이션
     function showAllNotifications() {
         const container = document.getElementById('custom-notification-container');
-        container.innerHTML = ''; // 기존에 열려있던 알림 리스트 초기화
+        container.innerHTML = ''; 
         
         appNotifications.forEach((notif, index) => {
             const card = document.createElement('div');
-            // 초기 상태: 왼쪽 화면 밖(-translate-x-full) 및 투명도 0
-            card.className = `bg-slate-900/95 backdrop-blur-md border border-purple-500/30 text-white p-4 rounded-xl shadow-2xl flex flex-col space-y-2.5 transition-all duration-500 transform -translate-x-full opacity-0 pointer-events-auto w-80 border-l-4 border-l-purple-500`;
+            card.className = `glass-card p-4 flex flex-col space-y-2.5 transition-all duration-500 transform -translate-x-full opacity-0 pointer-events-auto w-80 border-l-4 border-l-blue-400 relative overflow-hidden`;
             card.id = `card-${notif.id}`;
 
             let actionButtonsHTML = '';
-            // 업데이트 알림일 경우에만 특별히 GitHub 및 새 HTML 다운로드 버튼 추가
             if (notif.type === 'update') {
                 actionButtonsHTML = `
                     <div class="flex space-x-2 mt-1.5">
-                        <a href="${notif.githubUrl}" target="_blank" class="bg-purple-600 hover:bg-purple-500 text-white text-center text-xs px-2.5 py-1.5 rounded-lg transition-all font-medium flex-1 shadow-md shadow-purple-900/20">GitHub로 이동</a>
-                        <button onclick="downloadCurrentHTML()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-xs px-2.5 py-1.5 rounded-lg transition-all font-medium flex-1">새 HTML 다운로드</button>
+                        <a href="${notif.githubUrl}" target="_blank" class="glass-button text-center text-xs px-2.5 py-1.5 flex-1 !p-1.5 hover:bg-white/20">GitHub로 이동</a>
+                        <button onclick="downloadCurrentHTML()" class="glass-button text-xs px-2.5 py-1.5 flex-1 !p-1.5 hover:bg-white/20">새 HTML 다운로드</button>
                     </div>
                 `;
             }
 
             card.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <span class="font-bold text-xs tracking-wider text-purple-400 uppercase">${notif.title}</span>
-                    <button onclick="dismissNotification('${notif.id}')" class="text-slate-400 hover:text-white text-xs transition-colors px-1">✕</button>
+                <div class="flex justify-between items-start z-10 relative">
+                    <span class="font-bold text-xs tracking-wider text-blue-300 uppercase">${notif.title}</span>
+                    <button onclick="dismissNotification('${notif.id}')" class="text-white hover:text-red-400 text-xs transition-colors px-1">✕</button>
                 </div>
-                <p class="text-xs text-slate-200 leading-relaxed break-all">${notif.message}</p>
+                <p class="text-xs text-gray-200 leading-relaxed break-all z-10 relative">${notif.message}</p>
                 ${actionButtonsHTML}
             `;
             
             container.appendChild(card);
             
-            // 왼쪽에서 시간차(Stagger)를 두고 차례대로 미끄러지듯 나타나도록 연출
             setTimeout(() => {
                 card.classList.remove('-translate-x-full', 'opacity-0');
                 card.classList.add('translate-x-0', 'opacity-100');
@@ -2025,21 +2140,18 @@
         });
     }
 
-    // 개별 알림 끄기(✕ 버튼) 처리
     function dismissNotification(id) {
         appNotifications = appNotifications.filter(n => n.id !== id);
         updateNotificationUI();
         
         const card = document.getElementById(`card-${id}`);
         if (card) {
-            // 사라질 때도 왼쪽으로 스르륵 사라짐
             card.classList.remove('translate-x-0', 'opacity-100');
             card.classList.add('-translate-x-full', 'opacity-0');
             setTimeout(() => { card.remove(); }, 500);
         }
     }
 
-    // 새 HTML 다운로드 기능 (현재 온전한 소스코드를 로컬 파일 파일로 즉시 다운로드 빌드)
     function downloadCurrentHTML() {
         try {
             const htmlContent = document.documentElement.outerHTML;
@@ -2057,17 +2169,13 @@
         }
     }
 
-    /**
-     * 안전장치: 기존 코드 내부의 모든 브라우저 기본 alert()을 커스텀 알림 시스템으로 완전 자동 우회 연동
-     * 이 코드가 있으면 기존에 작성해둔 소스코드를 단 한 줄도 수정하지 않아도 알림 창이 보라색 알약 시스템으로 바뀝니다.
-     */
     const originalAlert = window.alert;
     window.alert = function(message) {
         const msg = String(message);
         if (msg.includes('업데이트') || msg.includes('버전') || msg.includes('update')) {
-            addCustomNotification('update', '업데이트 안내', msg, 'https://github.com/adk090612/cast_stanby'); // 본인의 GitHub 주소가 있다면 변경 가능
-        } else if (msg.includes('급식')) {
-            addCustomNotification('meal', '급식 데이터 오류', msg);
+            addCustomNotification('update', '업데이트 안내', msg, 'https://github.com/adk090612/cast_stanby'); 
+        } else if (msg.includes('급식') || msg.includes('연동')) {
+            addCustomNotification('meal', '정보 연동 알림', msg);
         } else if (msg.includes('연결') || msg.includes('인터넷') || msg.includes('오프라인') || msg.includes('네트워크')) {
             addCustomNotification('network', '네트워크 연결 상태', msg);
         } else {
@@ -2075,11 +2183,9 @@
         }
     };
 
-    // 추가 연동: 브라우저 자체의 인터넷 끊김/연결 이벤트 감지 시에도 수집하도록 추가
     window.addEventListener('offline', () => {
         addCustomNotification('network', '네트워크 연결 끊김', '인터넷 연결이 해제되었습니다. 일부 실시간 정보가 동기화되지 않을 수 있습니다.');
     });
-    // ================= 커스텀 알림 시스템 로직 끝 =================
     </script>
 
 </body>
