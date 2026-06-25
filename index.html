@@ -483,8 +483,17 @@
                             </h4>
                             <div class="glass-section p-4 max-h-[50vh] overflow-y-auto space-y-6">
                                 <div>
-                                    <h5 class="font-bold text-blue-300 text-lg">v2.3.0</h5>
+                                    <h5 class="font-bold text-blue-300 text-lg">v2.4.0</h5>
                                     <ul class="list-disc pl-5 text-sm text-gray-300 mt-2 space-y-1">
+                                        <li>나이스 정보 일정 시간 주기 업데이트 추가</li>
+                                        <li>버전 및 UI 안정화</li>
+                                        <li>이전 일정 숨김 지원</li>
+                                        <li>릴리즈 노트 개선</li>
+                                    </ul>
+                                </div>
+                                <div class="pt-2 border-t border-white/10">
+                                    <h5 class="font-bold text-gray-200 text-lg">v2.3.0</h5>
+                                    <ul class="list-disc pl-5 text-sm text-gray-400 mt-2 space-y-1">
                                         <li>버전 확인 로직 고도화 (A.B.C 체계 적용)</li>
                                         <li>나이스(NEIS) 학사일정 오픈 API 연동 적용</li>
                                         <li>학교 정보 및 시스템 설정(지역, 학교코드) 메뉴를 계정 탭으로 병합</li>
@@ -634,6 +643,10 @@
                                 <button type="submit" class="glass-button">일정 추가</button>
                             </form>
                             <p class="text-xs text-gray-400 mt-1">* 나이스(NEIS) 연동 데이터는 자동으로 표시되며 수동 일정과 병합됩니다. 체크박스를 통해 개별 D-Day 설정이 가능합니다.</p>
+
+                            <div class="flex justify-end mt-2 mb-1">
+                                <button type="button" id="toggle-past-schedules-btn" class="text-xs bg-white/10 hover:bg-white/20 text-white py-1.5 px-3 rounded-md transition-colors font-medium">이전 일정 보기</button>
+                            </div>
 
                             <div class="p-4 max-h-64 overflow-y-auto schedule-list-container border border-white/10 rounded-xl bg-white/5">
                                 <div id="schedule-list-modal" class="space-y-3"></div>
@@ -863,6 +876,8 @@
 
         const UPDATE_URL = 'https://adk090612.github.io/cast_stanby/';
         const REPO_URL = 'https://github.com/adk090612/cast_stanby';
+
+        let showPastSchedules = false; // 이전 일정 보기 상태 변수
 
         async function checkForUpdates(manual = false) {
             if (!manual) {
@@ -1528,11 +1543,21 @@
         function renderModalSchedules() {
             scheduleListModal.innerHTML = '';
             const allSchedules = getCombinedSchedules();
-            if (allSchedules.length === 0) { 
-                scheduleListModal.innerHTML = '<p class="text-gray-300 text-center py-4">추가된 일정이 없습니다.</p>'; 
+            const todayMid = new Date(new Date().toLocaleDateString('ko-KR')).getTime();
+            
+            let displaySchedules = allSchedules;
+            if (!showPastSchedules) {
+                displaySchedules = allSchedules.filter(s => {
+                    const targetDateStr = s.endDate ? s.endDate : s.date;
+                    return new Date(targetDateStr.replace(/\./g, '/')).getTime() >= todayMid;
+                });
+            }
+
+            if (displaySchedules.length === 0) { 
+                scheduleListModal.innerHTML = '<p class="text-gray-300 text-center py-4">추가된/표시할 일정이 없습니다.</p>'; 
                 return; 
             }
-            allSchedules.forEach(schedule => createScheduleElement(schedule, scheduleListModal, true));
+            displaySchedules.forEach(schedule => createScheduleElement(schedule, scheduleListModal, true));
         }
 
         function handleAddSchedule(e) {
@@ -1858,10 +1883,21 @@
             checkForUpdates(); 
 
             const ONE_HOUR = 60 * 60 * 1000;
-            setInterval(fetchManchon3DongWeather, ONE_HOUR);
-            setInterval(fetchTodayMeal, ONE_HOUR);
-            setInterval(fetchApiSchedules, ONE_HOUR);
-            setInterval(() => { renderDisplaySchedules(); }, ONE_HOUR);
+            const THREE_HOURS = 3 * 60 * 60 * 1000;
+            
+            setInterval(fetchManchon3DongWeather, ONE_HOUR); // 날씨는 1시간 유지
+            setInterval(fetchTodayMeal, THREE_HOURS); // 급식 3시간
+            setInterval(fetchApiSchedules, THREE_HOURS); // 일정 3시간
+            setInterval(() => { renderDisplaySchedules(); }, THREE_HOURS);
+
+            const togglePastSchedulesBtn = document.getElementById('toggle-past-schedules-btn');
+            if (togglePastSchedulesBtn) {
+                togglePastSchedulesBtn.addEventListener('click', () => {
+                    showPastSchedules = !showPastSchedules;
+                    togglePastSchedulesBtn.textContent = showPastSchedules ? '이전 일정 숨기기' : '이전 일정 보기';
+                    renderModalSchedules();
+                });
+            }
 
             document.getElementById('settings-btn').addEventListener('click', () => { settingsModal.classList.remove('hidden'); settingsContainer.style.opacity = '0'; switchSettingsView('main-menu'); });
             closeSettingsBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
