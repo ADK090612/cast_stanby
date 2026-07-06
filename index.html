@@ -325,7 +325,8 @@
         body.low-performance-mode #dday-banner,
         body.low-performance-mode #dynamic-bottom-bar,
         body.low-performance-mode #update-notification,
-        body.low-performance-mode .glass-input {
+        body.low-performance-mode .glass-input,
+        body.low-performance-mode #pip-container {
             backdrop-filter: none !important;
             -webkit-backdrop-filter: none !important;
             background: rgba(30, 30, 30, 0.95) !important;
@@ -341,20 +342,18 @@
     </style>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        // 하나의 HTML 파일 안에서 PWA 매니페스트를 동적으로 생성하는 코드
         (function() {
             const manifestObj = {
                 "name": "실시간 정보 및 일정 안내 방송 대기화면",
                 "short_name": "방송 대기화면",
                 "description": "학교 및 방송실용 실시간 대기화면 SPA",
-                "start_url": window.location.href, // 현재 HTML 파일의 주소를 자동으로 지정
-                "display": "standalone",           // 주소창 없이 일반 앱처럼 실행되도록 설정
+                "start_url": window.location.href, 
+                "display": "standalone",           
                 "background_color": "#000000",
                 "theme_color": "#000000",
                 "orientation": "landscape",
                 "icons": [
                     {
-                        // 아이콘 이미지 파일도 외부 URL(예: 본인 깃허브에 올린 이미지 주소)을 적어주면 파일 단일화 유지 가능
                         "src": "https://raw.githubusercontent.com/adk090612/cast_stanby/main/icon-512.png", 
                         "sizes": "512x512",
                         "type": "image/png"
@@ -362,11 +361,9 @@
                 ]
             };
 
-            // 자바스크립트 객체를 문자열로 바꾸고 URL 인코딩 처리
             const manifestStr = JSON.stringify(manifestObj);
             const manifestDataUrl = 'data:application/manifest+json,' + encodeURIComponent(manifestStr);
 
-            // <link rel="manifest" href="data:..."> 태그를 head에 동적 주입
             const link = document.createElement('link');
             link.rel = 'manifest';
             link.href = manifestDataUrl;
@@ -412,6 +409,8 @@
         <div class="glow-circle glow-green"></div>
         <div class="glow-circle glow-blue"></div>
     </div>
+    
+    <div class="fixed bottom-3 right-5 z-[1] text-white/40 text-[11px] font-semibold tracking-widest pointer-events-none font-system">powered by. ADK</div>
 
     <div class="settings-container">
         <button id="settings-btn" class="edit-btn">
@@ -419,6 +418,26 @@
                 <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5L2 22l1.5-5.5L17 3z"/>
             </svg>
         </button>
+    </div>
+
+    <div id="pip-container" class="fixed z-[100] hidden shadow-2xl overflow-hidden group glass-card flex-col" style="width: 320px; top: 0; left: 0; padding: 0; backdrop-filter: blur(16px) saturate(180%); -webkit-backdrop-filter: blur(16px) saturate(180%); background: rgba(0,0,0,0.4); border-radius: 16px;">
+        <div id="pip-drag-handle" class="w-full h-8 flex items-center justify-center cursor-move bg-white/10 hover:bg-white/20 transition-colors relative shrink-0">
+            <div class="w-12 h-1 bg-white/40 rounded-full"></div>
+            <button id="pip-close-btn" class="absolute right-3 text-white/50 hover:text-red-400 w-5 h-5 flex items-center justify-center rounded-full transition-colors z-20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        
+        <div id="pip-content-wrapper" class="w-full relative flex items-center justify-center bg-black/50 transition-all duration-300" style="aspect-ratio: 16/9;">
+            <img id="pip-img-display" src="" class="w-full h-full object-contain hidden" />
+            <div id="pip-yt-display" class="w-full h-full hidden"></div>
+            
+            <div id="pip-resize-handle" class="absolute bottom-1 right-1 w-6 h-6 cursor-nwse-resize opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
+                <div class="w-3 h-1 bg-white/80 rounded-full rotate-45 shadow-sm"></div>
+            </div>
+        </div>
     </div>
 
     <div id="settings-modal" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[60] p-6 glass-card" style="max-width:78rem;width:95%;max-height:92vh;overflow:auto;">
@@ -448,6 +467,13 @@
                         <div class="text-sm">
                             <div class="font-semibold">기본 설정</div>
                             <div class="text-xs text-gray-300">화면 전환 / 시간</div>
+                        </div>
+                    </div>
+                    <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center gap-3" data-view="pip" tabindex="0" role="button" aria-pressed="false">
+                        <span class="w-10 h-10 rounded-md bg-white/6 flex items-center justify-center text-xl">🔲</span>
+                        <div class="text-sm">
+                            <div class="font-semibold">PiP 모드</div>
+                            <div class="text-xs text-gray-300">미디어 오버레이 설정</div>
                         </div>
                     </div>
                     <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center gap-3" data-view="custom-text" tabindex="0" role="button" aria-pressed="false">
@@ -501,9 +527,59 @@
                     </div>
                 </aside>
 
-                <section class="settings-details flex-1 p-3">
+                <section class="settings-details flex-1 p-3 relative">
                     <div class="glass-section p-4 h-full overflow-hidden" style="min-height:320px;">
                         
+                        <div id="pip-view" class="settings-view hidden space-y-4">
+                            <h4 class="text-xl font-semibold border-b border-white/30 pb-2">PiP (Picture-in-Picture) 설정</h4>
+                            
+                            <div class="glass-section p-4 space-y-4">
+                                <label class="glass-checkbox-label">
+                                    <input type="checkbox" id="pip-enable-toggle" class="glass-checkbox-input" />
+                                    <span class="glass-checkbox-box"></span>
+                                    <span class="text-sm font-semibold text-white">PiP 미디어 화면 활성화</span>
+                                </label>
+
+                                <div class="pt-3 border-t border-white/10">
+                                    <p class="text-sm font-medium text-gray-200 mb-2">표시할 화면 선택</p>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <label class="glass-checkbox-label"><input type="checkbox" class="glass-checkbox-input pip-screen-cb" value="all" id="pip-show-all"><span class="glass-checkbox-box"></span><span class="text-sm">항상 표시 (모든 화면)</span></label>
+                                        <label class="glass-checkbox-label"><input type="checkbox" class="glass-checkbox-input pip-screen-cb" value="0"><span class="glass-checkbox-box"></span><span class="text-sm">날씨 화면</span></label>
+                                        <label class="glass-checkbox-label"><input type="checkbox" class="glass-checkbox-input pip-screen-cb" value="1"><span class="glass-checkbox-box"></span><span class="text-sm">오늘의 급식 화면</span></label>
+                                        <label class="glass-checkbox-label"><input type="checkbox" class="glass-checkbox-input pip-screen-cb" value="2"><span class="glass-checkbox-box"></span><span class="text-sm">학사 일정 화면</span></label>
+                                        <label class="glass-checkbox-label"><input type="checkbox" class="glass-checkbox-input pip-screen-cb" value="3"><span class="glass-checkbox-box"></span><span class="text-sm">커스텀 메시지 화면</span></label>
+                                    </div>
+                                </div>
+
+                                <div class="pt-3 border-t border-white/10">
+                                    <p class="text-sm font-medium text-gray-200 mb-2">미디어 소스 선택</p>
+                                    <div class="flex gap-2">
+                                        <button id="pip-type-img-btn" class="glass-button flex-1 bg-white/20">내 파일 이미지</button>
+                                        <button id="pip-type-yt-btn" class="glass-button flex-1 bg-white/5">유튜브 영상(베타 기능)</button>
+                                    </div>
+                                    
+                                    <div id="pip-img-config" class="mt-4 space-y-2">
+                                        <input type="file" id="pip-img-upload" class="hidden" accept="image/*">
+                                        <label for="pip-img-upload" class="glass-button w-full block text-center cursor-pointer border border-dashed border-white/40">이미지 탐색 (클릭)</label>
+                                        <div id="pip-img-preview-container" class="mt-2 hidden">
+                                            <p class="text-xs text-gray-400 mb-1">미리보기:</p>
+                                            <img id="pip-img-preview" src="" class="max-h-32 rounded-lg border border-white/20 object-cover">
+                                        </div>
+                                    </div>
+
+                                    <div id="pip-yt-config" class="mt-4 hidden space-y-2">
+                                        <input type="text" id="pip-yt-url" class="glass-input w-full" placeholder="YouTube 영상 링크 입력...">
+                                        <button id="pip-yt-apply-btn" class="glass-button w-full bg-blue-500/30">유튜브 영상 적용</button>
+                                        <div class="flex gap-2 mt-2">
+                                            <button id="pip-yt-play-btn" class="glass-button flex-1 text-xs">재생 / 일시정지</button>
+                                            <button id="pip-yt-mute-btn" class="glass-button flex-1 text-xs">음소거 토글</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="save-pip-btn" class="glass-button w-full mt-2 bg-blue-500/40">PiP 설정 저장</button>
+                        </div>
+
                         <div id="update-view" class="settings-view hidden space-y-4">
                             <h4 class="text-xl font-semibold border-b border-white/30 pb-2">업데이트 설정 및 확인</h4>
                             
@@ -856,7 +932,10 @@
                                 <p id="app-version-text" class="text-gray-300" data-version="2.4.1">2.4.1</p>
                             </div>
                         </div>
+                        
                     </div>
+                    
+                    <div class="absolute bottom-4 right-6 text-white/30 text-[10px] tracking-widest pointer-events-none font-system">powered by. ADK</div>
                 </section>
             </div>
         </div>
@@ -1213,6 +1292,26 @@
         const exportDataBtn = document.getElementById('export-data-btn');
         const importDataInput = document.getElementById('import-data-input');
 
+        // PiP 요소 DOM 캐싱
+        const pipView = document.getElementById('pip-view');
+        const pipEnableToggle = document.getElementById('pip-enable-toggle');
+        const pipScreenCbs = document.querySelectorAll('.pip-screen-cb');
+        const pipShowAllCb = document.getElementById('pip-show-all');
+        const pipTypeImgBtn = document.getElementById('pip-type-img-btn');
+        const pipTypeYtBtn = document.getElementById('pip-type-yt-btn');
+        const pipImgConfig = document.getElementById('pip-img-config');
+        const pipYtConfig = document.getElementById('pip-yt-config');
+        const pipImgUpload = document.getElementById('pip-img-upload');
+        const pipImgPreview = document.getElementById('pip-img-preview');
+        const pipImgPreviewContainer = document.getElementById('pip-img-preview-container');
+        const pipYtUrl = document.getElementById('pip-yt-url');
+        const pipYtApplyBtn = document.getElementById('pip-yt-apply-btn');
+        const savePipBtn = document.getElementById('save-pip-btn');
+        const pipContainer = document.getElementById('pip-container');
+        const pipImgDisplay = document.getElementById('pip-img-display');
+        const pipYtDisplay = document.getElementById('pip-yt-display');
+        const pipCloseBtn = document.getElementById('pip-close-btn');
+
         let schedules = [];
         let apiSchedules = []; 
         const currentScreenElements = [weatherScreen, mealScreen, scheduleScreen, customTextScreen];
@@ -1222,18 +1321,34 @@
         
         const weatherCard = weatherScreen.querySelector('.glass-card.no-initial-blur');
 
-        // ==== Play(플레이리스트) 기능 로직 ====
+        // ==== Play(플레이리스트) & PiP 기능 로직 ====
         let ytMusicPlaylist = JSON.parse(localStorage.getItem('dashboardPlaylist') || '[]');
         let currentMusicIndex = 0;
         let isMusicPlaying = false;
         let globalYtPlayer;
+        let pipYtPlayer;
         let isYtApiReady = false;
+
+        let pipState = {
+            enabled: false,
+            type: 'img', // 'img' or 'yt'
+            src: '', // data URL for img, or video ID for yt
+            screens: ['all'],
+            tempHidden: false, // temporarily hidden by X button
+            x: -1, // -1 means default
+            y: -1,
+            w: 320,
+            aspectRatio: 16/9
+        };
 
         // YouTube IFrame API 초기화 콜백
         function onYouTubeIframeAPIReady() {
             isYtApiReady = true;
             if(ytMusicPlaylist.length > 0) {
                 initYtPlayer();
+            }
+            if(pipState.type === 'yt' && pipState.src) {
+                initPipYtPlayer(pipState.src);
             }
         }
 
@@ -1242,16 +1357,23 @@
             globalYtPlayer = new YT.Player('yt-player-container', {
                 height: '0',
                 width: '0',
-                playerVars: {
-                    'autoplay': 0,
-                    'controls': 0,
-                    'playsinline': 1
-                },
+                playerVars: { 'autoplay': 0, 'controls': 0, 'playsinline': 1 },
                 events: {
                     'onReady': onPlayerReady,
                     'onStateChange': onPlayerStateChange
                 }
             });
+        }
+
+        function initPipYtPlayer(videoId) {
+            if(pipYtPlayer) {
+                pipYtPlayer.loadVideoById(videoId);
+            } else {
+                pipYtPlayer = new YT.Player('pip-yt-display', {
+                    videoId: videoId,
+                    playerVars: { 'autoplay': 1, 'controls': 0, 'mute': 1, 'playsinline': 1 },
+                });
+            }
         }
 
         function onPlayerReady(event) {
@@ -1311,7 +1433,7 @@
             }
         }
 
-        // 플레이리스트 관리
+        // 플레이리스트 관리 (중략)
         async function fetchYoutubeInfoAndAdd(url) {
             const videoIdMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&]{11})/);
             if (!videoIdMatch) {
@@ -1319,14 +1441,11 @@
                 return;
             }
             const videoId = videoIdMatch[1];
-            
-            // 기존 목록에 있는지 확인
             if(ytMusicPlaylist.some(item => item.id === videoId)){
                 alert('이미 플레이리스트에 있는 곡입니다.');
                 return;
             }
 
-            // noembed API를 통해 메타데이터 추출 (CORS 이슈 없음)
             try {
                 addYtMusicBtn.textContent = '불러오는 중...';
                 const response = await fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`);
@@ -1340,7 +1459,6 @@
                 saveAndRefreshPlaylist();
                 if(ytMusicPlaylist.length === 1 && isYtApiReady) initYtPlayer();
             } catch (err) {
-                // 실패 시 기본값으로 추가
                 ytMusicPlaylist.push({ id: videoId, title: '추가된 영상', artist: '알 수 없음', thumb: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` });
                 saveAndRefreshPlaylist();
                 if(ytMusicPlaylist.length === 1 && isYtApiReady) initYtPlayer();
@@ -1416,7 +1534,6 @@
             ytMusicPlaylist[index] = ytMusicPlaylist[targetIndex];
             ytMusicPlaylist[targetIndex] = temp;
             
-            // 현재 재생중인 곡 인덱스도 보정
             if(currentMusicIndex === index) currentMusicIndex = targetIndex;
             else if(currentMusicIndex === targetIndex) currentMusicIndex = index;
 
@@ -1465,7 +1582,6 @@
             }
         }
 
-        // DOM 로드 후 설정 버튼 이벤트
         addYtMusicBtn.addEventListener('click', () => {
             const url = ytMusicUrlInput.value.trim();
             if(url) fetchYoutubeInfoAndAdd(url);
@@ -1475,7 +1591,6 @@
             if(e.key === 'Enter') addYtMusicBtn.click();
         });
 
-        // 하단 Music Bar 버튼 이벤트
         document.getElementById('btn-playpause-music').addEventListener('click', toggleMusicPlayPause);
         document.getElementById('btn-prev-music').addEventListener('click', (e) => { e.stopPropagation(); playPrevMusic(); });
         document.getElementById('btn-next-music').addEventListener('click', (e) => { e.stopPropagation(); playNextMusic(); });
@@ -1487,7 +1602,7 @@
             switchSettingsView('play');
         });
 
-        // ==== 기존 로직 ====
+        // ==== 날씨/급식/일정/시계 로직 (기존과 동일) ====
         async function fetchManchon3DongWeather() {
             if (!weatherCard) return;
             if (!OPENWEATHER_API_KEY) {
@@ -1699,6 +1814,10 @@
                 nextElement.style.opacity = '1';
                 nextElement.style.pointerEvents = 'auto';
                 toggleCardBlur(nextIndex, true);
+                
+                // PiP 가시성 업데이트
+                updatePipVisibility(nextIndex);
+                
                 currentScreenIndex = nextIndex;
             }, TRANSITION_DURATION);
         }
@@ -1729,7 +1848,7 @@
             const profileViewEl = document.getElementById('profile-view');
             const infoViewEl = document.getElementById('info-view');
             
-            [mainMenuView, customTextView, scheduleEditView, playView, backgroundView, profileViewEl, infoViewEl, systemView, updateView, releaseNotesView].forEach(view => view && view.classList.add('hidden'));
+            [mainMenuView, customTextView, scheduleEditView, playView, backgroundView, profileViewEl, infoViewEl, systemView, updateView, releaseNotesView, pipView].forEach(view => view && view.classList.add('hidden'));
             
             let titleText = '대시보드 설정';
             let showBackButton = false;
@@ -1758,6 +1877,8 @@
                 titleText = '업데이트 설정'; showBackButton = true; targetView = updateView;
             } else if (viewName === 'release-notes') {
                 titleText = '릴리즈 노트'; showBackButton = true; targetView = releaseNotesView;
+            } else if (viewName === 'pip') {
+                titleText = 'PiP 모드 설정'; showBackButton = true; targetView = pipView;
             }
 
             settingsTitle.textContent = titleText;
@@ -1781,6 +1902,7 @@
             if (btn) btn.classList.add('active');
         }
 
+        // --- 일정 및 UI 관련 유틸 함수 생략(기존 유지) ---
         function loadSchedules() {
             const storedSchedules = localStorage.getItem('daeryunSchedules');
             if (storedSchedules) {
@@ -2002,6 +2124,320 @@
             element.classList.add(newClass);
         }
 
+        // --- PiP 관련 기능 구현 ---
+        function loadPipSettings() {
+            const savedPip = localStorage.getItem('dashboardPipState');
+            if (savedPip) {
+                try {
+                    Object.assign(pipState, JSON.parse(savedPip));
+                } catch(e) { console.error('PiP 설정 로드 실패', e); }
+            }
+
+            // 기본 위치 셋업 (우측 하단)
+            if (pipState.x === -1 || pipState.y === -1) {
+                pipState.w = 320;
+                pipState.x = window.innerWidth - pipState.w - 30;
+                pipState.y = window.innerHeight - (pipState.w / (pipState.aspectRatio || 16/9)) - 60;
+            }
+
+            // UI 업데이트
+            pipEnableToggle.checked = pipState.enabled;
+            
+            pipScreenCbs.forEach(cb => {
+                cb.checked = pipState.screens.includes(cb.value);
+            });
+
+            if (pipState.type === 'img') {
+                pipTypeImgBtn.classList.replace('bg-white/5', 'bg-white/20');
+                pipTypeYtBtn.classList.replace('bg-white/20', 'bg-white/5');
+                pipImgConfig.classList.remove('hidden');
+                pipYtConfig.classList.add('hidden');
+                if (pipState.src) {
+                    pipImgPreview.src = pipState.src;
+                    pipImgPreviewContainer.classList.remove('hidden');
+                }
+            } else {
+                pipTypeYtBtn.classList.replace('bg-white/5', 'bg-white/20');
+                pipTypeImgBtn.classList.replace('bg-white/20', 'bg-white/5');
+                pipYtConfig.classList.remove('hidden');
+                pipImgConfig.classList.add('hidden');
+                if (pipState.src) {
+                    pipYtUrl.value = `https://youtu.be/${pipState.src}`;
+                }
+            }
+            
+            // 비율 적용 (이미지일 경우 로드 후 계산)
+            if (pipState.type === 'img' && pipState.src) {
+                const tempImg = new Image();
+                tempImg.onload = function() {
+                    pipState.aspectRatio = this.naturalWidth / this.naturalHeight;
+                    applyPipAspectRatio();
+                };
+                tempImg.src = pipState.src;
+            } else {
+                applyPipAspectRatio();
+            }
+
+            renderPipMedia();
+        }
+
+        function applyPipAspectRatio() {
+            const wrapper = document.getElementById('pip-content-wrapper');
+            let ratio = pipState.type === 'yt' ? 16/9 : (pipState.aspectRatio || 16/9);
+            wrapper.style.aspectRatio = ratio.toString();
+            pipState.aspectRatio = ratio;
+            applyPipContainerStyle();
+        }
+
+        function applyPipContainerStyle() {
+            // 화면 밖을 벗어나지 않도록 안전장치
+            if (pipState.x + pipState.w > window.innerWidth) pipState.x = window.innerWidth - pipState.w - 30;
+            if (pipState.y + (pipState.w / pipState.aspectRatio) > window.innerHeight) pipState.y = window.innerHeight - (pipState.w / pipState.aspectRatio) - 60;
+            if (pipState.x < 0) pipState.x = 20;
+            if (pipState.y < 0) pipState.y = 20;
+
+            pipContainer.style.left = pipState.x + 'px';
+            pipContainer.style.top = pipState.y + 'px';
+            pipContainer.style.width = pipState.w + 'px';
+            // 높이는 aspect-ratio에 의해 자동 결정됩니다.
+        }
+
+        function renderPipMedia() {
+            if (pipState.type === 'img') {
+                pipYtDisplay.classList.add('hidden');
+                pipImgDisplay.classList.remove('hidden');
+                if (pipState.src) pipImgDisplay.src = pipState.src;
+            } else {
+                pipImgDisplay.classList.add('hidden');
+                pipYtDisplay.classList.remove('hidden');
+                if (pipState.src && isYtApiReady) {
+                    initPipYtPlayer(pipState.src);
+                }
+            }
+        }
+
+        function updatePipVisibility(screenIdx) {
+            if (!pipState.enabled || pipState.tempHidden) {
+                pipContainer.classList.add('hidden');
+                return;
+            }
+            if (pipState.screens.includes('all') || pipState.screens.includes(screenIdx.toString())) {
+                pipContainer.classList.remove('hidden');
+                pipContainer.classList.add('flex');
+            } else {
+                pipContainer.classList.add('hidden');
+                pipContainer.classList.remove('flex');
+            }
+        }
+
+        // PiP 설정창 내 상호작용
+        pipShowAllCb.addEventListener('change', (e) => {
+            if(e.target.checked) {
+                pipScreenCbs.forEach(cb => { if(cb !== pipShowAllCb) cb.checked = false; });
+            }
+        });
+        pipScreenCbs.forEach(cb => {
+            if(cb !== pipShowAllCb) {
+                cb.addEventListener('change', () => {
+                    if(cb.checked) pipShowAllCb.checked = false;
+                });
+            }
+        });
+
+        pipTypeImgBtn.addEventListener('click', () => {
+            pipState.type = 'img';
+            pipTypeImgBtn.classList.replace('bg-white/5', 'bg-white/20');
+            pipTypeYtBtn.classList.replace('bg-white/20', 'bg-white/5');
+            pipImgConfig.classList.remove('hidden');
+            pipYtConfig.classList.add('hidden');
+            applyPipAspectRatio();
+        });
+
+        pipTypeYtBtn.addEventListener('click', () => {
+            pipState.type = 'yt';
+            pipTypeYtBtn.classList.replace('bg-white/5', 'bg-white/20');
+            pipTypeImgBtn.classList.replace('bg-white/20', 'bg-white/5');
+            pipYtConfig.classList.remove('hidden');
+            pipImgConfig.classList.add('hidden');
+            applyPipAspectRatio();
+        });
+
+        pipImgUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            resizeAndSaveImage(file, (dataUrl) => {
+                pipState.src = dataUrl;
+                pipImgPreview.src = dataUrl;
+                pipImgPreviewContainer.classList.remove('hidden');
+                
+                const tempImg = new Image();
+                tempImg.onload = function() {
+                    pipState.aspectRatio = this.naturalWidth / this.naturalHeight;
+                    if(pipState.type === 'img') applyPipAspectRatio();
+                };
+                tempImg.src = dataUrl;
+            });
+        });
+
+        pipYtApplyBtn.addEventListener('click', () => {
+            const url = pipYtUrl.value.trim();
+            const videoIdMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&]{11})/);
+            if (videoIdMatch) {
+                pipState.src = videoIdMatch[1];
+                alert('유튜브 영상이 PiP 소스로 등록되었습니다.');
+            } else {
+                alert('올바른 유튜브 영상 링크를 입력하세요.');
+            }
+        });
+
+        // 유튜브 설정창 컨트롤
+        document.getElementById('pip-yt-play-btn').addEventListener('click', () => {
+            if(pipYtPlayer && typeof pipYtPlayer.getPlayerState === 'function') {
+                if(pipYtPlayer.getPlayerState() === YT.PlayerState.PLAYING) pipYtPlayer.pauseVideo();
+                else pipYtPlayer.playVideo();
+            }
+        });
+        document.getElementById('pip-yt-mute-btn').addEventListener('click', () => {
+            if(pipYtPlayer && typeof pipYtPlayer.isMuted === 'function') {
+                if(pipYtPlayer.isMuted()) pipYtPlayer.unMute();
+                else pipYtPlayer.mute();
+            }
+        });
+
+              // 1. 기존의 renderPipMedia 함수를 안전하게 감싸 크래시를 방지합니다.
+        function renderPipMedia() {
+          if (pipState.type === 'img') {
+                pipYtDisplay.classList.add('hidden');
+              pipImgDisplay.classList.remove('hidden');
+              if (pipState.src) pipImgDisplay.src = pipState.src;
+         } else {
+             pipImgDisplay.classList.add('hidden');
+             pipYtDisplay.classList.remove('hidden');
+             if (pipState.src && isYtApiReady) {
+                 initPipYtPlayer(pipState.src);
+                }
+            }
+        }
+
+        // 2. PiP 토글 및 저장 버튼 로직 수정 (에러 예외처리 추가)
+        savePipBtn.addEventListener('click', () => {
+         pipState.enabled = pipEnableToggle.checked;
+         pipState.tempHidden = false; 
+         const selectedScreens = Array.from(pipScreenCbs)
+               .filter(cb => cb.checked)
+              .map(cb => cb.value);
+            pipState.screens = selectedScreens.length > 0 ? selectedScreens : ['all'];
+            localStorage.setItem('dashboardPipState', JSON.stringify(pipState));
+
+         try {
+              renderPipMedia();
+                updatePipVisibility(currentScreenIndex);
+
+              // 만약 유튜브 모드라면 브라우저 API가 호출되지 않게 안전하게 분기
+              if (pipState.type === 'yt') {
+                  console.log("유튜브 플레이어는 HTML5 네이티브 PiP API를 지원하지 않으므로 커스텀 컨테이너 팝업 모드로 대체 작동합니다.");
+               }
+         } catch (e) {
+              console.error("PiP 전환 중 예외 처리 보호:", e);
+         }
+
+         alert('PiP 설정이 저장되었습니다.');
+         switchSettingsView('main-menu');
+        });
+
+        // 3. 브라우저가 requestPictureInPicture 오류를 강제로 뿜는 것을 원천 차단하는 전역 예외 처리 스크립트 추가
+        window.addEventListener('unhandledrejection', function (event) {
+         if (event.reason && event.reason.name === 'InvalidStateError' && event.reason.message.includes('requestPictureInPicture')) {
+               console.warn('유튜브 iFrame에서 발생한 requestPictureInPicture API 무시 처리됨.');
+                event.preventDefault(); // 에러 팝업 및 크래시 방지
+            }
+        });
+
+        // 드래그 및 크기 조절 로직
+        let isPipDragging = false;
+        let isPipResizing = false;
+        let dragStartX, dragStartY, initialW, initialLeft, initialTop;
+        const dragHandle = document.getElementById('pip-drag-handle');
+        const resizeHandle = document.getElementById('pip-resize-handle');
+
+        dragHandle.addEventListener('mousedown', (e) => {
+            if(e.target.closest('#pip-close-btn')) return;
+            isPipDragging = true;
+            dragStartX = e.clientX; 
+            dragStartY = e.clientY;
+            const rect = pipContainer.getBoundingClientRect();
+            initialLeft = rect.left; 
+            initialTop = rect.top;
+        });
+
+        resizeHandle.addEventListener('mousedown', (e) => {
+            isPipResizing = true;
+            e.stopPropagation();
+            dragStartX = e.clientX; 
+            const rect = pipContainer.getBoundingClientRect();
+            initialW = rect.width; 
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isPipDragging) {
+                let newX = initialLeft + (e.clientX - dragStartX);
+                let newY = initialTop + (e.clientY - dragStartY);
+                
+                // 화면 밖 이탈 방지
+                if(newX < 0) newX = 0;
+                if(newY < 0) newY = 0;
+                if(newX + pipContainer.offsetWidth > window.innerWidth) newX = window.innerWidth - pipContainer.offsetWidth;
+                if(newY + pipContainer.offsetHeight > window.innerHeight) newY = window.innerHeight - pipContainer.offsetHeight;
+                
+                pipContainer.style.left = newX + 'px';
+                pipContainer.style.top = newY + 'px';
+            }
+            if (isPipResizing) {
+                let newW = initialW + (e.clientX - dragStartX);
+                if(newW < 150) newW = 150;
+                if(newW > window.innerWidth * 0.8) newW = window.innerWidth * 0.8; // 최대 너비 제한
+                pipContainer.style.width = newW + 'px';
+                // 비율 유지는 wrapper의 aspect-ratio 속성에서 자동으로 처리됩니다.
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isPipDragging || isPipResizing) {
+                isPipDragging = false; 
+                isPipResizing = false;
+                
+                const rect = pipContainer.getBoundingClientRect();
+                pipState.x = rect.left;
+                pipState.y = rect.top;
+                pipState.w = rect.width;
+                localStorage.setItem('dashboardPipState', JSON.stringify(pipState));
+            }
+        });
+
+        // 숨김 버튼 (X) 처리
+        pipCloseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            pipState.tempHidden = true;
+            updatePipVisibility(currentScreenIndex);
+            
+            // Notification 활용
+            addCustomNotification('pip', 'PiP 모드 숨김', 'PiP 미디어가 숨겨졌습니다. 다시 보려면 설정에서 켜주세요.');
+
+            // 미디어 바(하단바)에 임시로 정보 띄우기
+            const schoolNameBottom = document.getElementById('school-name-bottom');
+            if(schoolNameBottom) {
+                const originalText = schoolNameBottom.textContent;
+                schoolNameBottom.textContent = "PiP 미디어 화면 숨김 처리됨";
+                schoolNameBottom.classList.add('text-blue-300');
+                
+                setTimeout(() => {
+                    schoolNameBottom.textContent = originalText;
+                    schoolNameBottom.classList.remove('text-blue-300');
+                }, 4000);
+            }
+        });
+
+        // --- 기타 공통 함수들 (기존 유지) ---
         function loadSettings() {
             const savedBg = localStorage.getItem('dashboardBackground');
             const defaultAnimatedBg = document.getElementById('default-animated-bg');
@@ -2101,6 +2537,9 @@
             
             const savedShowMusicBar = localStorage.getItem('dashboardShowMusicBar');
             if (showMusicBarToggle) showMusicBarToggle.checked = savedShowMusicBar !== 'false';
+            
+            // PiP 설정 로드 호출
+            loadPipSettings();
         }
 
         function saveCustomText() {
@@ -2467,7 +2906,6 @@
                 });
             }
 
-            // 데이터 백업 및 복원 기능 연동
             if (exportDataBtn) {
                 exportDataBtn.addEventListener('click', () => {
                     const exportData = {};
@@ -2550,6 +2988,7 @@
             });
 
             toggleCardBlur(0, true);
+            updatePipVisibility(0); // 처음 시작할 때 PiP 상태 동기화
             try { startScreenLoop(); } catch (err) {}
             setTimeout(() => { try { checkBackgroundBrightnessAndApply(); } catch (e) {} }, 200);
         }
