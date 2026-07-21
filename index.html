@@ -658,40 +658,67 @@
                                     <span class="text-xl">📺</span> 화면 모드 (전환 타이밍)
                                 </h3>
 
-                                <div id="transition-settings-container" class="space-y-4 transition-all duration-300">
-                                    <div class="space-y-2">
-                                        <label for="weather-duration-slider" class="flex justify-between text-sm text-gray-200">
-                                            <span>날씨 및 시계</span>
-                                            <span><span id="weather-duration-value" class="font-bold text-white">8</span>초</span>
-                                        </label>
-                                        <input type="range" id="weather-duration-slider" min="5" max="60" value="8" class="glass-input w-full">
-                                    </div>
+                                <div id="transition-settings-container" class="space-y-4 transition-all duration-300 flex flex-col">
+                                    <p class="text-xs text-gray-400 mb-2">※ 화살표를 눌러 표시 순서를 변경할 수 있습니다. 0초로 설정하면 해당 화면은 건너뜁니다.</p>
+                                    <div id="screen-order-list" class="space-y-3 flex flex-col">
+                                        <div class="screen-order-item bg-white/5 p-3 rounded-lg border border-white/10" data-id="0">
+                                            <div class="flex justify-between text-sm text-gray-200 mb-2 items-center">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="flex flex-col">
+                                                        <button type="button" class="order-up-btn text-gray-400 hover:text-white px-1 hover:bg-white/10 rounded leading-none">▲</button>
+                                                        <button type="button" class="order-down-btn text-gray-400 hover:text-white px-1 hover:bg-white/10 rounded leading-none mt-1">▼</button>
+                                                    </div>
+                                                    <span class="font-semibold text-white">날씨 및 시계</span>
+                                                </div>
+                                                <span><span id="weather-duration-value" class="font-bold text-white">8</span>초</span>
+                                            </div>
+                                            <input type="range" id="weather-duration-slider" min="0" max="60" value="8" class="glass-input w-full">
+                                        </div>
 
-                                    <div class="space-y-2">
-                                        <label for="meal-duration-slider" class="flex justify-between text-sm text-gray-200">
-                                            <span>오늘의 급식</span>
-                                            <span><span id="meal-duration-value" class="font-bold text-white">8</span>초</span>
-                                        </label>
-                                        <input type="range" id="meal-duration-slider" min="5" max="60" value="8" class="glass-input w-full">
-                                    </div>
+                                        <div class="screen-order-item bg-white/5 p-3 rounded-lg border border-white/10" data-id="1">
+                                            <div class="flex justify-between text-sm text-gray-200 mb-2 items-center">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="flex flex-col">
+                                                        <button type="button" class="order-up-btn text-gray-400 hover:text-white px-1 hover:bg-white/10 rounded leading-none">▲</button>
+                                                        <button type="button" class="order-down-btn text-gray-400 hover:text-white px-1 hover:bg-white/10 rounded leading-none mt-1">▼</button>
+                                                    </div>
+                                                    <span class="font-semibold text-white">오늘의 급식</span>
+                                                </div>
+                                                <span><span id="meal-duration-value" class="font-bold text-white">8</span>초</span>
+                                            </div>
+                                            <input type="range" id="meal-duration-slider" min="0" max="60" value="8" class="glass-input w-full">
+                                        </div>
 
-                                    <div class="space-y-2">
-                                        <label for="schedule-duration-slider" class="flex justify-between text-sm text-gray-200">
-                                            <span>학사 일정</span>
-                                            <span><span id="schedule-duration-value" class="font-bold text-white">6</span>초</span>
-                                        </label>
-                                        <input type="range" id="schedule-duration-slider" min="5" max="60" value="6" class="glass-input w-full">
-                                    </div>
+                                        <div class="screen-order-item bg-white/5 p-3 rounded-lg border border-white/10" data-id="2">
+                                            <div class="flex justify-between text-sm text-gray-200 mb-2 items-center">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="flex flex-col">
+                                                        <button type="button" class="order-up-btn text-gray-400 hover:text-white px-1 hover:bg-white/10 rounded leading-none">▲</button>
+                                                        <button type="button" class="order-down-btn text-gray-400 hover:text-white px-1 hover:bg-white/10 rounded leading-none mt-1">▼</button>
+                                                    </div>
+                                                    <span class="font-semibold text-white">학사 일정</span>
+                                                </div>
+                                                <span><span id="schedule-duration-value" class="font-bold text-white">6</span>초</span>
+                                            </div>
+                                            <input type="range" id="schedule-duration-slider" min="0" max="60" value="6" class="glass-input w-full">
+                                        </div>
 
-                                    <div class="space-y-2">
-                                        <label for="custom-duration-slider" class="flex justify-between text-sm text-gray-200">
-                                            <span>커스텀 메시지</span>
-                                            <span><span id="custom-duration-value" class="font-bold text-white">8</span>초</span>
-                                        </label>
-                                        <input type="range" id="custom-duration-slider" min="2" max="30" value="8" class="glass-input w-full">
+                                        <div class="screen-order-item bg-white/5 p-3 rounded-lg border border-white/10" data-id="3">
+                                            <div class="flex justify-between text-sm text-gray-200 mb-2 items-center">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="flex flex-col">
+                                                        <button type="button" class="order-up-btn text-gray-400 hover:text-white px-1 hover:bg-white/10 rounded leading-none">▲</button>
+                                                        <button type="button" class="order-down-btn text-gray-400 hover:text-white px-1 hover:bg-white/10 rounded leading-none mt-1">▼</button>
+                                                    </div>
+                                                    <span class="font-semibold text-white">커스텀 메시지</span>
+                                                </div>
+                                                <span><span id="custom-duration-value" class="font-bold text-white">8</span>초</span>
+                                            </div>
+                                            <input type="range" id="custom-duration-slider" min="0" max="60" value="8" class="glass-input w-full">
+                                        </div>
                                     </div>
                                     
-                                    <div class="pt-2 border-t border-white/10 space-y-2">
+                                    <div class="pt-2 border-t border-white/10 space-y-2 mt-4 order-last">
                                         <label class="glass-checkbox-label">
                                             <input type="checkbox" id="always-show-clock" class="glass-checkbox-input" /> 
                                             <span class="glass-checkbox-box"></span>
@@ -1090,7 +1117,7 @@
         const UPDATE_URL = 'https://adk090612.github.io/cast_stanby/';
         const REPO_URL = 'https://github.com/adk090612/cast_stanby';
 
-        let showPastSchedules = false; // 이전 일정 보기 상태 변수
+        let showPastSchedules = false; 
 
         async function checkForUpdates(manual = false) {
             if (!manual) {
@@ -1215,7 +1242,8 @@
         const DEFAULT_LOGO_URL = 'https://daeryun.dge.hs.kr/images/schl/web/daeryunh/common/logo.png';
 
         const SCREENS = ['weather-screen', 'meal-screen', 'schedule-screen', 'custom-text-screen'];
-        let currentScreenIndex = 0;
+        let screenOrder = [0, 1, 2, 3];
+        let currentSeqIndex = 0;
         let currentSettingsView = 'main-menu';
 
         const timeElement = document.getElementById('current-time');
@@ -1433,7 +1461,6 @@
             }
         }
 
-        // 플레이리스트 관리 (중략)
         async function fetchYoutubeInfoAndAdd(url) {
             const videoIdMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&]{11})/);
             if (!videoIdMatch) {
@@ -1602,7 +1629,7 @@
             switchSettingsView('play');
         });
 
-        // ==== 날씨/급식/일정/시계 로직 (기존과 동일) ====
+        // ==== 날씨/급식/일정/시계 로직 ====
         async function fetchManchon3DongWeather() {
             if (!weatherCard) return;
             if (!OPENWEATHER_API_KEY) {
@@ -1802,33 +1829,66 @@
             if (mainCard) mainCard.classList.toggle('no-initial-blur', !enableBlur);
         }
 
-        function transitionToScreen(nextIndex) {
-            const currentElement = currentScreenElements[currentScreenIndex];
-            const nextElement = currentScreenElements[nextIndex];
+        function transitionToScreen(nextSeqIndex) {
+            const currentActual = screenOrder[currentSeqIndex];
+            const nextActual = screenOrder[nextSeqIndex];
+            
+            const currentElement = currentScreenElements[currentActual];
+            const nextElement = currentScreenElements[nextActual];
+            
             currentElement.style.opacity = '0';
             currentElement.style.pointerEvents = 'none';
-            toggleCardBlur(currentScreenIndex, false);
+            toggleCardBlur(currentActual, false);
+            
             setTimeout(() => {
                 currentElement.style.zIndex = '5';
                 nextElement.style.zIndex = '10';
                 nextElement.style.opacity = '1';
                 nextElement.style.pointerEvents = 'auto';
-                toggleCardBlur(nextIndex, true);
+                toggleCardBlur(nextActual, true);
                 
                 // PiP 가시성 업데이트
-                updatePipVisibility(nextIndex);
+                updatePipVisibility(nextActual);
                 
-                currentScreenIndex = nextIndex;
+                currentSeqIndex = nextSeqIndex;
             }, TRANSITION_DURATION);
         }
 
         function startScreenLoop() {
             if (slideTimeout) clearTimeout(slideTimeout);
-            const dur = screenDurations[currentScreenIndex] || DEFAULT_DURATIONS[currentScreenIndex];
+            
+            // 유효한 화면 찾기 (시간이 0보다 큰 화면)
+            let validScreensCount = 0;
+            for(let i=0; i<screenOrder.length; i++) {
+                if(screenDurations[screenOrder[i]] > 0) validScreensCount++;
+            }
+            
+            // 모든 화면이 0초면 기본 5초씩 강제 설정 (무한 루프 방지)
+            if(validScreensCount === 0) {
+                screenDurations = [5000, 5000, 5000, 5000];
+            }
+            
+            const currentActual = screenOrder[currentSeqIndex];
+            let dur = screenDurations[currentActual];
+            
+            if(dur === 0) {
+                dur = 0;
+            }
+
             slideTimeout = setTimeout(() => {
-                const nextIndex = (currentScreenIndex + 1) % SCREENS.length;
-                transitionToScreen(nextIndex);
-                setTimeout(startScreenLoop, TRANSITION_DURATION);
+                let nextSeqIndex = (currentSeqIndex + 1) % screenOrder.length;
+                
+                // 시간이 0인 화면은 건너뛰기
+                while (screenDurations[screenOrder[nextSeqIndex]] === 0 && nextSeqIndex !== currentSeqIndex) {
+                    nextSeqIndex = (nextSeqIndex + 1) % screenOrder.length;
+                }
+                
+                if (nextSeqIndex !== currentSeqIndex) {
+                    transitionToScreen(nextSeqIndex);
+                    setTimeout(startScreenLoop, TRANSITION_DURATION);
+                } else {
+                    startScreenLoop(); // 표시할 화면이 하나뿐이면 화면 전환 없이 루프 유지
+                }
             }, dur);
         }
 
@@ -1902,7 +1962,6 @@
             if (btn) btn.classList.add('active');
         }
 
-        // --- 일정 및 UI 관련 유틸 함수 생략(기존 유지) ---
         function loadSchedules() {
             const storedSchedules = localStorage.getItem('daeryunSchedules');
             if (storedSchedules) {
@@ -2124,6 +2183,28 @@
             element.classList.add(newClass);
         }
 
+        function loadScreenOrder() {
+            const saved = localStorage.getItem('dashboardScreenOrder');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length === 4) {
+                        screenOrder = parsed;
+                    }
+                } catch(e) {}
+            }
+            
+            // DOM 재정렬
+            const list = document.getElementById('screen-order-list');
+            if (list) {
+                const items = Array.from(list.querySelectorAll('.screen-order-item'));
+                screenOrder.forEach(id => {
+                    const el = items.find(item => parseInt(item.getAttribute('data-id')) === id);
+                    if (el) list.appendChild(el);
+                });
+            }
+        }
+
         // --- PiP 관련 기능 구현 ---
         function loadPipSettings() {
             const savedPip = localStorage.getItem('dashboardPipState');
@@ -2203,15 +2284,15 @@
         }
 
         function renderPipMedia() {
-            if (pipState.type === 'img') {
+          if (pipState.type === 'img') {
                 pipYtDisplay.classList.add('hidden');
-                pipImgDisplay.classList.remove('hidden');
-                if (pipState.src) pipImgDisplay.src = pipState.src;
-            } else {
-                pipImgDisplay.classList.add('hidden');
-                pipYtDisplay.classList.remove('hidden');
-                if (pipState.src && isYtApiReady) {
-                    initPipYtPlayer(pipState.src);
+              pipImgDisplay.classList.remove('hidden');
+              if (pipState.src) pipImgDisplay.src = pipState.src;
+         } else {
+             pipImgDisplay.classList.add('hidden');
+             pipYtDisplay.classList.remove('hidden');
+             if (pipState.src && isYtApiReady) {
+                 initPipYtPlayer(pipState.src);
                 }
             }
         }
@@ -2304,22 +2385,6 @@
             }
         });
 
-              // 1. 기존의 renderPipMedia 함수를 안전하게 감싸 크래시를 방지합니다.
-        function renderPipMedia() {
-          if (pipState.type === 'img') {
-                pipYtDisplay.classList.add('hidden');
-              pipImgDisplay.classList.remove('hidden');
-              if (pipState.src) pipImgDisplay.src = pipState.src;
-         } else {
-             pipImgDisplay.classList.add('hidden');
-             pipYtDisplay.classList.remove('hidden');
-             if (pipState.src && isYtApiReady) {
-                 initPipYtPlayer(pipState.src);
-                }
-            }
-        }
-
-        // 2. PiP 토글 및 저장 버튼 로직 수정 (에러 예외처리 추가)
         savePipBtn.addEventListener('click', () => {
          pipState.enabled = pipEnableToggle.checked;
          pipState.tempHidden = false; 
@@ -2331,9 +2396,8 @@
 
          try {
               renderPipMedia();
-                updatePipVisibility(currentScreenIndex);
+              updatePipVisibility(screenOrder[currentSeqIndex]);
 
-              // 만약 유튜브 모드라면 브라우저 API가 호출되지 않게 안전하게 분기
               if (pipState.type === 'yt') {
                   console.log("유튜브 플레이어는 HTML5 네이티브 PiP API를 지원하지 않으므로 커스텀 컨테이너 팝업 모드로 대체 작동합니다.");
                }
@@ -2345,11 +2409,10 @@
          switchSettingsView('main-menu');
         });
 
-        // 3. 브라우저가 requestPictureInPicture 오류를 강제로 뿜는 것을 원천 차단하는 전역 예외 처리 스크립트 추가
         window.addEventListener('unhandledrejection', function (event) {
          if (event.reason && event.reason.name === 'InvalidStateError' && event.reason.message.includes('requestPictureInPicture')) {
                console.warn('유튜브 iFrame에서 발생한 requestPictureInPicture API 무시 처리됨.');
-                event.preventDefault(); // 에러 팝업 및 크래시 방지
+                event.preventDefault(); 
             }
         });
 
@@ -2397,7 +2460,6 @@
                 if(newW < 150) newW = 150;
                 if(newW > window.innerWidth * 0.8) newW = window.innerWidth * 0.8; // 최대 너비 제한
                 pipContainer.style.width = newW + 'px';
-                // 비율 유지는 wrapper의 aspect-ratio 속성에서 자동으로 처리됩니다.
             }
         });
 
@@ -2414,16 +2476,13 @@
             }
         });
 
-        // 숨김 버튼 (X) 처리
         pipCloseBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             pipState.tempHidden = true;
-            updatePipVisibility(currentScreenIndex);
+            updatePipVisibility(screenOrder[currentSeqIndex]);
             
-            // Notification 활용
             addCustomNotification('pip', 'PiP 모드 숨김', 'PiP 미디어가 숨겨졌습니다. 다시 보려면 설정에서 켜주세요.');
 
-            // 미디어 바(하단바)에 임시로 정보 띄우기
             const schoolNameBottom = document.getElementById('school-name-bottom');
             if(schoolNameBottom) {
                 const originalText = schoolNameBottom.textContent;
@@ -2437,8 +2496,10 @@
             }
         });
 
-        // --- 기타 공통 함수들 (기존 유지) ---
+        // --- 기타 공통 함수들 ---
         function loadSettings() {
+            loadScreenOrder();
+            
             const savedBg = localStorage.getItem('dashboardBackground');
             const defaultAnimatedBg = document.getElementById('default-animated-bg');
             if (savedBg) {
@@ -2621,7 +2682,9 @@
         }
 
         function handleDurationChange(screenIndex, e) {
-            const seconds = parseInt(e.target.value, 10) || 5;
+            let seconds = parseInt(e.target.value, 10);
+            if (isNaN(seconds)) seconds = 0;
+            
             if (screenIndex === 0 && weatherDurationValue) weatherDurationValue.textContent = String(seconds);
             if (screenIndex === 1 && mealDurationValue) mealDurationValue.textContent = String(seconds);
             if (screenIndex === 2 && scheduleDurationValue) scheduleDurationValue.textContent = String(seconds);
@@ -2633,7 +2696,11 @@
             if (screenIndex === 3) localStorage.setItem('dashboardDurationCustom', String(seconds));
 
             screenDurations[screenIndex] = seconds * 1000;
-            try { startScreenLoop(); } catch (err) {}
+            
+            if (seconds === 0 && screenOrder[currentSeqIndex] === screenIndex) {
+                 clearTimeout(slideTimeout);
+                 startScreenLoop();
+            }
         }
 
         function resizeAndSaveImage(file, callback, onError) {
@@ -2756,9 +2823,9 @@
             const ONE_HOUR = 60 * 60 * 1000;
             const THREE_HOURS = 3 * 60 * 60 * 1000;
             
-            setInterval(fetchManchon3DongWeather, ONE_HOUR); // 날씨는 1시간 유지
-            setInterval(fetchTodayMeal, THREE_HOURS); // 급식 3시간
-            setInterval(fetchApiSchedules, THREE_HOURS); // 일정 3시간
+            setInterval(fetchManchon3DongWeather, ONE_HOUR); 
+            setInterval(fetchTodayMeal, THREE_HOURS); 
+            setInterval(fetchApiSchedules, THREE_HOURS); 
             setInterval(() => { renderDisplaySchedules(); }, THREE_HOURS);
 
             const togglePastSchedulesBtn = document.getElementById('toggle-past-schedules-btn');
@@ -2980,15 +3047,53 @@
                 sidebarProfile.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sidebarProfile.click(); } });
             }
 
-            currentScreenElements.forEach((el, index) => {
-                el.style.display = 'flex';
-                el.style.opacity = index === 0 ? '1' : '0';
-                el.style.zIndex = index === 0 ? '10' : '5';
-                el.style.pointerEvents = index === 0 ? 'auto' : 'none';
+            // 순서 변경 버튼 이벤트 처리
+            document.addEventListener('click', (e) => {
+                const upBtn = e.target.closest('.order-up-btn');
+                const downBtn = e.target.closest('.order-down-btn');
+                if (upBtn || downBtn) {
+                    const list = document.getElementById('screen-order-list');
+                    const item = (upBtn || downBtn).closest('.screen-order-item');
+                    if (!list || !item) return;
+
+                    if (upBtn && item.previousElementSibling) {
+                        list.insertBefore(item, item.previousElementSibling);
+                    } else if (downBtn && item.nextElementSibling) {
+                        list.insertBefore(item.nextElementSibling, item);
+                    }
+                    
+                    const items = list.querySelectorAll('.screen-order-item');
+                    screenOrder = Array.from(items).map(el => parseInt(el.getAttribute('data-id')));
+                    localStorage.setItem('dashboardScreenOrder', JSON.stringify(screenOrder));
+                    
+                    const currentActual = Array.from(currentScreenElements).findIndex(el => el.style.opacity === '1');
+                    if (currentActual !== -1) {
+                        currentSeqIndex = screenOrder.indexOf(currentActual);
+                        if (currentSeqIndex === -1) currentSeqIndex = 0;
+                    }
+                }
             });
 
-            toggleCardBlur(0, true);
-            updatePipVisibility(0); // 처음 시작할 때 PiP 상태 동기화
+            let firstValidSeqIndex = 0;
+            for(let i=0; i<screenOrder.length; i++) {
+                if(screenDurations[screenOrder[i]] > 0) {
+                    firstValidSeqIndex = i;
+                    break;
+                }
+            }
+            currentSeqIndex = firstValidSeqIndex;
+            const initialActual = screenOrder[currentSeqIndex];
+
+            currentScreenElements.forEach((el, index) => {
+                el.style.display = 'flex';
+                el.style.opacity = index === initialActual ? '1' : '0';
+                el.style.zIndex = index === initialActual ? '10' : '5';
+                el.style.pointerEvents = index === initialActual ? 'auto' : 'none';
+            });
+
+            toggleCardBlur(initialActual, true);
+            updatePipVisibility(initialActual);
+            
             try { startScreenLoop(); } catch (err) {}
             setTimeout(() => { try { checkBackgroundBrightnessAndApply(); } catch (e) {} }, 200);
         }
