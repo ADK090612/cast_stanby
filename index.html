@@ -679,7 +679,26 @@
 :root[data-theme="weather"] #weather-precip{display:block}
 :root:not([data-theme="weather"]) #weather-precip{display:none!important}
 #weather-scene canvas{position:absolute;inset:0;width:100%;height:100%}#weather-sky{position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,var(--sky-top),var(--sky-mid) 53%,var(--sky-low));transition:background 1.2s ease,filter 1.2s ease;filter:brightness(var(--weather-light))}#weather-scene.weather-timeline-running #weather-sky{transition:none}
-#weather-clouds{z-index:2}#weather-stars{z-index:3}#weather-mountains{z-index:4}#weather-grass{z-index:5}
+#weather-aurora{position:absolute;inset:0;z-index:4;overflow:hidden;pointer-events:none;opacity:0;mix-blend-mode:screen;isolation:isolate;transition:opacity 3.4s cubic-bezier(.22,.7,.24,1)}
+:root[data-theme="weather"] #weather-scene.aurora-enabled.aurora-visible #weather-aurora{opacity:.96}
+#weather-aurora::before{content:"";position:absolute;left:-10%;top:5%;width:120%;height:37%;background:radial-gradient(ellipse at 50% 100%,rgba(67,255,194,.3) 0%,rgba(56,231,207,.19) 24%,rgba(77,132,255,.1) 48%,transparent 74%);filter:blur(34px);animation:auroraHorizon 28s ease-in-out infinite alternate;animation-play-state:paused}
+#weather-aurora::after{content:"";position:absolute;left:-9%;top:25%;width:118%;height:16%;background:radial-gradient(ellipse at 34% 68%,rgba(57,255,191,.28),transparent 55%),radial-gradient(ellipse at 67% 36%,rgba(85,210,255,.2),transparent 58%),linear-gradient(180deg,rgba(57,255,191,.03),rgba(57,255,191,.18) 45%,rgba(97,255,225,.4) 70%,rgba(85,190,255,.1));border-radius:48% 52% 24% 20% / 58% 50% 44% 42%;filter:blur(19px);opacity:.72;transform-origin:50% 100%;animation:auroraRibbon 21s ease-in-out infinite alternate;animation-play-state:paused}
+.aurora-sheet{position:absolute;top:0;height:42%;width:138%;left:-19%;transform-origin:50% 100%;filter:blur(15px);mask-image:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.05) 12%,#000 54%,#000 82%,transparent 100%);will-change:transform,opacity;animation-play-state:paused}
+.aurora-sheet-one{opacity:.8;background:linear-gradient(180deg,rgba(65,255,176,0) 0%,rgba(68,255,185,.035) 28%,rgba(64,247,177,.14) 58%,rgba(91,255,204,.34) 86%,rgba(102,237,255,.06) 100%),repeating-linear-gradient(94deg,transparent 0 2.8%,rgba(125,255,202,.06) 3.4%,rgba(96,255,187,.3) 4.3%,rgba(135,255,225,.1) 5.3%,transparent 7.1%,transparent 11%);animation:auroraCurtainOne 23s ease-in-out infinite alternate}
+.aurora-sheet-two{top:1%;height:40%;left:-16%;width:132%;opacity:.65;filter:blur(21px);background:linear-gradient(180deg,rgba(82,197,255,0) 0%,rgba(69,204,231,.035) 22%,rgba(69,204,231,.15) 59%,rgba(136,151,255,.28) 86%,rgba(116,240,255,.04) 100%),repeating-linear-gradient(103deg,transparent 0 4.7%,rgba(127,208,255,.07) 5.4%,rgba(122,235,255,.25) 6.5%,rgba(117,154,255,.09) 8%,transparent 10%,transparent 15%);animation:auroraCurtainTwo 31s ease-in-out infinite alternate}
+.aurora-sheet-three{top:0;height:37%;left:-22%;width:144%;opacity:.48;filter:blur(25px);background:linear-gradient(180deg,rgba(134,121,255,0) 0%,rgba(146,121,255,.025) 23%,rgba(146,113,255,.12) 62%,rgba(116,255,221,.23) 88%,transparent 100%),repeating-linear-gradient(88deg,transparent 0 6.8%,rgba(171,135,255,.055) 7.6%,rgba(139,210,255,.22) 8.6%,rgba(105,255,215,.08) 9.8%,transparent 12%,transparent 18%);animation:auroraCurtainThree 37s ease-in-out infinite alternate}
+:root[data-theme="weather"] #weather-scene.aurora-enabled.aurora-visible .aurora-sheet,:root[data-theme="weather"] #weather-scene.aurora-enabled.aurora-visible #weather-aurora::before,:root[data-theme="weather"] #weather-scene.aurora-enabled.aurora-visible #weather-aurora::after{animation-play-state:running}
+@keyframes auroraCurtainOne{0%{transform:translate3d(-2.2%,0,0) skewX(-5deg) scaleX(1.02)}19%{transform:translate3d(1.5%,1%,0) skewX(3deg) scaleX(1.07)}43%{transform:translate3d(-.7%,0,0) skewX(-2deg) scaleX(.98)}71%{transform:translate3d(2.7%,1.5%,0) skewX(6deg) scaleX(1.09)}100%{transform:translate3d(-1%,0,0) skewX(-4deg) scaleX(1.01)}}
+@keyframes auroraCurtainTwo{0%{transform:translate3d(2%,0,0) skewX(4deg) scaleX(1.04)}27%{transform:translate3d(-1%,1%,0) skewX(-3deg) scaleX(.98)}54%{transform:translate3d(2.4%,0,0) skewX(5deg) scaleX(1.08)}78%{transform:translate3d(-2.5%,1%,0) skewX(-6deg) scaleX(1.01)}100%{transform:translate3d(1%,0,0) skewX(2deg) scaleX(1.06)}}
+@keyframes auroraCurtainThree{0%{transform:translate3d(-1%,0,0) skewX(7deg) scaleX(1.08)}23%{transform:translate3d(2%,1%,0) skewX(0) scaleX(1.02)}49%{transform:translate3d(-2.4%,0,0) skewX(-6deg) scaleX(1.1)}74%{transform:translate3d(1%,1%,0) skewX(4deg) scaleX(.97)}100%{transform:translate3d(3%,0,0) skewX(-5deg) scaleX(1.06)}}
+@keyframes auroraRibbon{0%{transform:translate3d(-1.8%,0,0) skewX(-3deg) scaleX(1);border-radius:48% 52% 24% 20% / 58% 50% 44% 42%}35%{transform:translate3d(1.4%,1%,0) skewX(2deg) scaleX(1.04);border-radius:54% 46% 20% 27% / 48% 62% 38% 52%}69%{transform:translate3d(-.6%,-.5%,0) skewX(-1deg) scaleX(.98);border-radius:45% 55% 26% 17% / 63% 43% 54% 36%}100%{transform:translate3d(2%,0,0) skewX(3deg) scaleX(1.02);border-radius:51% 49% 18% 25% / 52% 57% 42% 47%}}
+@keyframes auroraHorizon{0%{transform:translate3d(-2%,1%,0) scaleX(.94);opacity:.68}37%{transform:translate3d(1%,-.5%,0) scaleX(1.04);opacity:.93}100%{transform:translate3d(2%,-1%,0) scaleX(1.08);opacity:1}}
+@media(prefers-reduced-motion:reduce){.aurora-sheet,#weather-aurora::before,#weather-aurora::after{animation:none!important}}
+
+#weather-stars{z-index:3}#weather-clouds{z-index:5}#weather-mountains{z-index:6}
+#weather-ground{position:absolute;left:0;right:0;top:42%;bottom:0;z-index:7;pointer-events:none;background:linear-gradient(180deg,#234830 0%,#153a24 22%,#081b15 100%)}
+#weather-grass{z-index:8}
+#weather-twilight{position:absolute;inset:0;z-index:9;pointer-events:none;opacity:var(--twilight-glow,0);transition:opacity 2.8s ease-in-out;mix-blend-mode:screen;background:radial-gradient(ellipse 58% 25% at 50% 44%,rgba(255,179,132,.22),rgba(224,130,150,.1) 42%,transparent 100%),radial-gradient(ellipse 30% 15% at 50% 43%,rgba(255,218,169,.16),transparent 72%);filter:blur(8px)}
 #weather-precip{position:fixed;inset:0;width:100%;height:100%;z-index:46;pointer-events:none}
 .weather-water-lens{position:fixed;left:0;top:0;z-index:47;display:block;border-radius:50%;pointer-events:none;transform-origin:center;background:radial-gradient(ellipse at 34% 27%,rgba(255,255,255,.14) 0%,rgba(222,244,255,.045) 19%,rgba(145,203,235,.014) 54%,rgba(255,255,255,.004) 73%,transparent 78%);border:1px solid rgba(232,248,255,.14);box-shadow:inset 0 1px 2px rgba(255,255,255,.18),inset 0 -1px 2px rgba(111,176,211,.08),0 0 3px rgba(208,239,255,.05);-webkit-backdrop-filter:blur(.35px) saturate(1.06) url('#glass-refraction');backdrop-filter:blur(.35px) saturate(1.06) url('#glass-refraction');will-change:transform,opacity}
 :root:not([data-theme="weather"]) .weather-water-lens{display:none}
@@ -723,7 +742,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         </defs>
     </svg>
 
-    <div id="weather-scene" aria-hidden="true"><div id="weather-sky"></div><canvas id="weather-stars"></canvas><canvas id="weather-clouds"></canvas><canvas id="weather-mountains"></canvas><canvas id="weather-grass"></canvas></div>
+    <div id="weather-scene" aria-hidden="true"><div id="weather-sky"></div><div id="weather-aurora"><span class="aurora-sheet aurora-sheet-one"></span><span class="aurora-sheet aurora-sheet-two"></span><span class="aurora-sheet aurora-sheet-three"></span></div><canvas id="weather-stars"></canvas><canvas id="weather-clouds"></canvas><canvas id="weather-mountains"></canvas><div id="weather-ground" aria-hidden="true"></div><canvas id="weather-grass"></canvas><div id="weather-twilight" aria-hidden="true"></div></div>
     <canvas id="weather-precip" aria-hidden="true"></canvas>
     <div id="weather-status">날씨 연동 대기</div>
     <div id="default-animated-bg">
@@ -1047,6 +1066,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                     <div class="flex flex-wrap gap-x-5 gap-y-2">
                                       <label class="glass-checkbox-label"><input type="checkbox" id="weather-reflect-toggle" class="glass-checkbox-input" checked><span class="glass-checkbox-box"></span><span class="text-sm">날씨 반영</span></label>
                                       <label class="glass-checkbox-label"><input type="checkbox" id="weather-time-reflect-toggle" class="glass-checkbox-input" checked><span class="glass-checkbox-box"></span><span class="text-sm">시간대 반영</span></label>
+                                      <label class="glass-checkbox-label"><input type="checkbox" id="weather-aurora-toggle" class="glass-checkbox-input"><span class="glass-checkbox-box"></span><span class="text-sm">오로라 표시</span></label>
                                     </div>
                                     <div class="weather-control-grid">
                                       <label class="block space-y-1 text-sm">연동 방식<select id="weather-mode" class="glass-input w-full"><option value="live">실시간 날씨 연동</option><option value="manual">수동 날씨 조절</option></select></label>
@@ -1060,8 +1080,6 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                       <label class="block space-y-1 text-sm">강수<select id="weather-kind" class="glass-input w-full"><option value="none">없음</option><option value="rain">비</option><option value="snow">눈</option></select></label>
                                     </div>
                                     <div id="weather-timeline-controls" class="weather-control-grid" hidden><label class="block space-y-1 text-sm">타임라인 한 바퀴 (분)<input id="weather-timeline-duration" class="glass-input w-full" type="number" min="1" max="1440" step="1" value="120"></label><p class="text-xs text-white/60 self-center">일출부터 다음 일출까지 하늘이 반복되고, 낮에는 맑음→비→맑음→눈→맑음 순서로 바뀝니다.</p></div>
-                                    <label class="block space-y-1 text-sm">강수 강도 <span id="weather-precip-value">35%</span><input id="weather-precip-amount" type="range" min="0" max="100" value="35" class="glass-input w-full"></label>
-                                    <label class="block space-y-1 text-sm">구름 양 <span id="weather-cloud-value">20%</span><input id="weather-cloud-amount" type="range" min="0" max="100" value="20" aria-label="구름 양 조절" class="glass-input w-full"></label>
                                     <label class="block space-y-1 text-sm">천구 회전 속도 <span id="weather-rotation-value">10%</span><input id="weather-rotation-speed" type="range" min="0" max="300" step="10" value="10" aria-label="천구 회전 속도 조절" class="glass-input w-full"></label>
                                     <p id="weather-detail" class="text-xs text-white/60">Open-Meteo 공개 날씨 API를 사용합니다. 위치 접근 없이 기본 대구 좌표로 시작합니다.</p>
                                 </section>
@@ -3969,16 +3987,16 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
-  const scene = $('weather-scene'), sky = $('weather-sky');
+  const scene = $('weather-scene'), sky = $('weather-sky'), ground = $('weather-ground');
   const starCanvas = $('weather-stars'), cloudCanvas = $('weather-clouds'), mountainCanvas = $('weather-mountains'), grassCanvas = $('weather-grass'), effectCanvas = $('weather-precip');
-  if (!scene || !sky || !starCanvas || !cloudCanvas || !mountainCanvas || !grassCanvas || !effectCanvas) return;
+  if (!scene || !sky || !ground || !starCanvas || !cloudCanvas || !mountainCanvas || !grassCanvas || !effectCanvas) return;
   const starCtx = starCanvas.getContext('2d'), cloudCtx = cloudCanvas.getContext('2d'), mountainCtx = mountainCanvas.getContext('2d'), grassCtx = grassCanvas.getContext('2d'), effectCtx = effectCanvas.getContext('2d');
   const state = {
-    mode: 'live', kind: 'none', amount: 0, cloud: 20, rotationSpeed: 10, time: 'auto', timelineDuration: 120, timelineStartedAt: 0, reflectWeather: true, reflectTime: true, weatherBackup: null, sunrise: '06:00', sunset: '18:00',
+    mode: 'live', kind: 'none', amount: 0, cloud: 20, rotationSpeed: 10, time: 'auto', timelineDuration: 120, timelineStartedAt: 0, reflectWeather: true, reflectTime: true, aurora: false, weatherBackup: null, sunrise: '06:00', sunset: '18:00',
     lat: 35.8714, lon: 128.6014, windSpeed: 8, windDir: 240, temperature: null, weatherTime: null, weatherFetchedAt: 0,
     location: '대구', detail: '', isDay: null, cloudLow: 20, cloudMid: 20, cloudHigh: 20, radiation: null
   };
-  let width = 0, height = 0, dpr = 1, clouds = [], stars = [], shootingStars = [], nextShootingStarAt = 0, starRotation = 0, lastStarRotationAt = 0, rain = [], splashes = [], flakes = [], beads = [], snowPatches = [], snowClumps = [], shelves = [], snowBeds = new Map(), lastShelfScan = 0, lastFrame = 0, lastGrassPhase = '', lastSkyPaint = 0, lastSkyValue = '', lastWeatherVisualSignature = '', weatherRequestId = 0, frameErrorNotified = false, starVisibility = 0, visualPrecipitation = 0, visualPrecipitationKind = 'none';
+  let width = 0, height = 0, dpr = 1, clouds = [], stars = [], shootingStars = [], nextShootingStarAt = 0, starRotation = 0, lastStarRotationAt = 0, rain = [], splashes = [], flakes = [], beads = [], snowPatches = [], snowClumps = [], shelves = [], snowBeds = new Map(), lastShelfScan = 0, lastFrame = 0, lastGrassPhase = '', lastSkyPaint = 0, lastSkyValue = '', lastWeatherVisualSignature = '', twilightWasVisible = false, weatherRequestId = 0, frameErrorNotified = false, starVisibility = 0, visualPrecipitation = 0, visualPrecipitationKind = 'none';
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const rand = (a, b) => a + Math.random() * (b - a);
   function applyAirDrag(p,dt,{gravity,terminal,windX=0,windY=0}) {
@@ -4022,18 +4040,35 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
       const angle=Math.random()*Math.PI*2, radius=maxRadius*Math.sqrt(Math.random());
       const colorRoll=Math.random();
       const color=colorRoll<.08?'190,211,255':colorRoll<.36?'220,232,255':colorRoll<.76?'255,249,237':colorRoll<.96?'255,226,190':'255,190,145';
-      return { x:centerX+Math.cos(angle)*radius, y:centerY+Math.sin(angle)*radius, r:rand(.2,.98), base:rand(.22,.8), color, phase:rand(0,7), speed:rand(.35,1.7), flicker:rand(.3,.9), from:.5, target:.5, transitionStart:0, transitionDuration:600, nextChange:rand(0,900) };
+      return { x:centerX+Math.cos(angle)*radius, y:centerY+Math.sin(angle)*radius, r:rand(.18,.68), base:rand(.62,1), color, phase:rand(0,7), speed:rand(.35,1.7), flicker:rand(.6,1), from:.5, target:.5, transitionStart:0, transitionDuration:600, nextChange:rand(0,900) };
     });
   }
   function weatherVisualState() {
-    if(state.time!=='timeline') return {kind:state.kind,amount:state.amount};
+    if(state.time!=='timeline') return {kind:state.kind,amount:state.kind==='rain'||state.kind==='snow'?50:state.amount};
     const rise=timeNumber(state.sunrise), set=timeNumber(state.sunset), dayLength=(set-rise+24)%24;
     if(dayLength<=0) return {kind:'none',amount:0};
     const dayProgress=((currentHour()-rise+24)%24)/dayLength;
     if(dayProgress>=1) return {kind:'none',amount:0};
     const sequence=['none','rain','none','snow','none'];
     const kind=sequence[Math.min(4,Math.floor(dayProgress*sequence.length))];
-    return {kind,amount:kind==='none'?0:(Number(state.amount)>0?Number(state.amount):35)};
+    return {kind,amount:kind==='none'?0:50};
+  }
+  function mountainCurvature(seed) {
+    const value=Math.sin(seed*12.9898+78.233)*43758.5453;
+    return 1.72+(value-Math.floor(value))*.56;
+  }
+  function fillMountainPeak(x,baseY,rx,ry,color,roundness=1.92) {
+    const centerY=baseY-ry, exponent=clamp(roundness,1.72,2.28), segments=64;
+    mountainCtx.beginPath();
+    for(let i=0;i<=segments;i++) {
+      const angle=Math.PI-(i/segments)*Math.PI;
+      const cosine=Math.cos(angle), sine=Math.sin(angle);
+      const px=x+rx*Math.sign(cosine)*Math.pow(Math.abs(cosine),2/exponent);
+      const py=centerY-ry*Math.pow(Math.max(0,sine),2/exponent);
+      if(i===0) mountainCtx.moveTo(px,py); else mountainCtx.lineTo(px,py);
+    }
+    mountainCtx.lineTo(x+rx,baseY); mountainCtx.lineTo(x-rx,baseY);
+    mountainCtx.closePath(); mountainCtx.fillStyle=color; mountainCtx.fill();
   }
   function drawMountains() {
     mountainCtx.clearRect(0, 0, width, height);
@@ -4048,37 +4083,33 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
       : phase==='sunset'||phase==='sunrise'||phase==='dawn'
         ? ['116,127,140','63,80,87','30,47,48']
         : ['111,139,140','58,88,80','25,51,40'];
-    const alpha=night?[.14,.30,.46]:[.18,.38,.56];
-    // Distant ridge: many tiny, soft ellipses whose centers sit just below the horizon.
+    // Distant ridge: preserve its existing height and ridge layout as overlapping rounded ridges.
     mountainCtx.save();
     mountainCtx.filter='blur(2.2px)';
     for(let i=0;i<33;i++) {
-      const x=width*(i/32), edge=Math.abs(i/32-.5)*2;
+      const x=width*(i/32);
       const rx=width*(.012+(i%5)*.0022), ry=height*(.004+(i%4)*.0015);
       const cy=horizon+height*(.006+(i%3)*.003);
-      mountainCtx.beginPath(); mountainCtx.ellipse(x,cy,rx,ry,0,0,Math.PI*2);
-      mountainCtx.fillStyle='rgba('+palette[0]+','+(.08+edge*.08)+')'; mountainCtx.fill();
+      fillMountainPeak(x,cy+ry,rx,ry,'rgba('+palette[0]+',1)',mountainCurvature(i+1));
     }
     mountainCtx.restore();
-    // Side hills use below-horizon ellipse centers; their crowns rise toward the screen edges.
+    // Side hills keep their existing below-horizon centers and rise toward the screen edges.
     for(const side of [-1,1]) for(let i=0;i<9;i++) {
       const distance=(i+1)/9, offset=.08+distance*.5, x=width*(.5+side*offset);
       const widthSeed=Math.sin((i+1)*(side<0?17.17:29.31)+23.4)*43758.5453;
       const widthVariation=.72+(widthSeed-Math.floor(widthSeed))*.56;
       const rx=width*(.045+distance*.09)*widthVariation, ry=height*(.028+distance*.1);
       const crownOffset=.01-distance*.07, cy=horizon+ry+height*crownOffset;
-      const opacity=alpha[1]*(.42+distance*.38);
-      mountainCtx.beginPath(); mountainCtx.ellipse(x,cy,rx,ry,0,0,Math.PI*2);
-      mountainCtx.fillStyle='rgba('+palette[1]+','+opacity+')'; mountainCtx.fill();
+      fillMountainPeak(x,cy+ry,rx,ry,'rgba('+palette[1]+',1)',mountainCurvature(i+1+(side<0?41:73)));
     }
-    // Near framing hills: broad, low ellipses centered under the horizon; only their crowns remain visible.
+    // Near framing hills keep their broad, low layout while the curved crowns keep a rounded, gently tapered profile.
     const nearHills=[
       [-.035,.116,.205,.115],[-.015,.088,.154,.087],[.055,.073,.126,.070],
       [.945,.071,.126,.068],[1.015,.091,.16,.089],[1.035,.119,.215,.116]
     ];
-    for(const [px,py,rx,ry] of nearHills) {
-      mountainCtx.beginPath(); mountainCtx.ellipse(width*px,horizon+height*py,width*rx,height*ry,0,0,Math.PI*2);
-      mountainCtx.fillStyle='rgba('+palette[2]+','+alpha[2]+')'; mountainCtx.fill();
+    for(let hillIndex=0;hillIndex<nearHills.length;hillIndex++) {
+      const [px,py,rx,ry]=nearHills[hillIndex];
+      fillMountainPeak(width*px,horizon+height*(py+ry),width*rx,height*ry,'rgba('+palette[2]+',1)',mountainCurvature(hillIndex+121));
     }
     // Removed the clipped horizon haze rectangle that created a thick horizontal band.
 
@@ -4095,33 +4126,40 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     mountainCtx.save(); mountainCtx.filter='blur(.45px)';
     for(const [offset,bldgHeight,bldgWidth] of skyline) {
       const x=width*(.5+offset), base=horizon+height*.006, h=bldgHeight*scale, w=bldgWidth*scale;
-      mountainCtx.fillStyle=night?'rgba(163,184,213,.38)':wet?'rgba(137,158,161,.40)':snow?'rgba(164,184,198,.39)':'rgba(91,119,114,.43)';
+      mountainCtx.fillStyle=night?'rgba(163,184,213,1)':wet?'rgba(137,158,161,1)':snow?'rgba(164,184,198,1)':'rgba(91,119,114,1)';
       mountainCtx.fillRect(x,base-h,w,h);
       if(bldgHeight>8) mountainCtx.fillRect(x+w*.4,base-h-1.5*scale,w*.17,1.5*scale);
     }
     mountainCtx.restore();
   }
+  let groundCurrentColors=null;
+  function groundPaletteFor(phase,weather) {
+    const rainWet=weather.kind==='rain'&&weather.amount>0, snowCover=weather.kind==='snow'&&weather.amount>0;
+    const nightScene=phase==='night'||phase==='bluehour', nightSnow=snowCover&&nightScene;
+    const warm=phase==='sunset'||phase==='sunrise'||phase==='dawn';
+    const exposure=.58+(state.skyBrightness??.72)*.42;
+    const stops=nightSnow?[[56,76,103],[32,46,69],[9,16,30]]
+      :snowCover?[[37,70,52],[24,49,38],[8,26,21]]
+      :rainWet?[[17,43,34],[10,35,27],[5,21,18]]
+      :nightScene?[[15,29,44],[8,19,33],[3,9,18]]
+      :warm?[[55,59,43],[28,39,27],[8,27,21]]
+      :[[35,72,48],[21,58,36],[8,27,21]];
+    return stops.map(row=>row.map(value=>Math.round(value*exposure)));
+  }
+  function updateGroundPalette(phase,weather,deltaMs) {
+    const target=groundPaletteFor(phase,weather);
+    if(!groundCurrentColors) groundCurrentColors=target.map(row=>row.slice());
+    else {
+      const blend=1-Math.exp(-Math.max(0,deltaMs)/1750);
+      groundCurrentColors=target.map((row,i)=>row.map((value,j)=>Math.round(groundCurrentColors[i][j]+(value-groundCurrentColors[i][j])*blend)));
+    }
+    const color=row=>`rgb(${row[0]} ${row[1]} ${row[2]})`;
+    ground.style.background=`linear-gradient(180deg,${color(groundCurrentColors[0])} 0%,${color(groundCurrentColors[1])} 22%,${color(groundCurrentColors[2])} 100%)`;
+  }
   function drawGrass() {
     grassCtx.clearRect(0, 0, width, height);
     const weather=weatherVisualState(), horizon = height * .42, rainWet = weather.kind === 'rain' && weather.amount > 0, snowCover = weather.kind === 'snow' && weather.amount > 0;
     const phase=solarPhase(), nightScene=phase==='night'||phase==='bluehour', nightSnow=snowCover && nightScene;
-    const brightness=state.skyBrightness??.72, exposure=.58+brightness*.42;
-    const gradient = grassCtx.createLinearGradient(0, horizon, 0, height);
-    if (nightSnow) {
-      gradient.addColorStop(0,`rgba(${Math.round(56*exposure)},${Math.round(76*exposure)},${Math.round(103*exposure)},.98)`); gradient.addColorStop(.2,`rgba(${Math.round(32*exposure)},${Math.round(46*exposure)},${Math.round(69*exposure)},.99)`); gradient.addColorStop(1,`rgba(${Math.round(9*exposure)},${Math.round(16*exposure)},${Math.round(30*exposure)},1)`);
-    } else if (snowCover) {
-      gradient.addColorStop(0,`rgba(${Math.round(37*exposure)},${Math.round(70*exposure)},${Math.round(52*exposure)},.96)`); gradient.addColorStop(.2,`rgba(${Math.round(24*exposure)},${Math.round(49*exposure)},${Math.round(38*exposure)},.99)`); gradient.addColorStop(1,`rgba(${Math.round(8*exposure)},${Math.round(26*exposure)},${Math.round(21*exposure)},1)`);
-    } else if (rainWet) {
-      gradient.addColorStop(0, `rgba(${Math.round(17*exposure)},${Math.round(43*exposure)},${Math.round(34*exposure)},.96)`); gradient.addColorStop(.22, `rgba(${Math.round(10*exposure)},${Math.round(35*exposure)},${Math.round(27*exposure)},.99)`); gradient.addColorStop(1, `rgba(${Math.round(5*exposure)},${Math.round(21*exposure)},${Math.round(18*exposure)},1)`);
-    } else if (nightScene) {
-      gradient.addColorStop(0,`rgba(${Math.round(15*exposure)},${Math.round(29*exposure)},${Math.round(44*exposure)},.96)`); gradient.addColorStop(.2,`rgba(${Math.round(8*exposure)},${Math.round(19*exposure)},${Math.round(33*exposure)},.99)`); gradient.addColorStop(1,`rgba(${Math.round(3*exposure)},${Math.round(9*exposure)},${Math.round(18*exposure)},1)`);
-    } else {
-      const warm=phase==='sunset'||phase==='sunrise'||phase==='dawn';
-      gradient.addColorStop(0, `rgba(${Math.round((warm?55:35)*exposure)},${Math.round((warm?59:72)*exposure)},${Math.round((warm?43:48)*exposure)},.9)`);
-      gradient.addColorStop(.22, `rgba(${Math.round((warm?28:21)*exposure)},${Math.round((warm?39:58)*exposure)},${Math.round((warm?27:36)*exposure)},.96)`);
-      gradient.addColorStop(1, `rgba(${Math.round(8*exposure)},${Math.round(27*exposure)},${Math.round(21*exposure)},.99)`);
-    }
-    grassCtx.fillStyle = gradient; grassCtx.fillRect(0, horizon, width, height - horizon);
     const count = Math.min(280000, Math.round(width * height / 5.2));
     // Reuse a deterministic random sequence so redraws only recolor the grass; blade positions stay fixed.
     let grassSeed=((Math.round(width)*73856093)^(Math.round(height)*19349663))>>>0;
@@ -4141,15 +4179,6 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
       const range=ranges[shade], tone=(band+.5)/bands, alpha=snowCover?(nightSnow?.24:.22)+tone*(nightSnow?.24:.27):(nightScene?.13:.22)+tone*(nightScene?.2:.38);
       const color=range.map(v=>Math.round(v+(band-3.5)*(snowCover?1.1:shade===1?1.4:.8))).join(',');
       grassCtx.strokeStyle=`rgba(${color},${alpha})`; grassCtx.lineWidth=(.28+widthBand*.22)*(.32+tone*.68); grassCtx.stroke(paths[(band*shades+shade)*widths+widthBand]);
-    }
-    if(['dawn','sunrise','sunset'].includes(phase)) {
-      const setting=phase==='sunset', centerX=width*.5, glowY=horizon+height*.035;
-      const twilight=grassCtx.createRadialGradient(centerX,glowY,0,centerX,glowY,width*.48);
-      twilight.addColorStop(0,setting?'rgba(255,151,79,.38)':'rgba(255,202,139,.30)');
-      twilight.addColorStop(.22,setting?'rgba(244,112,89,.22)':'rgba(255,174,143,.17)');
-      twilight.addColorStop(.52,setting?'rgba(180,91,112,.09)':'rgba(202,128,143,.07)');
-      twilight.addColorStop(1,'rgba(132,78,93,0)');
-      grassCtx.fillStyle=twilight; grassCtx.fillRect(0,horizon,width,height-horizon);
     }
     if (rainWet) {
       const sheen = grassCtx.createLinearGradient(0,horizon,0,height);
@@ -4193,6 +4222,16 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     if (hour > set + .38 && hour <= set + 1.25) return 'bluehour';
     if (hour > set - 1.1 && hour <= set + .38) return 'sunset';
     return 'day';
+  }
+  function twilightStrength() {
+    if(state.time==='auto'&&!state.reflectTime) return 0;
+    if(state.time!=='auto'&&state.time!=='timeline') return ['dawn','sunrise','sunset'].includes(state.time)?1:0;
+    const hour=currentHour(), rise=timeNumber(state.sunrise), set=timeNumber(state.sunset);
+    const delta=event=>{ let value=hour-event; if(value>12)value-=24; if(value< -12)value+=24; return value; };
+    const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);};
+    const fromSunrise=smooth(-1.05,-.2,delta(rise))*(1-smooth(.9,1.7,delta(rise)));
+    const fromSunset=smooth(-1.9,-.85,delta(set))*(1-smooth(.5,1.3,delta(set)));
+    return Math.max(fromSunrise,fromSunset);
   }
   function continuousSkyPalette() {
     const palettes = {
@@ -4319,8 +4358,11 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
       const x=vanishingX+offsetX*rotationCos-offsetY*rotationSin;
       const y=vanishingY+offsetX*rotationSin+offsetY*rotationCos;
       const milky = Math.exp(-Math.pow((y / height - (.32 + x / width * .13)) / .1, 2));
-      starCtx.fillStyle = `rgba(${star.color},${clamp((star.base * .72 + twinkle * .42 + milky * .05) * (1-cloudiness)*starGain,0,.98)})`;
-      starCtx.beginPath(); starCtx.arc(x, y, star.r * (.9 + twinkle * .45), 0, Math.PI * 2); starCtx.fill();
+      const alpha=clamp((star.base*1.35+twinkle*.95+milky*.15)*(1-cloudiness*.5)*starGain,0,1);
+      const radius=star.r*(.95+twinkle*.6);
+      if(starIndex%13===0) { starCtx.fillStyle=`rgba(${star.color},${alpha*.24})`; starCtx.beginPath(); starCtx.arc(x,y,radius*2.7,0,Math.PI*2); starCtx.fill(); }
+      starCtx.fillStyle = `rgba(${star.color},${alpha})`;
+      starCtx.beginPath(); starCtx.arc(x,y,radius,0,Math.PI*2); starCtx.fill();
     }
     // Stars remain individual points; no constellation guide lines are drawn.
     drawShootingStars(now);
@@ -4649,7 +4691,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     }
     snowClumps=snowClumps.filter(c=>c.age<10000);
   }
-  function fadeWeatherFrame() {
+  function fadeWeatherFrame(includePrecipitation=true) {
     const duration=window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:6000;
     if(!duration) return;
     const snapshot=document.createElement('div');
@@ -4665,13 +4707,16 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
       if(copy.width&&copy.height) copy.getContext('2d').drawImage(source,0,0,copy.width,copy.height);
       snapshot.appendChild(copy);
     }
-    const precipitation=document.createElement('canvas');
-    precipitation.width=effectCanvas.width; precipitation.height=effectCanvas.height;
-    precipitation.style.cssText='position:fixed;inset:0;width:100%;height:100%;z-index:46;pointer-events:none;opacity:1;transition:opacity '+duration+'ms ease;';
-    if(precipitation.width&&precipitation.height) precipitation.getContext('2d').drawImage(effectCanvas,0,0,precipitation.width,precipitation.height);
-    document.body.append(snapshot,precipitation);
-    requestAnimationFrame(()=>{snapshot.style.opacity='0';precipitation.style.opacity='0';});
-    window.setTimeout(()=>{snapshot.remove();precipitation.remove();},duration+80);
+    const precipitation=includePrecipitation?document.createElement('canvas'):null;
+    if(precipitation) {
+      precipitation.width=effectCanvas.width; precipitation.height=effectCanvas.height;
+      precipitation.style.cssText='position:fixed;inset:0;width:100%;height:100%;z-index:46;pointer-events:none;opacity:1;transition:opacity '+duration+'ms ease;';
+      if(precipitation.width&&precipitation.height) precipitation.getContext('2d').drawImage(effectCanvas,0,0,precipitation.width,precipitation.height);
+      document.body.appendChild(precipitation);
+    }
+    document.body.appendChild(snapshot);
+    requestAnimationFrame(()=>{snapshot.style.opacity='0';if(precipitation) precipitation.style.opacity='0';});
+    window.setTimeout(()=>{snapshot.remove();precipitation?.remove();},duration+80);
   }
   function frame(now) {
     if(width<1||height<1){requestAnimationFrame(frame);return;}
@@ -4682,24 +4727,31 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     }
     try {
     const weather=weatherVisualState();
+    const twilight=twilightStrength(), twilightActive=twilight>0||twilightWasVisible;
+    scene.style.setProperty('--twilight-glow',twilight.toFixed(3)); twilightWasVisible=twilight>0;
     const visualSignature=`${state.time==='timeline'?'timeline':solarPhase()}:${weather.kind}:${state.reflectTime}`;
-    if(lastWeatherVisualSignature && visualSignature!==lastWeatherVisualSignature) fadeWeatherFrame();
+    const precipitationEnded=visualPrecipitationKind!=='none'&&weather.kind!==visualPrecipitationKind;
+    if(lastWeatherVisualSignature && visualSignature!==lastWeatherVisualSignature && !state.aurora && !twilightActive) fadeWeatherFrame(!precipitationEnded);
     lastWeatherVisualSignature=visualSignature;
-    const phase = setSky(), wind = windVector(), cloudiness = clamp(state.cloud/100,0,1);
+    const phase = setSky(), wind = windVector(), cloudiness = (weather.kind==='rain'||weather.kind==='snow') ? .1 : clamp(state.cloud/100,0,1);
+    updateGroundPalette(phase,weather,dt*16.67);
+    const auroraPhase=['night','dawn','sunrise','sunset','bluehour'].includes(phase);
+    scene.classList.toggle('aurora-enabled',state.aurora===true);
+    scene.classList.toggle('aurora-visible',state.aurora===true&&auroraPhase);
     const grassSignature=`${phase}:${Math.round((state.skyBrightness??0)*100)}:${weather.kind}:${weather.amount}`;
     if(grassSignature!==lastGrassPhase) { drawMountains(); drawGrass(); lastGrassPhase=grassSignature; }
     const targetStarVisibility=phase==='night'?1:phase==='bluehour'?.38:0;
-    starVisibility += (targetStarVisibility-starVisibility)*Math.min(1,dt/180);
+    if(phase==='day') { starVisibility=0; shootingStars=[]; nextShootingStarAt=0; lastStarRotationAt=0; }
+    else starVisibility += (targetStarVisibility-starVisibility)*Math.min(1,dt/180);
     starCtx.clearRect(0,0,width,height); cloudCtx.clearRect(0,0,width,height);
     if (starVisibility>.003) drawNight(now,cloudiness,starVisibility);
     drawClouds(wind,cloudiness,dt);
     effectCtx.clearRect(0,0,width,height);
     const targetKind=weather.kind==='rain'||weather.kind==='snow'?weather.kind:'none';
-    if(targetKind!=='none' && targetKind!==visualPrecipitationKind) { visualPrecipitationKind=targetKind; visualPrecipitation=0; }
-    const targetAmount=targetKind==='none'?0:clamp(Number(weather.amount)||0,0,100);
-    const amountStep=dt*0.22; // About 7.5 seconds from a dry start to full intensity.
-    visualPrecipitation+=clamp(targetAmount-visualPrecipitation,-amountStep,amountStep);
-    if(targetKind==='none' && visualPrecipitation<=amountStep) { visualPrecipitation=0; visualPrecipitationKind='none'; }
+    if(targetKind==='none') {
+      if(visualPrecipitationKind!=='none') { rain=[]; flakes=[]; clearAccumulatedWeather(); }
+      visualPrecipitation=0; visualPrecipitationKind='none';
+    } else { visualPrecipitationKind=targetKind; visualPrecipitation=50; }
     try { scanSurfaces(now); } catch(error) { shelves=[]; clearAccumulatedWeather(); if(!frameErrorNotified) { console.warn('강수 표면 상태를 초기화하고 애니메이션을 계속합니다.',error); frameErrorNotified=true; } }
     const intensity = visualPrecipitation/100;
     if (visualPrecipitationKind === 'rain' && intensity > 0) { flakes = []; snowPatches = []; snowClumps=[]; drawRain(wind,intensity,dt); }
@@ -4711,15 +4763,14 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
   function persist() { try { localStorage.setItem('standbyWeather',JSON.stringify(state)); } catch (e) { console.warn('날씨 설정 저장 실패',e); } }
   function sync() {
     const assign = (id,value) => { const el=$(id); if(el) el.value=value; };
-    const displayedAmount=state.time==='timeline'&&Number(state.amount)<=0?35:state.amount;
-    assign('weather-mode',state.mode); assign('weather-kind',state.kind); assign('weather-time',state.time); assign('weather-timeline-duration',state.timelineDuration); assign('weather-precip-amount',displayedAmount); assign('weather-cloud-amount',state.cloud); assign('weather-rotation-speed',state.rotationSpeed); assign('weather-lat',state.lat); assign('weather-lon',state.lon); assign('weather-location',state.location||'대구');
+    assign('weather-mode',state.mode); assign('weather-kind',state.kind); assign('weather-time',state.time); assign('weather-timeline-duration',state.timelineDuration); assign('weather-rotation-speed',state.rotationSpeed); assign('weather-lat',state.lat); assign('weather-lon',state.lon); assign('weather-location',state.location||'대구');
     if ($('weather-timeline-controls')) $('weather-timeline-controls').hidden=state.time!=='timeline';
     if ($('weather-reflect-toggle')) $('weather-reflect-toggle').checked=state.reflectWeather;
     if ($('weather-time-reflect-toggle')) $('weather-time-reflect-toggle').checked=state.reflectTime;
-    if ($('weather-precip-value')) $('weather-precip-value').textContent=displayedAmount+'%';
-    if ($('weather-cloud-value')) $('weather-cloud-value').textContent=state.cloud+'%';
+    if ($('weather-aurora-toggle')) $('weather-aurora-toggle').checked=state.aurora;
     if ($('weather-rotation-value')) $('weather-rotation-value').textContent=state.rotationSpeed+'%';
-    if ($('weather-status')) $('weather-status').textContent=`${state.location||'대구'} · ${state.kind==='rain'?'비':state.kind==='snow'?'눈':'맑음'} · 구름 ${state.cloud}%`;
+    const statusWeather=weatherVisualState(), statusCloud=(statusWeather.kind==='rain'||statusWeather.kind==='snow')?10:state.cloud;
+    if ($('weather-status')) $('weather-status').textContent=`${state.location||'대구'} · ${statusWeather.kind==='rain'?'비':statusWeather.kind==='snow'?'눈':'맑음'} · 구름 ${statusCloud}%`;
     if ($('sun-times')) $('sun-times').textContent=`일출 ${state.sunrise} · 일몰 ${state.sunset}`;
     if ($('weather-detail')) $('weather-detail').textContent=state.detail||'Open-Meteo 공개 날씨 API를 사용합니다.';
   }
@@ -4740,19 +4791,18 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         const snowMm=Math.max(0,Number(c.snowfall)||0), rainMm=Math.max(0,Number(c.rain)||0), showersMm=Math.max(0,Number(c.showers)||0), totalMm=Math.max(0,Number(c.precipitation)||0);
         const previousKind=state.kind; state.kind=(snowMm>0||snowCodes.includes(code))?'snow':(rainMm>0||showersMm>0||totalMm>0||wetCodes.includes(code))?'rain':'none';
         if(previousKind!==state.kind) clearAccumulatedWeather();
-        const measuredMm=state.kind==='snow'?snowMm:Math.max(rainMm,showersMm,totalMm);
-        state.amount=state.kind==='none'?0:clamp(Math.round(18+Math.sqrt(measuredMm)*28),24,100);
+        state.amount=state.kind==='none'?0:70; if(state.kind!=='none') state.cloud=10;
       }
       lastSkyValue=''; setSky(); drawGrass();
       state.location=$('weather-location')?.value.trim()||'현재 위치';
       state.detail=`${Number(c.temperature_2m).toFixed(1)}°C · 구름 ${Number(c.cloud_cover??25)}% · 강수 ${Number(c.precipitation||0).toFixed(1)}mm · 풍속 ${Number(c.wind_speed_10m??8)}km/h · 풍향 ${Number(c.wind_direction_10m??240)}°`;
       persist(); sync();
-    } catch(error) { if($('weather-detail')) $('weather-detail').textContent='날씨 정보를 가져오지 못했습니다. 네트워크를 확인하거나 수동 조절 모드를 사용하세요.'; console.warn('날씨 API 요청 실패',error); }
+    } catch(error) { if(requestId!==weatherRequestId||state.mode!==requestedMode) return; if($('weather-detail')) $('weather-detail').textContent='날씨 정보를 가져오지 못했습니다. 네트워크를 확인하거나 수동 조절 모드를 사용하세요.'; console.warn('날씨 API 요청 실패',error); }
   }
   function init() {
     try { const saved=JSON.parse(localStorage.getItem('standbyWeather')||'{}'); Object.assign(state,saved); } catch {}
-    state.reflectWeather=state.reflectWeather!==false; state.reflectTime=state.reflectTime!==false;
-    state.kind=['rain','snow'].includes(state.kind)?state.kind:'none'; state.amount=clamp(Number.isFinite(Number(state.amount))?Number(state.amount):0,0,100);
+    state.reflectWeather=state.reflectWeather!==false; state.reflectTime=state.reflectTime!==false; state.aurora=state.aurora===true;
+    state.kind=['rain','snow'].includes(state.kind)?state.kind:'none'; state.amount=clamp(Number.isFinite(Number(state.amount))?Number(state.amount):0,0,100); if(state.kind!=='none'){state.amount=50;state.cloud=10;}
     state.rotationSpeed=clamp(Number.isFinite(Number(state.rotationSpeed))?Number(state.rotationSpeed):10,0,300);
     state.timelineDuration=clamp(Number.isFinite(Number(state.timelineDuration))?Number(state.timelineDuration):120,1,1440);
     if(state.time==='timeline'&&!Number(state.timelineStartedAt)) state.timelineStartedAt=Date.now();
@@ -4772,17 +4822,15 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
       }
     });
     $('weather-time-reflect-toggle')?.addEventListener('change',e=>{ state.reflectTime=e.target.checked; lastSkyValue=''; setSky(true); drawMountains(); drawGrass(); persist(); sync(); });
+    $('weather-aurora-toggle')?.addEventListener('change',e=>{ state.aurora=e.target.checked; scene.classList.toggle('aurora-enabled',state.aurora); persist(); sync(); });
     $('weather-kind')?.addEventListener('change',e=>{ weatherRequestId++;
       if(state.kind!==e.target.value) clearAccumulatedWeather(); state.mode='manual'; state.kind=e.target.value;
-      if(state.kind!=='none'&&state.amount===0) state.amount=35;
+      if(state.kind==='rain'||state.kind==='snow'){state.amount=50;state.cloud=10;}else state.amount=0;
       if($('weather-mode')) $('weather-mode').value='manual';
-      if($('weather-precip-amount')) $('weather-precip-amount').value=state.amount;
       lastSkyValue=''; setSky(); drawGrass(); persist(); sync();
     });
     $('weather-time')?.addEventListener('change',e=>{ weatherRequestId++; state.time=e.target.value; state.mode='manual'; state.timelineStartedAt=state.time==='timeline'?Date.now():0; if($('weather-mode')) $('weather-mode').value='manual'; lastSkyValue=''; setSky(true); drawMountains(); drawGrass(); persist(); sync(); });
     $('weather-timeline-duration')?.addEventListener('change',e=>{ state.timelineDuration=clamp(Number(e.target.value)||120,1,1440); e.target.value=state.timelineDuration; if(state.time==='timeline') state.timelineStartedAt=Date.now(); lastSkyValue=''; setSky(true); drawMountains(); drawGrass(); persist(); sync(); });
-    $('weather-precip-amount')?.addEventListener('input',e=>{ weatherRequestId++; state.mode='manual'; if($('weather-mode')) $('weather-mode').value='manual'; state.amount=Number(e.target.value); if($('weather-precip-value')) $('weather-precip-value').textContent=state.amount+'%'; lastSkyValue=''; setSky(); drawGrass(); persist(); sync(); });
-    $('weather-cloud-amount')?.addEventListener('input',e=>{ weatherRequestId++; state.mode='manual'; if($('weather-mode')) $('weather-mode').value='manual'; state.cloud=Number(e.target.value); if($('weather-cloud-value')) $('weather-cloud-value').textContent=state.cloud+'%'; lastSkyValue=''; setSky(); persist(); sync(); });
     $('weather-rotation-speed')?.addEventListener('input',e=>{
       const now=performance.now();
       if(lastStarRotationAt) starRotation+=(now-lastStarRotationAt)/90000*Math.PI*2*(state.rotationSpeed/100);
