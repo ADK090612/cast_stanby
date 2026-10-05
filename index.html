@@ -2204,20 +2204,23 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         function fetchManchon3DongWeather() { return withRegionLoading('weather-screen', '날씨 정보를 불러오는 중', fetchManchon3DongWeatherRequest); }
 
         const temperatureColorStops = [[-20,37,99,235],[0,96,165,250],[12,34,197,94],[24,250,204,21],[40,239,68,68]];
-        function temperatureColor(value) {
-            const temperature=Number(value);
-            if(!Number.isFinite(temperature)) return '#ffffff';
-            if(temperature<=temperatureColorStops[0][0]) return '#'+temperatureColorStops[0].slice(1).map(channel=>channel.toString(16).padStart(2,'0')).join('');
-            for(let i=1;i<temperatureColorStops.length;i++) {
-                const upper=temperatureColorStops[i];
-                if(temperature<=upper[0]) {
-                    const lower=temperatureColorStops[i-1], blend=(temperature-lower[0])/(upper[0]-lower[0]);
+        const windSpeedColorStops = [[0,34,197,94],[3,250,204,21],[8,249,115,22],[18,239,68,68]];
+        const humidityColorStops = [[0,249,115,22],[25,250,204,21],[50,34,197,94],[72,56,189,248],[100,59,130,246]];
+        function interpolateWeatherColor(value, stops) {
+            const amount=Number(value);
+            if(!Number.isFinite(amount)) return '#ffffff';
+            const hexColor=stop=>'#'+stop.slice(1).map(channel=>channel.toString(16).padStart(2,'0')).join('');
+            if(amount<=stops[0][0]) return hexColor(stops[0]);
+            for(let i=1;i<stops.length;i++) {
+                const upper=stops[i];
+                if(amount<=upper[0]) {
+                    const lower=stops[i-1], blend=(amount-lower[0])/(upper[0]-lower[0]);
                     return '#'+[1,2,3].map(channel=>Math.round(lower[channel]+(upper[channel]-lower[channel])*blend).toString(16).padStart(2,'0')).join('');
                 }
             }
-            const hottest=temperatureColorStops[temperatureColorStops.length-1];
-            return '#'+hottest.slice(1).map(channel=>channel.toString(16).padStart(2,'0')).join('');
+            return hexColor(stops[stops.length-1]);
         }
+        const temperatureColor=value=>interpolateWeatherColor(value,temperatureColorStops);
 
         function renderWeather(data, locationName = '') {
             const exactTemp = Number(data.main.temp);
@@ -2225,13 +2228,12 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             const temp = Math.round(exactTemp);
             const feels = Math.round(data.main.feels_like);
             const humidity = data.main.humidity;
-            const wind = (data.wind && data.wind.speed) ? data.wind.speed : null;
+            const wind = Number.isFinite(Number(data.wind?.speed)) ? Number(data.wind.speed) : null;
             const description = data.weather && data.weather[0] ? data.weather[0].description : '';
             const icon = data.weather && data.weather[0] ? data.weather[0].icon : '01d';
             const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
-            const weatherMain=String(data.weather?.[0]?.main||'').toLowerCase();
-            const conditionColor=({clear:'#facc15',clouds:'#cbd5e1',drizzle:'#7dd3fc',rain:'#38bdf8',snow:'#bfdbfe',thunderstorm:'#c4b5fd',mist:'#a5b4fc',smoke:'#a5b4fc',haze:'#a5b4fc',dust:'#fcd34d',fog:'#a5b4fc',sand:'#fcd34d',ash:'#d1d5db',squall:'#67e8f9',tornado:'#c4b5fd'})[weatherMain]||temperatureColor(temp);
-            const temperatureTextColor=temperatureColor(exactTemp), feelsTextColor=temperatureColor(exactFeels), humidityTextColor=humidity>=80?'#7dd3fc':conditionColor;
+            const conditionColor='#ffffff';
+            const temperatureTextColor=temperatureColor(exactTemp), feelsTextColor=temperatureColor(exactFeels), humidityTextColor=interpolateWeatherColor(humidity,humidityColorStops), windTextColor=wind===null?conditionColor:interpolateWeatherColor(wind,windSpeedColorStops);
 
             weatherCard.innerHTML = `
                 <p class="text-xl sm:text-2xl font-semibold text-gray-200 mb-4">현재 위치: ${locationName}</p>
@@ -2247,7 +2249,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                         <p class="text-xl font-semibold mb-2 text-gray-200">오늘의 예보</p>
                         <div class="text-lg flex justify-between gap-4"><span>체감온도:</span><span class="weather-dynamic-color font-bold text-red-400" style="--weather-dynamic-color:${feelsTextColor}">${feels}°C</span></div>
                         <div class="text-lg flex justify-between gap-4"><span>습도:</span><span class="weather-dynamic-color font-bold text-blue-400" style="--weather-dynamic-color:${humidityTextColor}">${humidity}%</span></div>
-                        <p class="weather-dynamic-color text-md text-gray-300 pt-2" style="--weather-dynamic-color:${conditionColor}">${wind !== null ? `풍속: ${wind} m/s` : ''}</p>
+                        <p class="weather-dynamic-color text-md text-gray-300 pt-2" style="--weather-dynamic-color:${windTextColor}">${wind !== null ? `풍속: ${wind} m/s` : ''}</p>
                     </div>
                 </div>
             `;
