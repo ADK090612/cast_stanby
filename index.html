@@ -310,6 +310,10 @@
         ::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.15); border-radius: 999px; border: 3px solid transparent; background-clip: content-box; backdrop-filter: blur(4px); }
         ::-webkit-scrollbar-thumb:hover { background-color: rgba(255, 255, 255, 0.3); }
 
+        #schedule-screen > div:first-of-type > .glass-card { overflow: hidden !important; }
+        #schedule-screen .schedule-list-container { min-height: 0; scrollbar-width: none; -ms-overflow-style: none; }
+        #schedule-screen .schedule-list-container::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
         .glass-checkbox-input:checked + .glass-checkbox-box {
             background: linear-gradient(145deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
             border-color: rgba(255, 255, 255, 0.3);
@@ -616,9 +620,9 @@
 :root[data-theme="weather"][data-weather-design="modern"] #current-date,
         :root[data-theme="weather"][data-weather-design="modern"] #current-time { display:none; }
         :root[data-theme="weather"][data-weather-design="modern"] #weather-modern-clock { display:flex; flex-direction:column; position:fixed; left:calc(var(--safe-left) + clamp(4px,.5vw,10px)); top:auto; bottom:calc(100vh - var(--weather-modern-horizon,42vh)); z-index:15; transform:none; align-items:stretch; width:max-content; gap:0; color:rgba(255,255,255,.54)!important; font-size:clamp(10.5rem,22vw,24rem); font-weight:800; line-height:.9; letter-spacing:-.055em; text-shadow:0 3px 16px rgba(0,0,0,.42)!important; white-space:nowrap; }
-        :root[data-theme="weather"][data-weather-design="modern"] .weather-modern-clock-face { display:flex; align-items:baseline; gap:.1em; transform:translateY(.08em); }
+        :root[data-theme="weather"][data-weather-design="modern"] .weather-modern-clock-face { display:flex; align-items:flex-end; gap:.1em; transform:translateY(.08em); }
         :root[data-theme="weather"][data-weather-design="modern"] #weather-modern-seconds { font-size:.34em; font-weight:800; letter-spacing:-.025em; opacity:.55; }
-        :root[data-theme="weather"][data-weather-design="modern"] #weather-modern-date { display:block; position:absolute; left:calc(100% + .18em); bottom:0; width:auto; text-align:left; transform:none; color:rgba(255,255,255,.54)!important; font-size:clamp(1.5rem,3vw,2.7rem); font-weight:800; line-height:1; letter-spacing:.025em; text-shadow:0 2px 12px rgba(0,0,0,.4)!important; white-space:nowrap; }
+        :root[data-theme="weather"][data-weather-design="modern"] #weather-modern-date { display:block; position:fixed; left:auto; right:calc(var(--safe-right) + clamp(4px,.5vw,10px)); bottom:calc(100vh - var(--weather-modern-horizon,42vh) - .08em); width:auto; text-align:right; transform:none; color:rgba(255,255,255,.54)!important; font-size:clamp(1.5rem,3vw,2.7rem); font-weight:800; line-height:1; letter-spacing:.025em; text-shadow:0 2px 12px rgba(0,0,0,.4)!important; white-space:nowrap; }
         
         :root[data-theme="weather"][data-weather-design="modern"] #dynamic-bottom-bar { position:fixed!important; left:calc(var(--safe-left) + clamp(16px,3vw,48px))!important; right:auto!important; bottom:calc(var(--safe-bottom) + 20px)!important; transform:none!important; margin-left:0!important; }
         @media (max-width:720px) {
@@ -641,6 +645,8 @@
 :root[data-theme="weather"] body, :root[data-theme="weather"] body * { color:#fff !important; text-shadow:0 2px 7px rgba(0,0,0,.9),0 0 16px rgba(0,0,0,.55) !important; }
 .weather-dynamic-color { color:var(--weather-dynamic-color) !important; text-shadow:0 2px 6px rgba(0,0,0,.82) !important; }
 :root[data-theme="weather"] #weather-screen .weather-dynamic-color { color:var(--weather-dynamic-color) !important; text-shadow:0 2px 6px rgba(0,0,0,.92),0 0 12px rgba(0,0,0,.6) !important; }
+:root[data-theme="weather"][data-weather-design="simple"] #simple-weather-temperature { color:var(--weather-dynamic-color)!important; text-shadow:0 2px 8px rgba(0,0,0,.72)!important; }
+#simple-weather-temperature, #weather-current-temperature { transition:color .7s ease; }
 </style>
     <!-- YouTube media integration disabled: video and music features are removed from the standby UI. -->
     <script>
@@ -695,17 +701,17 @@
 @keyframes auroraHorizon{0%{transform:translate3d(-2%,1%,0) scaleX(.94);opacity:.68}37%{transform:translate3d(1%,-.5%,0) scaleX(1.04);opacity:.93}100%{transform:translate3d(2%,-1%,0) scaleX(1.08);opacity:1}}
 @media(prefers-reduced-motion:reduce){.aurora-sheet,#weather-aurora::before,#weather-aurora::after{animation:none!important}}
 
-#weather-stars{z-index:3}#weather-clouds{z-index:5}#weather-mountains{z-index:6}
+#weather-stars{z-index:3}#weather-celestial{z-index:4}#weather-clouds{z-index:5}#weather-mountains{z-index:6}
 #weather-ground{position:absolute;left:0;right:0;top:42%;bottom:0;z-index:7;pointer-events:none;background:linear-gradient(180deg,#234830 0%,#153a24 22%,#081b15 100%)}
 #weather-grass{z-index:8}
-#weather-twilight{position:absolute;inset:0;z-index:9;pointer-events:none;opacity:var(--twilight-glow,0);transition:opacity 2.8s ease-in-out;mix-blend-mode:screen;background:radial-gradient(ellipse 58% 25% at 50% 44%,rgba(255,179,132,.22),rgba(224,130,150,.1) 42%,transparent 100%),radial-gradient(ellipse 30% 15% at 50% 43%,rgba(255,218,169,.16),transparent 72%);filter:blur(8px)}
+#weather-twilight{position:absolute;inset:0;z-index:9;pointer-events:none;opacity:var(--twilight-glow,0);transition:opacity 1.2s ease-in-out;mix-blend-mode:screen;background:radial-gradient(ellipse 34% 18% at var(--twilight-x,50%) var(--twilight-y,44%),rgba(var(--twilight-warmth,255,191,143),.3),rgba(224,130,150,.12) 43%,transparent 100%),radial-gradient(ellipse 72% 28% at var(--twilight-x,50%) var(--twilight-y,44%),rgba(255,218,169,.13),transparent 74%);filter:blur(10px)}
 #weather-precip{position:fixed;inset:0;width:100%;height:100%;z-index:46;pointer-events:none}
 .weather-water-lens{position:fixed;left:0;top:0;z-index:47;display:block;border-radius:50%;pointer-events:none;transform-origin:center;background:radial-gradient(ellipse at 34% 27%,rgba(255,255,255,.14) 0%,rgba(222,244,255,.045) 19%,rgba(145,203,235,.014) 54%,rgba(255,255,255,.004) 73%,transparent 78%);border:1px solid rgba(232,248,255,.14);box-shadow:inset 0 1px 2px rgba(255,255,255,.18),inset 0 -1px 2px rgba(111,176,211,.08),0 0 3px rgba(208,239,255,.05);-webkit-backdrop-filter:blur(.35px) saturate(1.06) url('#glass-refraction');backdrop-filter:blur(.35px) saturate(1.06) url('#glass-refraction');will-change:transform,opacity}
 :root:not([data-theme="weather"]) .weather-water-lens{display:none}
 body.low-performance-mode .weather-water-lens{-webkit-backdrop-filter:blur(.7px) saturate(1.2);backdrop-filter:blur(.7px) saturate(1.2)}
 #weather-status{display:none;position:fixed;left:1rem;bottom:1rem;z-index:61;padding:.45rem .8rem;border-radius:999px;background:rgba(10,23,35,.3);color:#fff;font-size:.75rem;backdrop-filter:blur(8px);pointer-events:none}
 #weather-timeline-controls[hidden]{display:none!important}.weather-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}.weather-settings-panel .weather-control-grid>label{text-align:center}.weather-settings-panel .weather-control-grid .glass-input:not([type="range"]){text-align:center;text-align-last:center}.weather-settings-panel>.glass-checkbox-label{justify-content:center}@media(max-width:700px){.weather-control-grid{grid-template-columns:1fr}}
-body.low-performance-mode #weather-scene canvas{display:none}body.low-performance-mode #weather-scene #weather-sky{display:block}body.low-performance-mode #weather-precip{display:block;opacity:.82}body.low-performance-mode #weather-scene #weather-stars,body.low-performance-mode #weather-scene #weather-clouds{display:block!important}
+body.low-performance-mode #weather-scene canvas{display:none}body.low-performance-mode #weather-scene #weather-sky{display:block}body.low-performance-mode #weather-precip{display:block;opacity:.82}body.low-performance-mode #weather-scene #weather-stars,body.low-performance-mode #weather-scene #weather-celestial,body.low-performance-mode #weather-scene #weather-clouds{display:block!important}
 :root[data-theme="weather"] .screen .glass-card,:root[data-theme="weather"] .screen .glass-section{background:linear-gradient(145deg,rgba(7,13,21,.32),rgba(13,22,31,.22))!important;backdrop-filter:blur(7px) saturate(125%)!important;-webkit-backdrop-filter:blur(7px) saturate(125%)!important;border-color:rgba(226,237,248,.22);box-shadow:0 12px 32px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.12)}
 @media(prefers-reduced-motion:reduce){#weather-scene canvas{animation:none!important}}
 </style>
@@ -742,7 +748,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         </defs>
     </svg>
 
-    <div id="weather-scene" aria-hidden="true"><div id="weather-sky"></div><div id="weather-aurora"><span class="aurora-sheet aurora-sheet-one"></span><span class="aurora-sheet aurora-sheet-two"></span><span class="aurora-sheet aurora-sheet-three"></span></div><canvas id="weather-stars"></canvas><canvas id="weather-clouds"></canvas><canvas id="weather-mountains"></canvas><div id="weather-ground" aria-hidden="true"></div><canvas id="weather-grass"></canvas><div id="weather-twilight" aria-hidden="true"></div></div>
+    <div id="weather-scene" aria-hidden="true"><div id="weather-sky"></div><div id="weather-aurora"><span class="aurora-sheet aurora-sheet-one"></span><span class="aurora-sheet aurora-sheet-two"></span><span class="aurora-sheet aurora-sheet-three"></span></div><canvas id="weather-stars"></canvas><canvas id="weather-celestial"></canvas><canvas id="weather-clouds"></canvas><canvas id="weather-mountains"></canvas><div id="weather-ground" aria-hidden="true"></div><canvas id="weather-grass"></canvas><div id="weather-twilight" aria-hidden="true"></div></div>
     <canvas id="weather-precip" aria-hidden="true"></canvas>
     <div id="weather-status">날씨 연동 대기</div>
     <div id="default-animated-bg">
@@ -2197,8 +2203,26 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
 
         function fetchManchon3DongWeather() { return withRegionLoading('weather-screen', '날씨 정보를 불러오는 중', fetchManchon3DongWeatherRequest); }
 
+        const temperatureColorStops = [[-20,37,99,235],[0,96,165,250],[12,34,197,94],[24,250,204,21],[40,239,68,68]];
+        function temperatureColor(value) {
+            const temperature=Number(value);
+            if(!Number.isFinite(temperature)) return '#ffffff';
+            if(temperature<=temperatureColorStops[0][0]) return '#'+temperatureColorStops[0].slice(1).map(channel=>channel.toString(16).padStart(2,'0')).join('');
+            for(let i=1;i<temperatureColorStops.length;i++) {
+                const upper=temperatureColorStops[i];
+                if(temperature<=upper[0]) {
+                    const lower=temperatureColorStops[i-1], blend=(temperature-lower[0])/(upper[0]-lower[0]);
+                    return '#'+[1,2,3].map(channel=>Math.round(lower[channel]+(upper[channel]-lower[channel])*blend).toString(16).padStart(2,'0')).join('');
+                }
+            }
+            const hottest=temperatureColorStops[temperatureColorStops.length-1];
+            return '#'+hottest.slice(1).map(channel=>channel.toString(16).padStart(2,'0')).join('');
+        }
+
         function renderWeather(data, locationName = '') {
-            const temp = Math.round(data.main.temp);
+            const exactTemp = Number(data.main.temp);
+            const exactFeels = Number(data.main.feels_like);
+            const temp = Math.round(exactTemp);
             const feels = Math.round(data.main.feels_like);
             const humidity = data.main.humidity;
             const wind = (data.wind && data.wind.speed) ? data.wind.speed : null;
@@ -2206,9 +2230,8 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             const icon = data.weather && data.weather[0] ? data.weather[0].icon : '01d';
             const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
             const weatherMain=String(data.weather?.[0]?.main||'').toLowerCase();
-            const temperatureColor=value=>value<=10?'#3b82f6':value<=25?'#22c55e':'#ef4444';
             const conditionColor=({clear:'#facc15',clouds:'#cbd5e1',drizzle:'#7dd3fc',rain:'#38bdf8',snow:'#bfdbfe',thunderstorm:'#c4b5fd',mist:'#a5b4fc',smoke:'#a5b4fc',haze:'#a5b4fc',dust:'#fcd34d',fog:'#a5b4fc',sand:'#fcd34d',ash:'#d1d5db',squall:'#67e8f9',tornado:'#c4b5fd'})[weatherMain]||temperatureColor(temp);
-            const temperatureTextColor=temperatureColor(temp), feelsTextColor=temperatureColor(feels), humidityTextColor=humidity>=80?'#7dd3fc':conditionColor;
+            const temperatureTextColor=temperatureColor(exactTemp), feelsTextColor=temperatureColor(exactFeels), humidityTextColor=humidity>=80?'#7dd3fc':conditionColor;
 
             weatherCard.innerHTML = `
                 <p class="text-xl sm:text-2xl font-semibold text-gray-200 mb-4">현재 위치: ${locationName}</p>
@@ -2229,7 +2252,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                 </div>
             `;
             const simpleTemperature=document.getElementById('simple-weather-temperature');
-            if(simpleTemperature) simpleTemperature.textContent=`${temp}°C`;
+            if(simpleTemperature) { simpleTemperature.textContent=`${temp}°C`; simpleTemperature.style.setProperty('--weather-dynamic-color',temperatureTextColor); }
         }
 
         function syncSimpleMeal() {
@@ -3987,16 +4010,20 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
+  const cloudLevelOrder = ['high','mid','low'];
   const scene = $('weather-scene'), sky = $('weather-sky'), ground = $('weather-ground');
-  const starCanvas = $('weather-stars'), cloudCanvas = $('weather-clouds'), mountainCanvas = $('weather-mountains'), grassCanvas = $('weather-grass'), effectCanvas = $('weather-precip');
-  if (!scene || !sky || !ground || !starCanvas || !cloudCanvas || !mountainCanvas || !grassCanvas || !effectCanvas) return;
-  const starCtx = starCanvas.getContext('2d'), cloudCtx = cloudCanvas.getContext('2d'), mountainCtx = mountainCanvas.getContext('2d'), grassCtx = grassCanvas.getContext('2d'), effectCtx = effectCanvas.getContext('2d');
+  const starCanvas = $('weather-stars'), celestialCanvas = $('weather-celestial'), cloudCanvas = $('weather-clouds'), mountainCanvas = $('weather-mountains'), grassCanvas = $('weather-grass'), effectCanvas = $('weather-precip');
+  if (!scene || !sky || !ground || !starCanvas || !celestialCanvas || !cloudCanvas || !mountainCanvas || !grassCanvas || !effectCanvas) return;
+  const starCtx = starCanvas.getContext('2d'), celestialCtx = celestialCanvas.getContext('2d'), cloudCtx = cloudCanvas.getContext('2d'), mountainCtx = mountainCanvas.getContext('2d'), grassCtx = grassCanvas.getContext('2d'), effectCtx = effectCanvas.getContext('2d');
   const state = {
     mode: 'live', kind: 'none', amount: 0, cloud: 20, rotationSpeed: 10, time: 'auto', timelineDuration: 120, timelineStartedAt: 0, reflectWeather: true, reflectTime: true, aurora: false, weatherBackup: null, sunrise: '06:00', sunset: '18:00',
     lat: 35.8714, lon: 128.6014, windSpeed: 8, windDir: 240, temperature: null, weatherTime: null, weatherFetchedAt: 0,
     location: '대구', detail: '', isDay: null, cloudLow: 20, cloudMid: 20, cloudHigh: 20, radiation: null
   };
-  let width = 0, height = 0, dpr = 1, clouds = [], stars = [], shootingStars = [], nextShootingStarAt = 0, starRotation = 0, lastStarRotationAt = 0, rain = [], splashes = [], flakes = [], beads = [], snowPatches = [], snowClumps = [], shelves = [], snowBeds = new Map(), lastShelfScan = 0, lastFrame = 0, lastGrassPhase = '', lastSkyPaint = 0, lastSkyValue = '', lastWeatherVisualSignature = '', twilightWasVisible = false, weatherRequestId = 0, frameErrorNotified = false, starVisibility = 0, visualPrecipitation = 0, visualPrecipitationKind = 'none';
+  let width = 0, height = 0, dpr = 1, sunVisibleArea = 0, clouds = [], cloudLayers = {high:[],mid:[],low:[]}, stars = [], shootingStars = [], nextShootingStarAt = 0, starRotation = 0, lastStarRotationAt = 0, rain = [], splashes = [], flakes = [], beads = [], snowPatches = [], snowClumps = [], shelves = [], snowBeds = new Map(), lastShelfScan = 0, lastFrame = 0, lastGrassPhase = '', lastSkyPaint = 0, lastSkyValue = '', lastWeatherVisualSignature = '', twilightWasVisible = false, weatherRequestId = 0, frameErrorNotified = false, starVisibility = 0, visualPrecipitation = 0, visualPrecipitationKind = 'none';
+  // A lower render cadence cuts repeated canvas and particle work while keeping motion time-based.
+  let nextFrameAt = 0, previousFrameCost = 0;
+  let grassGeometryCache={key:'',paths:null};
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const rand = (a, b) => a + Math.random() * (b - a);
   function applyAirDrag(p,dt,{gravity,terminal,windX=0,windY=0}) {
@@ -4029,8 +4056,10 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         });
       });
       const baseY=rand(height*ranges[0],height*ranges[1]);
-      return {x:rand(-width*.08,width*1.08),y:baseY,baseY,sx,sy,speed:rand(.025,.11),phase:rand(0,7),seed:Math.random(),level,rows,opacity:0};
+      return {x:rand(-width*.08,width*1.08),y:baseY,baseY,sx,sy,speed:rand(.025,.11),phase:rand(0,7),seed:Math.random(),level,rows,opacity:0,targetOpacity:0};
     });
+    cloudLayers={high:[],mid:[],low:[]};
+    for(const cloud of clouds) cloudLayers[cloud.level].push(cloud);
   }
   function buildStars() {
     const centerX=width*.5, centerY=height*.42;
@@ -4161,20 +4190,24 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     const weather=weatherVisualState(), horizon = height * .42, rainWet = weather.kind === 'rain' && weather.amount > 0, snowCover = weather.kind === 'snow' && weather.amount > 0;
     const phase=solarPhase(), nightScene=phase==='night'||phase==='bluehour', nightSnow=snowCover && nightScene;
     const count = Math.min(280000, Math.round(width * height / 5.2));
-    // Reuse a deterministic random sequence so redraws only recolor the grass; blade positions stay fixed.
-    let grassSeed=((Math.round(width)*73856093)^(Math.round(height)*19349663))>>>0;
-    const grassRandom=()=>{grassSeed=(grassSeed*1664525+1013904223)>>>0;return grassSeed/4294967296;};
-    const grassRand=(min,max)=>min+grassRandom()*(max-min);
-    const bands=8, shades=3, widths=2, paths=Array.from({length:bands*shades*widths},()=>new Path2D());
-    const ranges=snowCover?(nightSnow?[[90,133],[112,153],[148,188]]:[[25,43],[40,67],[61,96]]):rainWet?[[12,25],[23,42],[34,59]]:nightScene?[[4,10],[9,20],[17,31]]:[[28,49],[52,88],[83,133]];
-    for (let i = 0; i < count; i++) {
-      // Fivefold denser exponential sampling converges toward the horizon; pixel resolution caps the limit.
-      const u=grassRandom(), densityFalloff=5.2, depth=-Math.log(1-u*(1-Math.exp(-densityFalloff)))/densityFalloff;
-      const y=horizon+depth*(height-horizon), x=grassRandom()*width, len=grassRand(.35,1.1)+depth*(snowCover?5:11);
-      const band=Math.min(bands-1,Math.floor(depth*bands)), shade=Math.floor(grassRandom()*shades), widthBand=Math.floor(grassRandom()*widths);
-      const path=paths[(band*shades+shade)*widths+widthBand], droop=rainWet?grassRand(.18,.62):grassRand(-.2,.2);
-      path.moveTo(x,y); path.lineTo(x+len*droop,y-len*(rainWet?.62:1));
+    // Reuse the large, deterministic blade geometry when only sky colors or lighting change.
+    const bands=8, shades=3, widths=2, geometryKey=`${Math.round(width)}:${Math.round(height)}:${rainWet?1:0}:${snowCover?1:0}`;
+    let paths=grassGeometryCache.key===geometryKey?grassGeometryCache.paths:null;
+    if(!paths) {
+      let grassSeed=((Math.round(width)*73856093)^(Math.round(height)*19349663))>>>0;
+      const grassRandom=()=>{grassSeed=(grassSeed*1664525+1013904223)>>>0;return grassSeed/4294967296;};
+      const grassRand=(min,max)=>min+grassRandom()*(max-min);
+      paths=Array.from({length:bands*shades*widths},()=>new Path2D());
+      for (let i = 0; i < count; i++) {
+        const u=grassRandom(), densityFalloff=5.2, depth=-Math.log(1-u*(1-Math.exp(-densityFalloff)))/densityFalloff;
+        const y=horizon+depth*(height-horizon), x=grassRandom()*width, len=grassRand(.35,1.1)+depth*(snowCover?5:11);
+        const band=Math.min(bands-1,Math.floor(depth*bands)), shade=Math.floor(grassRandom()*shades), widthBand=Math.floor(grassRandom()*widths);
+        const path=paths[(band*shades+shade)*widths+widthBand], droop=rainWet?grassRand(.18,.62):grassRand(-.2,.2);
+        path.moveTo(x,y); path.lineTo(x+len*droop,y-len*(rainWet?.62:1));
+      }
+      grassGeometryCache={key:geometryKey,paths};
     }
+    const ranges=snowCover?(nightSnow?[[90,133],[112,153],[148,188]]:[[25,43],[40,67],[61,96]]):rainWet?[[12,25],[23,42],[34,59]]:nightScene?[[4,10],[9,20],[17,31]]:[[28,49],[52,88],[83,133]];
     for(let band=0;band<bands;band++) for(let shade=0;shade<shades;shade++) for(let widthBand=0;widthBand<widths;widthBand++) {
       const range=ranges[shade], tone=(band+.5)/bands, alpha=snowCover?(nightSnow?.24:.22)+tone*(nightSnow?.24:.27):(nightScene?.13:.22)+tone*(nightScene?.2:.38);
       const color=range.map(v=>Math.round(v+(band-3.5)*(snowCover?1.1:shade===1?1.4:.8))).join(',');
@@ -4196,7 +4229,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
   }
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 1.5); width = window.innerWidth; height = window.innerHeight;
-    [[starCanvas, starCtx],[cloudCanvas, cloudCtx],[mountainCanvas, mountainCtx],[grassCanvas, grassCtx],[effectCanvas, effectCtx]].forEach(([c, ctx]) => setCanvasSize(c, ctx));
+    [[starCanvas, starCtx],[celestialCanvas, celestialCtx],[cloudCanvas, cloudCtx],[mountainCanvas, mountainCtx],[grassCanvas, grassCtx],[effectCanvas, effectCtx]].forEach(([c, ctx]) => setCanvasSize(c, ctx));
     document.querySelectorAll('.weather-water-lens').forEach(el=>el.remove());
     buildClouds(); buildStars(); shootingStars=[]; nextShootingStarAt=performance.now()+900; rain=[]; flakes=[]; drawMountains(); drawGrass(); shelves = []; beads = []; splashes = []; snowPatches = []; snowClumps = []; snowBeds.clear();
   }
@@ -4209,7 +4242,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     }
     // Manual mode follows the device clock; live mode follows the API's local time.
     if (state.reflectTime && state.mode === 'live' && state.weatherTime) { const match = state.weatherTime.match(/T(\d{2}):(\d{2})/); if (match) return (+match[1] + +match[2] / 60 + Math.max(0,Date.now()-(state.weatherFetchedAt||Date.now()))/3600000)%24; }
-    const now = new Date(); return now.getHours() + now.getMinutes() / 60;
+    const now = new Date(); return now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600 + now.getMilliseconds() / 3600000;
   }
   function solarPhase() {
     const timelineMode=state.time==='timeline';
@@ -4223,15 +4256,70 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     if (hour > set - 1.1 && hour <= set + .38) return 'sunset';
     return 'day';
   }
+  function visualDate() {
+    if(state.time==='timeline') { const duration=clamp(Number(state.timelineDuration)||120,1,1440), startedAt=Number(state.timelineStartedAt)||Date.now(); return new Date(startedAt+Math.max(0,Date.now()-startedAt)/(duration*60000)*86400000); }
+    if(state.mode==='live'&&state.weatherTime) { const parsed=new Date(state.weatherTime); if(Number.isFinite(parsed.getTime())) return parsed; }
+    return new Date();
+  }
+  function lunarPhase(date=visualDate()) {
+    const synodicMonth=29.530588853, julianDay=date.getTime()/86400000+2440587.5, age=((julianDay-2451550.2597222)%synodicMonth+synodicMonth)%synodicMonth, angle=age/synodicMonth*Math.PI*2;
+    return {age,angle,illumination:(1-Math.cos(angle))*.5,waxing:age<synodicMonth*.5};
+  }
+  function visualHour() {
+    if(state.time==='timeline'||(state.time==='auto'&&state.reflectTime)) return currentHour();
+    const rise=timeNumber(state.sunrise),set=timeNumber(state.sunset),dayLength=(set-rise+24)%24;
+    if(state.time==='dawn') return (rise-.38+24)%24;
+    if(state.time==='sunrise') return (rise+.12)%24;
+    if(state.time==='sunset') return (set-.12+24)%24;
+    if(state.time==='night') return (set+2)%24;
+    return (rise+dayLength*.5)%24;
+  }
+  function solarDayProgress(hour=visualHour()) {
+    const rise=timeNumber(state.sunrise), set=timeNumber(state.sunset), dayLength=(set-rise+24)%24, sinceRise=(hour-rise+24)%24;
+    return sinceRise<=dayLength?{progress:sinceRise/dayLength,dayLength,rise,set}:null;
+  }
+  function solarAltitude(hour=visualHour()) {
+    const day=solarDayProgress(hour), date=visualDate(), dayOfYear=Math.floor((Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())-Date.UTC(date.getFullYear(),0,0))/86400000), declination=23.44*Math.sin(2*Math.PI*(284+dayOfYear)/365);
+    if(day) { const maxAltitude=90-Math.abs(state.lat-declination); return Math.asin(clamp(Math.sin(maxAltitude*Math.PI/180)*Math.sin(Math.PI*day.progress),-1,1))*180/Math.PI; }
+    const riseDelta=((hour-timeNumber(state.sunrise)+36)%24)-12, setDelta=((hour-timeNumber(state.sunset)+36)%24)-12, horizonRate=15*Math.cos(state.lat*Math.PI/180)*Math.cos(declination*Math.PI/180);
+    return -Math.min(18,Math.min(Math.abs(riseDelta),Math.abs(setDelta))*Math.max(4.5,horizonRate));
+  }
+  function visibleDiscArea(cx,cy,r) {
+    const samples=19,left=Math.max(0,Math.floor((cx-r)*dpr)),top=Math.max(0,Math.floor((cy-r)*dpr)),right=Math.min(mountainCanvas.width,Math.ceil((cx+r)*dpr)),bottom=Math.min(mountainCanvas.height,Math.ceil((cy+r)*dpr));
+    if(right<=left||bottom<=top) return 0;
+    try {
+      const mountains=mountainCtx.getImageData(left,top,right-left,bottom-top).data,cloudsData=cloudCtx.getImageData(left,top,right-left,bottom-top).data;let total=0,visible=0;
+      for(let row=0;row<samples;row++) for(let col=0;col<samples;col++) {
+        const x=cx-r+(col+.5)*(2*r/samples),y=cy-r+(row+.5)*(2*r/samples),dx=x-cx,dy=y-cy;if(dx*dx+dy*dy>r*r)continue;total++;
+        if(x<0||x>=width||y<0||y>=height)continue;
+        const px=Math.floor(x*dpr)-left,py=Math.floor(y*dpr)-top,index=(py*(right-left)+px)*4,mountainAlpha=mountains[index+3]/255,cloudAlpha=cloudsData[index+3]/255;
+        visible+=(mountainAlpha>.58?0:1)*(1-cloudAlpha*.72);
+      }
+      return total?clamp(visible/total,0,1):0;
+    } catch { return 0; }
+  }
+  function drawCelestial() {
+    celestialCtx.clearRect(0,0,width,height);
+    const hour=visualHour(),day=solarDayProgress(hour),horizon=height*.42,smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);},sunY=day?horizon-Math.sin(Math.PI*day.progress)*height*.27:horizon,sunX=day?day.progress*width:(hour<timeNumber(state.sunrise)?0:width);
+    scene.style.setProperty('--twilight-x',`${sunX}px`);scene.style.setProperty('--twilight-y',`${sunY}px`);
+    scene.style.setProperty('--twilight-warmth',hour>=timeNumber(state.sunset)-2&&hour<=timeNumber(state.sunset)+1.5?'255,157,111':'255,191,143');
+    if(day) {
+      const r=clamp(Math.min(width,height)*.0115,6,12);sunVisibleArea=visibleDiscArea(sunX,sunY,r);
+      celestialCtx.save();celestialCtx.shadowColor='rgba(255,255,255,.52)';celestialCtx.shadowBlur=r*1.2;celestialCtx.fillStyle='rgba(255,255,255,.92)';celestialCtx.beginPath();celestialCtx.arc(sunX,sunY,r,0,Math.PI*2);celestialCtx.fill();celestialCtx.restore();
+    } else sunVisibleArea=0;
+    const moon=lunarPhase(visualDate()),moonRise=(timeNumber(state.sunrise)+moon.age*24/29.530588853)%24,moonElapsed=(hour-moonRise+24)%24,moonArcHours=12.4;
+    if(moonElapsed<moonArcHours&&moon.illumination>.006) {
+      const progress=moonElapsed/moonArcHours,x=progress*width,y=horizon-Math.sin(Math.PI*progress)*height*.235,r=clamp(Math.min(width,height)*.0095,6,11),offset=(moon.waxing?-1:1)*r*(1-Math.cos(moon.angle)),daylight=solarAltitude(hour)>0;
+      celestialCtx.globalAlpha=daylight?.48:1;celestialCtx.fillStyle=daylight?'#f5f6f8':'#bdc5cf';celestialCtx.beginPath();celestialCtx.arc(x,y,r,0,Math.PI*2);celestialCtx.fill();celestialCtx.globalAlpha=1;
+
+      celestialCtx.save();celestialCtx.beginPath();celestialCtx.arc(x,y,r,0,Math.PI*2);celestialCtx.clip();celestialCtx.fillStyle=daylight?'rgba(0,0,0,1)':'rgba(255,255,255,.96)';celestialCtx.globalCompositeOperation=daylight?'destination-out':'source-over';celestialCtx.beginPath();celestialCtx.arc(x+offset,y,r,0,Math.PI*2);celestialCtx.fill();celestialCtx.restore();
+    }
+    const altitude=solarAltitude(hour),twilight=smooth(-12,-5,altitude)*(1-smooth(1,8,altitude));scene.style.setProperty('--twilight-glow',clamp(twilight,0,1).toFixed(3));twilightWasVisible=twilight>.01;
+  }
   function twilightStrength() {
     if(state.time==='auto'&&!state.reflectTime) return 0;
     if(state.time!=='auto'&&state.time!=='timeline') return ['dawn','sunrise','sunset'].includes(state.time)?1:0;
-    const hour=currentHour(), rise=timeNumber(state.sunrise), set=timeNumber(state.sunset);
-    const delta=event=>{ let value=hour-event; if(value>12)value-=24; if(value< -12)value+=24; return value; };
-    const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);};
-    const fromSunrise=smooth(-1.05,-.2,delta(rise))*(1-smooth(.9,1.7,delta(rise)));
-    const fromSunset=smooth(-1.9,-.85,delta(set))*(1-smooth(.5,1.3,delta(set)));
-    return Math.max(fromSunrise,fromSunset);
+    const altitude=solarAltitude(currentHour()),smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);};return smooth(-12,-5,altitude)*(1-smooth(1,8,altitude));
   }
   function continuousSkyPalette() {
     const palettes = {
@@ -4260,11 +4348,14 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
 
 
     const skyColors=palette.slice(0,3), horizonStop='42%', middleStop='27%';
+    const sunMix=clamp(sunVisibleArea*(['sunrise','sunset','dawn'].includes(phase)?.42:.18),0,.42);
+    const tint=(base,warm,amount)=>'#'+[1,3,5].map(i=>Math.round(parseInt(base.slice(i,i+2),16)+(parseInt(warm.slice(i,i+2),16)-parseInt(base.slice(i,i+2),16))*amount).toString(16).padStart(2,'0')).join('');
+    skyColors[1]=tint(skyColors[1],'#ffd5ac',sunMix*.45); skyColors[2]=tint(skyColors[2],'#ffbd82',sunMix);
 
     const manualTimeExposure=phase==='night'?.82:phase==='bluehour'?.9:phase==='dawn'?.94:phase==='sunrise'||phase==='sunset'?.98:1;
     const sunExposure=timelineMode?1:manualTimeExposure;
     const precipitationShade=rainy?weather.amount/100*.10:0;
-    const darken=clamp(palette[3]*(1-precipitationShade)*sunExposure,.2,1); state.skyBrightness=darken;
+    const sunAreaBrightness=.84+.16*sunVisibleArea, darken=clamp(palette[3]*(1-precipitationShade)*sunExposure*sunAreaBrightness,.2,1); state.skyBrightness=darken;
     const solarX='50%';
     const glowRgb=timelineMode?[1,3,5].map(i=>parseInt(skyColors[1].slice(i,i+2),16)).join(','):snowy?'205,232,255':rainy?'194,211,225':phase==='sunset'?'255,151,80':phase==='sunrise'?'255,217,163':phase==='dawn'?'234,172,177':phase==='bluehour'?'89,157,227':phase==='night'?'94,145,224':'255,244,220';
     const phaseGlow=timelineMode ? .12 : phase==='sunset' ? .37 : phase==='sunrise' ? .31 : phase==='dawn' ? .2 : phase==='bluehour' ? .13 : phase==='night' ? (snowy ? .13 : .055) : .12;
@@ -4344,7 +4435,9 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
       aurora.addColorStop(0,`rgba(82,218,218,${(dusk ? .055 : .12)*(1-cloudiness*.8)})`); aurora.addColorStop(.48,`rgba(47,134,202,${(dusk ? .035 : .075)*(1-cloudiness*.8)})`); aurora.addColorStop(1,'rgba(30,89,171,0)');
       cloudCtx.fillStyle=aurora; cloudCtx.fillRect(width*.43,horizon-height*.18,width*.57,height*.21);
     }
-    const visibleStarCount=document.body.classList.contains('low-performance-mode')?Math.min(stars.length,1800):stars.length;
+    const lowPower=document.body.classList.contains('low-performance-mode');
+    // Keep the full star field on fast frames; shed distant points first when rendering is overloaded.
+    const visibleStarCount=lowPower?Math.min(stars.length,1800):previousFrameCost>18?Math.min(stars.length,3000):previousFrameCost>10?Math.min(stars.length,5000):stars.length;
     for (let starIndex=0;starIndex<visibleStarCount;starIndex++) {
       const star=stars[starIndex];
       if(now>=star.nextChange) {
@@ -4367,16 +4460,41 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     // Stars remain individual points; no constellation guide lines are drawn.
     drawShootingStars(now);
   }
+  function createCloudSprite(cloud, phase, weather) {
+    const sprite=document.createElement('canvas'), sx=cloud.sx, sy=cloud.sy;
+    sprite.width=Math.max(1,Math.ceil(sx*4)); sprite.height=Math.max(1,Math.ceil(sy*2.6));
+    const ctx=sprite.getContext('2d'), originX=sx*2, originY=sy*.8;
+    const baseGray=weather.kind==='rain'?224:phase==='night'||phase==='bluehour'?190:248;
+    const color=weather.kind==='rain'?`${Math.round(baseGray*.74)},${Math.round(baseGray*.81)},${Math.round(baseGray*.9)}`:phase==='sunset'||phase==='sunrise'?`${baseGray},${Math.round(baseGray*.91)},${Math.round(baseGray*.82)}`:phase==='night'||phase==='bluehour'?`${Math.round(baseGray*.64)},${Math.round(baseGray*.76)},${Math.round(baseGray*.96)}`:`${baseGray},${Math.min(255,baseGray+2)},${Math.min(255,baseGray+5)}`;
+    const base=ctx.createRadialGradient(originX,originY+sy*.43,sy*.08,originX,originY+sy*.43,sx*1.02);
+    base.addColorStop(0,`rgba(${color},.095)`); base.addColorStop(.66,`rgba(${color},.045)`); base.addColorStop(1,`rgba(${color},0)`);
+    ctx.fillStyle=base; ctx.beginPath(); ctx.ellipse(originX,originY+sy*.43,sx*1.02,sy*.48,0,0,Math.PI*2); ctx.fill();
+    for(let row=0;row<cloud.rows.length;row++) for(const puff of cloud.rows[row]) {
+      const x=originX+puff.x, y=originY+puff.y, rx=puff.rx, ry=puff.ry;
+      const alpha=clamp((row===0?.94:row===1?.84:.68)*puff.light,0,.92);
+      if(row>0) { ctx.fillStyle=`rgba(${color},${alpha*.2})`; ctx.beginPath(); ctx.ellipse(x,y+ry*.28,rx*1.14,ry*.88,0,0,Math.PI*2); ctx.fill(); }
+      const gradient=ctx.createRadialGradient(x-rx*.2,y-ry*.24,ry*.015,x,y,Math.max(rx,ry));
+      gradient.addColorStop(0,`rgba(255,255,255,${alpha})`); gradient.addColorStop(.58,`rgba(255,255,255,${alpha*.96})`); gradient.addColorStop(.88,`rgba(${color},${alpha*.25})`); gradient.addColorStop(1,`rgba(${color},0)`);
+      ctx.fillStyle=gradient; ctx.beginPath(); ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2); ctx.fill();
+    }
+    cloud.sprite=sprite; cloud.spriteSignature=`${phase}:${weather.kind}`;
+  }
   function drawClouds(wind, cloudiness, dt) {
     const visibleCount=Math.round(clouds.length*cloudiness);
-    const cloudLayers=['high','mid','low'].map(level=>clouds.filter(cloud=>cloud.level===level));
-    const visibleClouds=new Set();
-    for(let layerIndex=0;visibleClouds.size<visibleCount;layerIndex++) {
-      for(const layer of cloudLayers) if(layer[layerIndex]&&visibleClouds.size<visibleCount) visibleClouds.add(layer[layerIndex]);
+    for(const cloud of clouds) cloud.targetOpacity=0;
+    let selectedCount=0;
+    for(let layerIndex=0;selectedCount<visibleCount;layerIndex++) {
+      for(const level of cloudLevelOrder) {
+        const cloud=cloudLayers[level][layerIndex];
+        if(cloud&&selectedCount<visibleCount) { cloud.targetOpacity=1; selectedCount++; }
+      }
     }
     const fadeStep=Math.min(1,dt*.025);
+    const phase=solarPhase(), weather=weatherVisualState(), lowPower=document.body.classList.contains('low-performance-mode');
+    const dawnShape=phase==='dawn'||phase==='sunrise', stretch=dawnShape?1.58:1, flatten=dawnShape?.76:1;
+    const simpleClouds=lowPower||(weather.amount>0&&weather.kind!=='none');
     for (const cloud of clouds) {
-      const targetOpacity=visibleClouds.has(cloud)?1:0;
+      const targetOpacity=cloud.targetOpacity;
       cloud.opacity=clamp(cloud.opacity+clamp(targetOpacity-cloud.opacity,-fadeStep,fadeStep),0,1);
       const lateral=Math.abs(cloud.x/Math.max(1,width)*2-1), perspective=.48+.72*lateral;
       cloud.x += wind.x*(.12+.22*lateral)+Math.sign(wind.x || 1)*(.018+cloud.speed*lateral);
@@ -4386,7 +4504,6 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
       if(cloud.baseY>height*cloudBand[1]) cloud.baseY=height*cloudBand[0];
       if (cloud.x - cloud.sx * 2 > width) cloud.x = -cloud.sx * 2;
       if (cloud.x + cloud.sx * 2 < 0) cloud.x = width + cloud.sx * 2;
-      const dawnShape=['dawn','sunrise'].includes(solarPhase()), stretch=dawnShape?1.58:1, flatten=dawnShape?.76:1;
       const cloudX=cloud.x, cloudY=cloud.baseY+Math.pow(1-lateral,1.7)*height*.018;
       const sx=cloud.sx*perspective*stretch, sy=cloud.sy*perspective*flatten;
 
@@ -4394,27 +4511,16 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
       const illumination=.88+(state.skyBrightness??.7)*.12;
       const opacity=clamp(.64*illumination*(cloud.level==='high'?.86:1)*cloud.opacity,0,.76);
       if (opacity < .018) continue;
-      const weather=weatherVisualState();
-      if(document.body.classList.contains('low-performance-mode') || (weather.amount > 0 && weather.kind !== 'none')) {
+      if(simpleClouds) {
         const cloudFill=cloudCtx.createRadialGradient(cloudX,cloudY,sy*.05,cloudX,cloudY,sx*1.3);
         cloudFill.addColorStop(0,`rgba(242,247,255,${opacity*.82})`); cloudFill.addColorStop(.62,`rgba(229,238,247,${opacity*.46})`); cloudFill.addColorStop(1,'rgba(229,238,247,0)');
         cloudCtx.fillStyle=cloudFill; cloudCtx.beginPath(); cloudCtx.ellipse(cloudX,cloudY,sx*1.15,sy*.72,0,0,Math.PI*2); cloudCtx.fill();
         continue;
       }
-      const phase=solarPhase(), baseGray=weather.kind==='rain'?224:phase==='night'||phase==='bluehour'?190:248;
-      const color=weather.kind==='rain'?`${Math.round(baseGray*.74)},${Math.round(baseGray*.81)},${Math.round(baseGray*.9)}`:phase==='sunset'||phase==='sunrise'?`${baseGray},${Math.round(baseGray*.91)},${Math.round(baseGray*.82)}`:phase==='night'||phase==='bluehour'?`${Math.round(baseGray*.64)},${Math.round(baseGray*.76)},${Math.round(baseGray*.96)}`:`${baseGray},${Math.min(255,baseGray+2)},${Math.min(255,baseGray+5)}`;
-      // A barely visible vapor bed joins the puffs; each cloudlet itself fades to full transparency at its rim.
-      const base=cloudCtx.createRadialGradient(cloudX,cloudY+sy*.43,sy*.08,cloudX,cloudY+sy*.43,sx*1.02);
-      base.addColorStop(0,`rgba(${color},${opacity*.095})`); base.addColorStop(.66,`rgba(${color},${opacity*.045})`); base.addColorStop(1,`rgba(${color},0)`);
-      cloudCtx.fillStyle=base; cloudCtx.beginPath(); cloudCtx.ellipse(cloudX,cloudY+sy*.43,sx*1.02,sy*.48,0,0,Math.PI*2); cloudCtx.fill();
-      for(let row=0;row<cloud.rows.length;row++) for(const puff of cloud.rows[row]) {
-        const x=cloudX+puff.x*perspective*stretch, y=cloudY+puff.y*perspective*flatten, rx=puff.rx*perspective*stretch, ry=puff.ry*perspective*flatten;
-        const alpha=clamp(opacity*(row===0?.94:row===1?.84:.68)*puff.light,0,.92);
-        if(row>0) { cloudCtx.fillStyle=`rgba(${color},${alpha*.2})`; cloudCtx.beginPath(); cloudCtx.ellipse(x,y+ry*.28,rx*1.14,ry*.88,0,0,Math.PI*2); cloudCtx.fill(); }
-        const puffGradient=cloudCtx.createRadialGradient(x-rx*.2,y-ry*.24,ry*.015,x,y,Math.max(rx,ry));
-        puffGradient.addColorStop(0,`rgba(255,255,255,${alpha})`); puffGradient.addColorStop(.58,`rgba(255,255,255,${alpha*.96})`); puffGradient.addColorStop(.88,`rgba(${color},${alpha*.25})`); puffGradient.addColorStop(1,`rgba(${color},0)`);
-        cloudCtx.fillStyle=puffGradient; cloudCtx.beginPath(); cloudCtx.ellipse(x,y,rx,ry,0,0,Math.PI*2); cloudCtx.fill();
-      }
+      if(!cloud.sprite||cloud.spriteSignature!==`${phase}:${weather.kind}`) createCloudSprite(cloud,phase,weather);
+      cloudCtx.globalAlpha=opacity;
+      cloudCtx.drawImage(cloud.sprite,cloudX-sx*2*perspective*stretch,cloudY-sy*.8*perspective*flatten,cloud.sprite.width*perspective*stretch,cloud.sprite.height*perspective*flatten);
+      cloudCtx.globalAlpha=1;
     }
 
   }
@@ -4467,7 +4573,9 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
   function landSurface(x, y) { return shelves.find(s => x >= s.x && x <= s.x+s.w && y >= surfaceTopAt(s,x)-2 && y <= s.y+s.h); }
   function surfaceKey(surface) { return `${surface.id}:${Math.round(surface.x)}:${Math.round(surface.y)}:${Math.round(surface.w)}`; }
   function clearAccumulatedWeather() {
-    beads.forEach(bead=>bead.lens?.remove()); beads=[]; splashes=[]; snowPatches=[]; snowClumps=[]; snowBeds.clear();
+    beads.forEach(bead=>bead.lens?.remove()); beads=[]; splashes=[]; rain=[]; flakes=[]; snowPatches=[]; snowClumps=[]; snowBeds.clear();
+    document.querySelectorAll('[data-weather-precipitation-fade]').forEach(el=>el.remove());
+    effectCtx.clearRect(0,0,width,height);
   }
   function addBead(x, y, surface) {
     const key=surfaceKey(surface), nearest = beads.find(b => b.surfaceKey === key && Math.abs(b.x-x) < 18 && Math.abs(b.y-y) < 7 && b.age < 520);
@@ -4710,6 +4818,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     const precipitation=includePrecipitation?document.createElement('canvas'):null;
     if(precipitation) {
       precipitation.width=effectCanvas.width; precipitation.height=effectCanvas.height;
+      precipitation.setAttribute('data-weather-precipitation-fade','');
       precipitation.style.cssText='position:fixed;inset:0;width:100%;height:100%;z-index:46;pointer-events:none;opacity:1;transition:opacity '+duration+'ms ease;';
       if(precipitation.width&&precipitation.height) precipitation.getContext('2d').drawImage(effectCanvas,0,0,precipitation.width,precipitation.height);
       document.body.appendChild(precipitation);
@@ -4720,7 +4829,10 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
   }
   function frame(now) {
     if(width<1||height<1){requestAnimationFrame(frame);return;}
-    const dt = clamp((now-lastFrame)/16.67 || 1, .5, 2.2); lastFrame = now;
+    if(document.hidden) { lastFrame=now; nextFrameAt=now; window.setTimeout(()=>requestAnimationFrame(frame),250); return; }
+    if(now<nextFrameAt) { requestAnimationFrame(frame); return; }
+    const frameStartedAt=performance.now();
+    const dt = clamp((now-lastFrame)/16.67 || 1, .5, 3.1); lastFrame = now;
     if (document.documentElement.dataset.theme !== 'weather') {
       document.body.classList.remove('weather-light-ink','weather-dark-ink');
       window.setTimeout(()=>requestAnimationFrame(frame),250); return;
@@ -4733,7 +4845,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     const precipitationEnded=visualPrecipitationKind!=='none'&&weather.kind!==visualPrecipitationKind;
     if(lastWeatherVisualSignature && visualSignature!==lastWeatherVisualSignature && !state.aurora && !twilightActive) fadeWeatherFrame(!precipitationEnded);
     lastWeatherVisualSignature=visualSignature;
-    const phase = setSky(), wind = windVector(), cloudiness = (weather.kind==='rain'||weather.kind==='snow') ? .1 : clamp(state.cloud/100,0,1);
+    const phase = state.time==='timeline' ? solarPhase() : setSky(), wind = windVector(), cloudiness = (weather.kind==='rain'||weather.kind==='snow') ? .1 : clamp(state.cloud/100,0,1);
     updateGroundPalette(phase,weather,dt*16.67);
     const auroraPhase=['night','dawn','sunrise','sunset','bluehour'].includes(phase);
     scene.classList.toggle('aurora-enabled',state.aurora===true);
@@ -4746,6 +4858,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     starCtx.clearRect(0,0,width,height); cloudCtx.clearRect(0,0,width,height);
     if (starVisibility>.003) drawNight(now,cloudiness,starVisibility);
     drawClouds(wind,cloudiness,dt);
+    if(state.time!=='timeline') drawCelestial();
     effectCtx.clearRect(0,0,width,height);
     const targetKind=weather.kind==='rain'||weather.kind==='snow'?weather.kind:'none';
     if(targetKind==='none') {
@@ -4758,7 +4871,21 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     else if (visualPrecipitationKind === 'snow' && intensity > 0) { rain = []; beads = []; splashes=[]; drawSnow(wind,intensity,dt); }
     else { rain = []; flakes = []; beads = []; splashes=[]; snowPatches = []; snowClumps=[]; }
     } catch(error) { if(!frameErrorNotified) { console.warn('날씨 애니메이션 렌더링을 복구합니다.',error); frameErrorNotified=true; } }
+    previousFrameCost=performance.now()-frameStartedAt;
+    // Start at 30 fps. If the previous render itself was expensive, back off to 25 or 20 fps.
+    const frameInterval=previousFrameCost>18?50:previousFrameCost>10?40:1000/30;
+    nextFrameAt=now+frameInterval;
     requestAnimationFrame(frame);
+  }
+  function timelineMotionFrame() {
+    const active=state.time==='timeline'&&!document.hidden&&document.documentElement.dataset.theme==='weather';
+    if(active) {
+      drawCelestial();
+      setSky();
+      requestAnimationFrame(timelineMotionFrame);
+    } else {
+      window.setTimeout(()=>requestAnimationFrame(timelineMotionFrame),250);
+    }
   }
   function persist() { try { localStorage.setItem('standbyWeather',JSON.stringify(state)); } catch (e) { console.warn('날씨 설정 저장 실패',e); } }
   function sync() {
@@ -4843,6 +4970,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     window.addEventListener('resize',resize,{passive:true});
     document.addEventListener('fullscreenchange',()=>{ window.setTimeout(resize,60); window.setTimeout(resize,240); });
     requestAnimationFrame(frame);
+    requestAnimationFrame(timelineMotionFrame);
     if(state.mode==='live') fetchWeather(); window.setInterval(()=>{ if(state.mode==='live') fetchWeather(); },60000);
   }
   window.addEventListener('load',init,{once:true});
