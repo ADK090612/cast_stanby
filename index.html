@@ -599,10 +599,8 @@
         :root[data-theme="weather"][data-weather-design="simple"] #dday-banner { display:none!important; }
         :root[data-theme="weather"][data-weather-design="simple"] #simple-schedule-pills.has-schedules { display:block; }
         @media(max-width:640px) { #simple-schedule-pills { left:calc(var(--safe-left) + 12px); right:calc(var(--safe-right) + 12px); top:calc(var(--safe-top) + 10px); height:46px; } #simple-schedule-pills .simple-schedule-pill { max-width:min(62vw,280px); padding:.08rem .72rem .08rem .3rem; gap:.48rem; font-size:.82rem; } }
-        :root[data-theme="weather"][data-weather-design="simple"] .screen { display:none!important; visibility:hidden!important; opacity:0!important; pointer-events:none!important; }
+        :root[data-theme="weather"][data-weather-design="simple"] .screen { z-index:-1!important; display:none!important; visibility:hidden!important; opacity:0!important; pointer-events:none!important; }
         :root[data-theme="weather"][data-weather-design="simple"] #dynamic-bottom-bar,
-        :root[data-theme="weather"][data-weather-design="simple"] #weather-modern-clock,
-        :root[data-theme="weather"][data-weather-design="simple"] #weather-modern-date,
         :root[data-theme="weather"][data-weather-design="simple"] #pip-container,
 
         :root[data-theme="weather"][data-weather-design="simple"] #simple-weather-clock,
@@ -640,7 +638,10 @@
 :root[data-theme="weather"][data-weather-design="modern"] #meal-screen .glass-card > div:last-child > h3 { font-size:.95rem!important; margin-bottom:.5rem!important; }
 :root[data-theme="weather"][data-weather-design="modern"] #meal-screen .glass-card > div:last-child > ul { font-size:.75rem!important; line-height:1.3!important; column-gap:.45rem; row-gap:.2rem; }
 :root[data-theme="weather"][data-weather-design="modern"] #current-date,
-        :root[data-theme="weather"][data-weather-design="modern"] #current-time { display:none; }
+        :root[data-theme="weather"][data-weather-design="modern"] #current-time { display:none!important; }
+        :root[data-theme="weather"][data-weather-design="simple"] .aux-clock,
+        :root[data-theme="weather"][data-weather-design="simple"] #current-date,
+        :root[data-theme="weather"][data-weather-design="simple"] #current-time { display:none!important; }
         :root[data-theme="weather"][data-weather-design="modern"] #weather-modern-clock { display:flex; flex-direction:column; position:fixed; left:calc(var(--safe-left) + clamp(4px,.5vw,10px)); top:auto; bottom:calc(100vh - var(--weather-modern-horizon,42vh)); z-index:15; transform:none; align-items:stretch; width:max-content; gap:0; color:rgba(255,255,255,.54)!important; font-size:clamp(10.5rem,22vw,24rem); font-weight:800; line-height:.9; letter-spacing:-.055em; text-shadow:0 3px 16px rgba(0,0,0,.42)!important; white-space:nowrap; }
         :root[data-theme="weather"][data-weather-design="modern"] .weather-modern-clock-face { display:flex; align-items:flex-end; gap:.1em; transform:translateY(.08em); }
         :root[data-theme="weather"][data-weather-design="modern"] #weather-modern-seconds { font-size:.34em; font-weight:800; letter-spacing:-.025em; opacity:.55; }
@@ -1572,6 +1573,30 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             if (persist) localStorage.setItem('dashboardSystemFont', font);
         }
 
+        const simpleWeatherScreenStyles = new Map();
+        function syncSimpleWeatherScreens(shouldHide) {
+            const screens = typeof currentScreenElements === 'undefined' ? [] : currentScreenElements;
+            const properties = ['display','visibility','opacity','pointer-events','z-index'];
+            for (const screen of screens) {
+                if (shouldHide) {
+                    if (!simpleWeatherScreenStyles.has(screen)) {
+                        simpleWeatherScreenStyles.set(screen, Object.fromEntries(properties.map(name => [name, { value: screen.style.getPropertyValue(name), priority: screen.style.getPropertyPriority(name) }])));
+                    }
+                    screen.style.setProperty('display','none','important');
+                    screen.style.setProperty('visibility','hidden','important');
+                    screen.style.setProperty('opacity','0','important');
+                    screen.style.setProperty('pointer-events','none','important');
+                    screen.style.setProperty('z-index','-1','important');
+                } else if (simpleWeatherScreenStyles.has(screen)) {
+                    const saved = simpleWeatherScreenStyles.get(screen);
+                    for (const name of properties) {
+                        screen.style.removeProperty(name);
+                        if (saved[name].value) screen.style.setProperty(name, saved[name].value, saved[name].priority);
+                    }
+                    simpleWeatherScreenStyles.delete(screen);
+                }
+            }
+        }
         function syncModernScheduleTitle() {
             const title = document.getElementById('schedule-screen-title');
             if (title) title.hidden = document.documentElement.dataset.theme === 'weather' && document.documentElement.dataset.weatherDesign === 'modern';
@@ -1580,8 +1605,15 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             const previousDesign=document.documentElement.dataset.weatherDesign;
             const selectedDesign = ['modern','simple'].includes(design) ? design : 'default';
             document.documentElement.dataset.weatherDesign = selectedDesign;
+            syncSimpleWeatherScreens(document.documentElement.dataset.theme==='weather'&&selectedDesign==='simple');
+            const simpleWeatherMode=document.documentElement.dataset.theme==='weather'&&selectedDesign==='simple';
+            for(const id of ['current-time','current-date']) {
+                const clockElement=document.getElementById(id);
+                if(clockElement&&simpleWeatherMode) { clockElement.hidden=true; clockElement.style.setProperty('display','none','important'); }
+            }
+            updateTime();
             try { updateSimpleSchedulePills(true); } catch (error) {}
-            if(selectedDesign==='simple'&&document.documentElement.dataset.theme==='weather') { if(slideTimeout) clearTimeout(slideTimeout); slideTimeout=null; try { updatePipVisibility(currentScreenIndex); } catch(error) {} }
+            if(selectedDesign==='simple'&&document.documentElement.dataset.theme==='weather') { applyAlwaysShowClock(false); if(slideTimeout) clearTimeout(slideTimeout); slideTimeout=null; try { updatePipVisibility(currentScreenIndex); } catch(error) {} }
             else if(previousDesign==='simple'&&document.documentElement.dataset.theme==='weather') { try { updatePipVisibility(currentScreenIndex); startScreenLoop(); } catch(error) {} }
             if(previousDesign==='simple'&&!isSimpleWeatherMode()) { syncCustomTextSettings(); syncDurationSliderFills(); applyAlwaysShowClock(localStorage.getItem('dashboardAlwaysShowClock')!=='0'); updateMusicBarUI(); }
             syncModernScheduleTitle();
@@ -1592,10 +1624,12 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             const previousTheme=document.documentElement.dataset.theme;
             const selectedTheme = ['light','weather'].includes(theme) ? theme : 'dark';
             document.documentElement.dataset.theme = selectedTheme;
+            syncSimpleWeatherScreens(selectedTheme==='weather'&&document.documentElement.dataset.weatherDesign==='simple');
+            updateTime();
             window.dispatchEvent(new CustomEvent('standby-theme-change',{detail:{theme:selectedTheme}}));
             try { updateSimpleSchedulePills(true); } catch (error) {}
             if(document.documentElement.dataset.weatherDesign==='simple') {
-                if(selectedTheme==='weather') { if(slideTimeout) clearTimeout(slideTimeout); slideTimeout=null; try { updatePipVisibility(currentScreenIndex); } catch(error) {} }
+                if(selectedTheme==='weather') { applyAlwaysShowClock(false); if(slideTimeout) clearTimeout(slideTimeout); slideTimeout=null; try { updatePipVisibility(currentScreenIndex); } catch(error) {} }
                 else if(previousTheme==='weather') { try { updatePipVisibility(currentScreenIndex); startScreenLoop(); } catch(error) {} }
                 if(previousTheme==='weather'&&!isSimpleWeatherMode()) { syncCustomTextSettings(); syncDurationSliderFills(); applyAlwaysShowClock(localStorage.getItem('dashboardAlwaysShowClock')!=='0'); updateMusicBarUI(); }
             }
@@ -2425,14 +2459,19 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         function updateTime() {
             prunePastSchedules();
             const now = new Date();
-            const simpleMode=document.documentElement.dataset.theme==='weather'&&document.documentElement.dataset.weatherDesign==='simple';
+            const simpleClock=document.getElementById('simple-weather-clock');
+            const simpleMode=(document.documentElement.dataset.theme==='weather'&&document.documentElement.dataset.weatherDesign==='simple')||(simpleClock&&getComputedStyle(simpleClock).display!=='none');
             if(simpleMode) {
+                if(timeElement) { timeElement.hidden=true; timeElement.style.setProperty('display','none','important'); }
+                if(dateElement) { dateElement.hidden=true; dateElement.style.setProperty('display','none','important'); }
                 const simpleTime=document.getElementById('simple-weather-time'), simpleDate=document.getElementById('simple-weather-date');
                 if(simpleTime) simpleTime.textContent=now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Seoul'});
                 if(simpleDate) { const parts=new Intl.DateTimeFormat('en-GB',{year:'numeric',month:'2-digit',day:'2-digit',timeZone:'Asia/Seoul'}).formatToParts(now); const values=Object.fromEntries(parts.map(part=>[part.type,part.value])); simpleDate.textContent=`${values.year}/${values.month}/${values.day}`; }
                 updateSimpleSchedulePills();
                 return;
             }
+            if(timeElement) { timeElement.hidden=false; timeElement.style.removeProperty('display'); }
+            if(dateElement) { dateElement.hidden=false; dateElement.style.removeProperty('display'); }
             const dateOptions = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long', timeZone: 'Asia/Seoul' };
             const timeOptionsWithSeconds = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'Asia/Seoul' };
             const dateText = now.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short', timeZone: 'Asia/Seoul' });
