@@ -773,6 +773,158 @@ body.low-performance-mode .weather-water-lens{-webkit-backdrop-filter:blur(.7px)
 body.low-performance-mode #weather-scene canvas{display:none}body.low-performance-mode #weather-scene #weather-sky{display:block}body.low-performance-mode #weather-precip{display:block;opacity:.82}body.low-performance-mode #weather-scene #weather-stars,body.low-performance-mode #weather-scene #weather-celestial,body.low-performance-mode #weather-scene #weather-clouds{display:block!important}
 :root[data-theme="weather"] .screen .glass-card,:root[data-theme="weather"] .screen .glass-section{background:linear-gradient(145deg,rgba(7,13,21,.32),rgba(13,22,31,.22))!important;backdrop-filter:blur(7px) saturate(125%)!important;-webkit-backdrop-filter:blur(7px) saturate(125%)!important;border-color:rgba(226,237,248,.22);box-shadow:0 12px 32px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.12)}
 @media(prefers-reduced-motion:reduce){#weather-scene canvas{animation:none!important}}
+
+        /* 긴급·예약 방송 및 타임라인 */
+        #dynamic-bottom-bar { position:relative;interpolate-size:allow-keywords;transition:width .62s cubic-bezier(.2,.75,.22,1),padding .45s ease,background .45s ease,border-color .45s ease,box-shadow .45s ease; }
+        #dynamic-bottom-bar.broadcast-active { display:flex!important;width:min(88vw,900px);max-width:calc(100vw - 24px)!important;min-width:0!important;justify-content:center;padding:.82rem 1rem;gap:.75rem;overflow:hidden;cursor:default;background:var(--broadcast-pill-color,#dc2626)!important;background-image:none!important;border:1px solid color-mix(in srgb,var(--broadcast-text-color,#fff) 28%,transparent)!important;box-shadow:0 14px 38px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.2)!important; }
+        #dynamic-bottom-bar.broadcast-active #school-view,#dynamic-bottom-bar.broadcast-active #music-view { display:none!important; }
+        #broadcast-view { display:flex;flex:1 1 auto;align-items:center;gap:.7rem;min-width:0;width:100%; }
+        #broadcast-view[hidden] { display:none!important; }
+        #broadcast-text-viewport { flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap;color:var(--broadcast-text-color,#fff)!important;font-size:clamp(1rem,2vw,1.35rem);font-weight:700;line-height:1.35; }
+        #broadcast-text-viewport .broadcast-copy { display:inline-block;flex:0 0 auto;white-space:nowrap;color:var(--broadcast-text-color,#fff)!important; }
+        #broadcast-text-viewport.is-static { display:flex;justify-content:center; }
+        #broadcast-marquee-track { display:flex;width:max-content;will-change:transform; }
+        #dynamic-bottom-bar.broadcast-active #broadcast-text-viewport,#dynamic-bottom-bar.broadcast-active #broadcast-text-viewport .broadcast-copy,:root[data-theme="weather"] #broadcast-text-viewport,:root[data-theme="weather"] #broadcast-text-viewport .broadcast-copy { color:var(--broadcast-text-color,#fff)!important;text-shadow:0 1px 3px rgba(0,0,0,.28)!important; }
+        #broadcast-menu { position:absolute;z-index:5;left:50%;bottom:calc(100% + .7rem);width:min(30rem,calc(100vw - 24px));max-height:min(30vh,18rem);overflow:auto;padding:.75rem;opacity:0;visibility:hidden;pointer-events:none;transform:translate(-50%,8px);transition:opacity .2s ease,transform .2s ease,visibility .2s;background:rgba(15,23,42,.94); }
+        #dynamic-bottom-bar.menu-open #broadcast-menu { opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0); }
+        #broadcast-menu h3 { margin:0 0 .55rem;color:#fff;font-size:.9rem;font-weight:700; }
+        #broadcast-menu-list { display:grid;grid-template-columns:1fr;gap:.45rem; }
+        .broadcast-choice { width:100%;display:flex;align-items:center;gap:.7rem;padding:.65rem .75rem;border:1px solid rgba(255,255,255,.12);border-left:3px solid var(--broadcast-choice-color,#60a5fa);border-radius:12px;color:#fff;text-align:left;background:rgba(255,255,255,.07);cursor:pointer;transition:background .18s,transform .18s; }
+        .broadcast-choice:hover,.broadcast-choice:focus-visible { background:rgba(255,255,255,.14);transform:translateY(-1px);outline:none; }
+        .broadcast-choice-icon { width:1.8rem;height:1.8rem;flex:0 0 1.8rem;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.11); }
+        #broadcast-open-settings-btn { width:100%;margin-top:.55rem;padding:.55rem .75rem;border:1px solid rgba(255,255,255,.1);border-radius:10px;color:rgba(255,255,255,.82);background:rgba(255,255,255,.04);font-size:.78rem;cursor:pointer; }
+        #broadcast-open-settings-btn:hover { background:rgba(255,255,255,.1); }
+        #broadcast-menu-hint { color:rgba(255,255,255,.62);font-size:.8rem;padding:.3rem .2rem; }
+        .broadcast-quick-compose { margin-top:.7rem;padding-top:.7rem;border-top:1px solid rgba(255,255,255,.1); }
+        .broadcast-quick-compose label { display:block;margin-bottom:.4rem;color:rgba(255,255,255,.78);font-size:.78rem;font-weight:700; }
+        .broadcast-quick-compose-row { display:flex;gap:.45rem; }
+        #broadcast-quick-message { flex:1;min-width:0;padding:.58rem .65rem;border:1px solid rgba(255,255,255,.16);border-radius:10px;color:#fff;background:rgba(255,255,255,.08);font-size:.85rem; }
+        #broadcast-quick-message:focus { outline:2px solid rgba(147,197,253,.75);outline-offset:1px; }
+        #broadcast-quick-send-btn { flex:0 0 auto;padding:.55rem .8rem;border:1px solid rgba(255,255,255,.18);border-radius:10px;color:#fff;background:rgba(59,130,246,.72);font-size:.82rem;font-weight:700;cursor:pointer; }
+        #broadcast-quick-send-btn:hover { background:rgba(59,130,246,.92); }
+        body.broadcast-active .powered-by { display:none!important; }
+        body.broadcast-active:not(.broadcast-menu-open) .screen > div { translate:0 -clamp(1rem,3vh,2rem); }
+        body.broadcast-menu-open .screen > div { translate:0 -clamp(4rem,13vh,8rem); }
+        body.broadcast-menu-open #dynamic-bottom-bar { z-index:2147483000!important; }
+        body.broadcast-menu-open #broadcast-menu { z-index:2147483001!important; }
+        body.settings-open #broadcast-menu { display:none!important; }
+        body.settings-open #dynamic-bottom-bar { z-index:20!important; }
+        .broadcast-settings-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem; }
+        .broadcast-settings-grid .full-span { grid-column:1/-1; }
+        .broadcast-color-field { min-width:0; }
+        .broadcast-color-field input[type="color"] { display:block;width:100%;height:2.65rem;padding:.25rem;border:1px solid rgba(255,255,255,.22);border-radius:10px;background:rgba(255,255,255,.08); }
+        .broadcast-message-card,.bell-period-card,.bell-grade-card { border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.035); }
+        .broadcast-message-card { display:flex;justify-content:space-between;align-items:center;gap:.75rem;padding:.75rem; }
+        .broadcast-message-actions { display:flex;flex:0 0 auto;gap:.4rem; }
+        .broadcast-message-actions button,.timeline-order-btn { padding:.42rem .6rem;border:1px solid rgba(255,255,255,.14);border-radius:9px;color:#fff;background:rgba(255,255,255,.07);font-size:.78rem;cursor:pointer; }
+        .broadcast-message-actions button:hover,.timeline-order-btn:hover { background:rgba(255,255,255,.14); }
+        .broadcast-preview { display:inline-flex;min-height:2.6rem;max-width:100%;align-items:center;justify-content:center;padding:.55rem 1rem;border:1px solid rgba(255,255,255,.24);border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+        .broadcast-day-label { display:inline-flex;align-items:center;gap:.3rem;padding:.35rem .5rem;border:1px solid rgba(255,255,255,.12);border-radius:999px;background:rgba(255,255,255,.04); }
+        .bell-period-card { padding:.85rem; }
+        .bell-period-main { display:grid;grid-template-columns:auto repeat(2,minmax(7rem,1fr));gap:.7rem;align-items:end; }
+        .bell-period-main h5 { margin:0 0 .7rem;white-space:nowrap; }
+        .bell-period-card details { margin-top:.7rem;border-top:1px solid rgba(255,255,255,.08);padding-top:.55rem; }
+        .bell-period-card summary,.bell-grade-card summary { color:rgba(255,255,255,.8);font-size:.8rem;cursor:pointer; }
+        .bell-event-editors { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;margin-top:.65rem; }
+        .bell-event-editor { min-width:0;padding:.7rem;border-radius:11px;background:rgba(255,255,255,.035); }
+        .bell-event-editor .bell-event-fields { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;margin-top:.55rem; }
+        .bell-grade-card { display:grid;grid-template-columns:minmax(5rem,.5fr) repeat(2,minmax(0,1fr));gap:.65rem;align-items:end;padding:.75rem; }
+        .bell-grade-card details { grid-column:1/-1;border-top:1px solid rgba(255,255,255,.08);padding-top:.45rem; }
+        #broadcast-bell-status { min-height:1.3rem; }
+        #broadcast-timeline-list { display:grid;gap:.55rem; }
+        .broadcast-timeline-item { display:grid;grid-template-columns:1.4rem minmax(0,1fr) auto;align-items:center;gap:.6rem;padding:.65rem .7rem;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.035);cursor:grab; }
+        .broadcast-timeline-item:active { cursor:grabbing; }
+        .broadcast-timeline-item.is-dragging { opacity:.42; }
+        .broadcast-timeline-item.is-drop-target { border-color:rgba(147,197,253,.7);background:rgba(96,165,250,.12); }
+        .broadcast-timeline-item .timeline-grip { color:rgba(255,255,255,.42);font-size:1.1rem;user-select:none; }
+        .broadcast-timeline-item .timeline-meta { color:rgba(255,255,255,.56);font-size:.72rem; }
+        .broadcast-timeline-actions { display:flex;gap:.3rem; }
+        .broadcast-timeline-actions button { width:2rem;height:2rem;display:grid;place-items:center;border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;background:rgba(255,255,255,.06);cursor:pointer; }
+        .broadcast-timeline-actions .timeline-edit-btn { width:auto;min-width:3.2rem;padding:0 .55rem;font-size:.76rem; }
+        .broadcast-timeline-actions button:disabled { opacity:.35;cursor:default; }
+        .timeline-delete-btn:hover { background:rgba(239,68,68,.2)!important;border-color:rgba(248,113,113,.42)!important;color:#fee2e2!important; }
+        @media(max-width:700px) {
+            #dynamic-bottom-bar.broadcast-active { width:calc(100vw - 24px);padding:.7rem .8rem; }
+            #broadcast-menu { max-height:min(34vh,15rem); }
+            .broadcast-settings-grid,.bell-event-editors { grid-template-columns:1fr; }
+            .bell-period-main { grid-template-columns:1fr 1fr; }
+            .bell-period-main h5 { grid-column:1/-1;margin:0; }
+            .bell-grade-card { grid-template-columns:1fr 1fr; }
+        }
+        :root[data-weather-design="modern"] #dynamic-bottom-bar.broadcast-active { left:calc(var(--safe-left) + clamp(16px,3vw,48px))!important;right:auto!important;margin-left:0!important;margin-right:0!important;transform:none!important;width:min(88vw,900px);max-width:calc(100vw - var(--safe-left) - var(--safe-right) - 24px)!important; }
+        :root[data-weather-design="simple"] #dynamic-bottom-bar.broadcast-active { display:flex!important;position:fixed!important;top:auto!important;left:var(--safe-left)!important;right:var(--safe-right)!important;bottom:calc(var(--safe-bottom) + 42vh)!important;width:min(88vw,900px);max-width:calc(100vw - 24px)!important;margin-left:auto!important;margin-right:auto!important;transform:none!important;z-index:68!important; }
+        :root[data-weather-design="simple"] #dynamic-bottom-bar.broadcast-active #broadcast-view { display:flex!important; }
+        :root[data-weather-design="simple"] #dynamic-bottom-bar.menu-open #broadcast-menu { position:fixed;top:38vh;bottom:auto;left:50%;max-height:min(23vh,15rem);width:min(30rem,calc(100vw - 24px));transform:translate(-50%,0); }
+        :root[data-weather-design="simple"] #dynamic-bottom-bar.broadcast-active.menu-open #broadcast-menu { top:35vh;max-height:16vh; }
+        @media(max-width:640px) {
+            :root[data-weather-design="simple"] #dynamic-bottom-bar.broadcast-active { width:calc(100vw - 24px);bottom:calc(var(--safe-bottom) + 42vh)!important; }
+            :root[data-weather-design="simple"] #dynamic-bottom-bar.menu-open #broadcast-menu { top:36vh;max-height:26vh; }
+            :root[data-weather-design="simple"] #dynamic-bottom-bar.broadcast-active.menu-open #broadcast-menu { top:33vh;max-height:18vh; }
+        }
+        body.broadcast-menu-open #dynamic-bottom-bar { z-index:2147483000!important; }
+        :root[data-weather-design="simple"] body.broadcast-menu-open #dynamic-bottom-bar.broadcast-active { z-index:2147483000!important; }
+        /* Keep the broadcast trigger visible and reachable across layouts. */
+        #dynamic-bottom-bar { z-index:70; pointer-events:auto; }
+        :root[data-weather-design="modern"] #dynamic-bottom-bar { position:fixed!important;left:calc(var(--safe-left) + clamp(16px,3vw,48px))!important;right:auto!important;bottom:calc(var(--safe-bottom) + 20px)!important;margin-left:0!important;margin-right:0!important;transform:none!important;width:max-content;max-width:calc(100vw - var(--safe-left) - var(--safe-right) - 24px)!important;min-width:0!important;box-sizing:border-box; }
+        :root[data-weather-design="simple"] #dynamic-bottom-bar { z-index:70!important;pointer-events:auto!important; }
+        #school-view { min-width:0;max-width:100%; }
+        #school-name-bottom { min-width:0;max-width:min(46vw,24rem);overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+        #school-pill-broadcast-fallback:not(.hidden) { display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .65rem;border:1px solid rgba(255,255,255,.2);border-radius:999px;color:#fff;background:rgba(255,255,255,.08);font-weight:700; }
+        :root[data-theme="light"] #school-pill-broadcast-fallback { color:#202b3d!important; }
+        :root:not([data-weather-design="modern"]):not([data-weather-design="simple"]) #dynamic-bottom-bar { position:fixed!important;top:auto!important;bottom:calc(var(--safe-bottom) + 1.25rem)!important;left:50%!important;right:auto!important;margin-left:0!important;margin-right:0!important;transform:translateX(-50%)!important;width:max-content;max-width:calc(100vw - var(--safe-left) - var(--safe-right) - 24px)!important;min-width:0!important;z-index:70!important;box-sizing:border-box; }
+
+    </style>
+<style id="broadcast-viewport-fixes">
+#broadcast-menu { background:#0f172a!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important; }
+#dynamic-bottom-bar.broadcast-active { backdrop-filter:none!important;-webkit-backdrop-filter:none!important; }
+:root[data-weather-design="modern"] #dynamic-bottom-bar { max-width:calc(100vw - var(--safe-left) - var(--safe-right) - clamp(16px,3vw,48px) - 24px)!important; }
+:root[data-weather-design="modern"] #dynamic-bottom-bar.broadcast-active { max-width:calc(100vw - var(--safe-left) - var(--safe-right) - clamp(16px,3vw,48px) - 24px)!important; }
+:root[data-weather-design="modern"] #dynamic-bottom-bar.menu-open #broadcast-menu { position:fixed;top:calc(var(--safe-top) + 12px);right:calc(var(--safe-right) + 16px);bottom:calc(var(--safe-bottom) + 76px);left:calc(var(--safe-left) + clamp(16px,3vw,48px));width:min(30rem,calc(100vw - var(--safe-left) - var(--safe-right) - clamp(16px,3vw,48px) - 32px));max-height:calc(100vh - var(--safe-top) - var(--safe-bottom) - 104px);box-sizing:border-box;transform:translateY(8px); }
+:root[data-weather-design="modern"] #dynamic-bottom-bar.menu-open #broadcast-menu { transform:translateY(0); }
+</style><style id="simple-pill-default-layout">
+:root[data-weather-design="simple"] #dynamic-bottom-bar { position:fixed!important;top:auto!important;bottom:calc(var(--safe-bottom) + 1.25rem)!important;left:50%!important;right:auto!important;margin-left:0!important;margin-right:0!important;transform:translateX(-50%)!important;width:max-content;max-width:calc(100vw - var(--safe-left) - var(--safe-right) - 24px)!important;min-width:0!important;z-index:70!important;box-sizing:border-box; }
+:root[data-weather-design="simple"] #dynamic-bottom-bar.broadcast-active { position:fixed!important;top:auto!important;bottom:calc(var(--safe-bottom) + 1.25rem)!important;left:50%!important;right:auto!important;margin-left:0!important;margin-right:0!important;transform:translateX(-50%)!important;width:min(88vw,900px)!important;max-width:calc(100vw - var(--safe-left) - var(--safe-right) - 24px)!important;min-width:0!important;z-index:70!important;box-sizing:border-box; }
+:root[data-weather-design="simple"] #dynamic-bottom-bar.menu-open #broadcast-menu { position:absolute!important;top:auto!important;bottom:calc(100% + .7rem)!important;left:50%!important;right:auto!important;width:min(30rem,calc(100vw - 24px))!important;max-height:min(30vh,18rem)!important;transform:translate(-50%,0)!important; }
+:root[data-theme="dark"] #broadcast-menu,:root:not([data-theme="light"]) #broadcast-menu { color:#f8fafc!important; }
+:root[data-theme="light"] #broadcast-menu { background:#f8fafc!important;color:#1f2937!important;border:1px solid #cbd5e1!important;box-shadow:0 18px 44px rgba(15,23,42,.18)!important; }
+:root[data-theme="light"] #broadcast-menu h3 { color:#111827!important; }
+:root[data-theme="light"] #broadcast-menu #broadcast-menu-hint { color:#475569!important; }
+:root[data-theme="light"] #broadcast-menu .broadcast-choice { color:#1f2937!important;background:#fff!important;border-color:#cbd5e1!important; }
+:root[data-theme="light"] #broadcast-menu .broadcast-choice:hover,:root[data-theme="light"] #broadcast-menu .broadcast-choice:focus-visible { background:#e2e8f0!important; }
+:root[data-theme="light"] #broadcast-menu .broadcast-choice > span:last-child > span:last-child { color:#64748b!important; }
+:root[data-theme="light"] #broadcast-menu .broadcast-choice-icon { background:#e2e8f0!important; }
+:root[data-theme="light"] #broadcast-menu .broadcast-quick-compose { border-top-color:#cbd5e1!important; }
+:root[data-theme="light"] #broadcast-menu .broadcast-quick-compose label { color:#334155!important; }
+:root[data-theme="light"] #broadcast-menu #broadcast-quick-message { color:#1f2937!important;background:#fff!important;border-color:#cbd5e1!important; }
+:root[data-theme="light"] #broadcast-menu #broadcast-quick-message::placeholder { color:#64748b!important; }
+:root[data-theme="light"] #broadcast-menu #broadcast-open-settings-btn { color:#334155!important;background:#e2e8f0!important;border-color:#cbd5e1!important; }
+</style>
+<style id="modern-menu-above-pill">
+:root[data-weather-design="modern"] #dynamic-bottom-bar.menu-open #broadcast-menu { position:fixed!important;top:auto!important;right:auto!important;bottom:calc(var(--safe-bottom) + 84px)!important;left:calc(var(--safe-left) + clamp(16px,3vw,48px))!important;width:min(30rem,calc(100vw - var(--safe-left) - var(--safe-right) - clamp(16px,3vw,48px) - 32px))!important;max-height:min(30vh,18rem,calc(100vh - var(--safe-top) - var(--safe-bottom) - 120px))!important;box-sizing:border-box;transform:translateY(0)!important; }
+</style><style id="broadcast-menu-monochrome">
+#broadcast-menu { background:#111827!important;color:#f9fafb!important;border:1px solid #374151!important;box-shadow:0 18px 44px rgba(0,0,0,.38)!important; }
+#broadcast-menu .broadcast-choice { background:#1f2937!important;border-color:#4b5563!important;border-left-color:#6b7280!important;color:#f9fafb!important; }
+#broadcast-menu .broadcast-choice:hover,#broadcast-menu .broadcast-choice:focus-visible { background:#374151!important; }
+#broadcast-menu .broadcast-choice-icon { background:#374151!important; }
+#broadcast-menu .broadcast-quick-compose { border-top-color:#4b5563!important; }
+#broadcast-menu .broadcast-quick-compose label { color:#e5e7eb!important; }
+#broadcast-menu #broadcast-quick-message { background:#1f2937!important;color:#f9fafb!important;border-color:#4b5563!important; }
+#broadcast-menu #broadcast-quick-message::placeholder { color:#9ca3af!important; }
+#broadcast-menu #broadcast-quick-send-btn { background:#4b5563!important;border-color:#6b7280!important;color:#fff!important; }
+#broadcast-menu #broadcast-open-settings-btn { background:#1f2937!important;border-color:#4b5563!important;color:#e5e7eb!important; }
+:root[data-theme="light"] #broadcast-menu { background:#fff!important;color:#111827!important;border-color:#9ca3af!important;box-shadow:0 18px 44px rgba(15,23,42,.18)!important; }
+:root[data-theme="light"] #broadcast-menu h3 { color:#111827!important; }
+:root[data-theme="light"] #broadcast-menu #broadcast-menu-hint { color:#4b5563!important; }
+:root[data-theme="light"] #broadcast-menu .broadcast-choice { background:#f9fafb!important;border-color:#d1d5db!important;border-left-color:#6b7280!important;color:#111827!important; }
+:root[data-theme="light"] #broadcast-menu .broadcast-choice:hover,:root[data-theme="light"] #broadcast-menu .broadcast-choice:focus-visible { background:#e5e7eb!important; }
+:root[data-theme="light"] #broadcast-menu .broadcast-choice-icon { background:#e5e7eb!important; }
+:root[data-theme="light"] #broadcast-menu .broadcast-choice > span:last-child > span:last-child { color:#4b5563!important; }
+:root[data-theme="light"] #broadcast-menu .broadcast-quick-compose { border-top-color:#d1d5db!important; }
+:root[data-theme="light"] #broadcast-menu .broadcast-quick-compose label { color:#374151!important; }
+:root[data-theme="light"] #broadcast-menu #broadcast-quick-message { background:#fff!important;color:#111827!important;border-color:#9ca3af!important; }
+:root[data-theme="light"] #broadcast-menu #broadcast-quick-message::placeholder { color:#6b7280!important; }
+:root[data-theme="light"] #broadcast-menu #broadcast-quick-send-btn { background:#4b5563!important;border-color:#374151!important;color:#fff!important; }
+:root[data-theme="light"] #broadcast-menu #broadcast-open-settings-btn { background:#f3f4f6!important;border-color:#d1d5db!important;color:#1f2937!important; }
 </style>
 </head>
 <body class="min-h-screen text-white overflow-hidden">
@@ -855,7 +1007,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         </div>
     </div>
 
-    <div id="settings-modal" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[60] p-6 glass-card" style="max-width:78rem;width:95%;max-height:92vh;overflow:auto;">
+    <div id="settings-modal" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[80] p-6 glass-card" style="max-width:78rem;width:95%;max-height:92vh;overflow:auto;">
         <div id="settings-header" class="flex justify-between items-center mb-4">
             <button id="back-settings-btn" class="text-white hover:text-sky-300 transition-colors hidden pr-4">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -887,7 +1039,11 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                     <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center gap-3" data-view="display" tabindex="0" role="button" aria-pressed="false">
                         <span class="settings-tab-icon w-10 h-10 rounded-xl flex items-center justify-center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 20V9"/><path d="m13 13 2 2 4-4"/></svg></span>
                         <div class="text-sm"><div class="font-semibold">화면</div><div class="text-xs text-gray-300">여백 / 전체 화면</div></div>
-                    </div>                    <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center gap-3" data-view="pip" tabindex="0" role="button" aria-pressed="false">
+                    </div>                    <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center gap-3" data-view="broadcasts" tabindex="0" role="button" aria-pressed="false">
+                        <span class="settings-tab-icon w-10 h-10 rounded-xl flex items-center justify-center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h3l2-7 4 14 2-7h5"/><circle cx="12" cy="12" r="10"/></svg></span>
+                        <div class="text-sm"><div class="font-semibold">긴급·예약 방송</div><div class="text-xs text-gray-300">알림 / 교시·급식 시간</div></div>
+                    </div>
+                    <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center gap-3" data-view="pip" tabindex="0" role="button" aria-pressed="false">
                         <span class="settings-tab-icon w-10 h-10 rounded-xl flex items-center justify-center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 12h9"/></svg></span>
                         <div class="text-sm">
                             <div class="font-semibold">PiP 모드</div>
@@ -1120,6 +1276,48 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                 <label class="glass-checkbox-label"><input id="show-school-logo" type="checkbox" class="glass-checkbox-input"><span class="glass-checkbox-box"></span><span class="text-sm">학교 로고 표시</span></label>
                                 <label class="glass-checkbox-label"><input id="show-school-name" type="checkbox" class="glass-checkbox-input"><span class="glass-checkbox-box"></span><span class="text-sm">학교 이름 표시</span></label>
                             </div>
+                        </div>
+                        <div id="broadcasts-view" class="settings-view hidden space-y-4">
+                            <h4 class="text-xl font-semibold border-b border-white/30 pb-2">긴급·예약 방송 설정</h4>
+                            <p class="text-sm text-gray-300">학교 pill을 가리키면 긴급 방송 버튼이 나타납니다. 알림마다 이름과 표시 기간, 색, 글꼴을 정할 수 있습니다. pill에는 입력한 메시지만 표시됩니다.</p>
+                            <section class="glass-section p-4 space-y-3"><div><h5 class="font-semibold">알림 타임라인</h5><p class="text-xs text-white/60 mt-1">드래그 앤 드롭 또는 위·아래 버튼으로 순서를 바꿉니다. 긴급 버튼과 같은 시각에 도착한 알림 순서에 적용됩니다.</p></div><div id="broadcast-timeline-list"></div></section>
+                            <section class="glass-section p-4 space-y-4">
+                                <div><h5 class="font-semibold">긴급·예약 메시지</h5><p class="text-xs text-white/60 mt-1">긴급 메시지는 pill 메뉴에서 즉시 표시되고 예약 메시지는 지정한 시각에 표시됩니다.</p></div>
+                                <div class="broadcast-settings-grid">
+                                    <label class="block space-y-1 text-sm">방송 방식<select id="broadcast-mode-select" class="glass-input w-full"><option value="urgent">긴급 방송 버튼</option><option value="scheduled">예약 방송</option></select></label>
+                                    <label class="block space-y-1 text-sm">긴급 종류<select id="broadcast-category-select" class="glass-input w-full"><option value="공습">공습</option><option value="화재">화재</option><option value="지진">지진</option><option value="기타">기타 긴급 방송</option></select></label>
+                                    <label class="block space-y-1 text-sm full-span">알림 이름<input id="broadcast-title-input" type="text" maxlength="60" required class="glass-input w-full" placeholder="예: 전교생 대피 안내"></label>
+                                    <label id="broadcast-scheduled-at-wrap" class="block space-y-1 text-sm full-span" hidden>방송 예약 시간<input id="broadcast-scheduled-at-input" type="datetime-local" class="glass-input w-full"></label>
+                                    <label class="block space-y-1 text-sm full-span">표시할 메시지<textarea id="broadcast-message-input" rows="3" maxlength="500" class="glass-input w-full" placeholder="pill에 표시할 메시지를 입력하세요"></textarea></label>
+                                    <label class="block space-y-1 text-sm">표시 기간<select id="broadcast-duration-mode" class="glass-input w-full"><option value="next">다음 메시지 전까지</option><option value="minutes">분 단위로 지정</option></select></label>
+                                    <label id="broadcast-duration-minutes-wrap" class="block space-y-1 text-sm">표시 시간 (분)<input id="broadcast-duration-minutes" type="number" min="1" max="1440" value="1" class="glass-input w-full"></label>
+                                    <label class="broadcast-color-field block space-y-1 text-sm">pill 색<input id="broadcast-pill-color" type="color" value="#dc2626"></label>
+                                    <label class="broadcast-color-field block space-y-1 text-sm">글자 색<input id="broadcast-text-color" type="color" value="#ffffff"></label>
+                                    <label class="block space-y-1 text-sm full-span">글꼴<select id="broadcast-font-select" class="glass-input w-full"><option value="font-family-notosanskr">Noto Sans KR</option><option value="font-family-system">시스템 기본</option><option value="font-family-pretendard">Pretendard</option><option value="font-family-nanum">Nanum Gothic</option><option value="font-family-gowun">Gowun Dodum</option><option value="font-family-jua">Jua</option><option value="font-family-blackhan">Black Han Sans</option></select></label><label class="block space-y-1 text-sm full-span">이 알림의 효과음<select id="broadcast-message-sound" class="glass-input w-full"><option value="default">기본 효과음 설정 사용</option><option value="off">효과음 없음</option><option value="siren">사이렌</option><option value="bell">종소리</option><option value="chime">차임</option><option value="beep">알림음</option></select></label>
+                                </div>
+                                <div class="flex items-center justify-between gap-3 flex-wrap"><div id="broadcast-preview" class="broadcast-preview font-family-notosanskr" style="background:#dc2626;color:#fff">방송 메시지 미리보기</div><div class="flex gap-2"><button id="broadcast-cancel-edit-btn" type="button" class="glass-button" hidden>편집 취소</button><button id="broadcast-save-message-btn" type="button" class="glass-button">메시지 저장</button></div></div>
+                                <p id="broadcast-form-status" class="text-xs text-white/60 min-h-4" aria-live="polite"></p><div id="broadcast-message-list" class="space-y-2"></div>
+                            </section>
+                            <section class="glass-section p-4 space-y-4"><div><h5 class="font-semibold">음성 안내 (TTS)</h5><p class="text-xs text-white/60 mt-1">현재 기기와 브라우저에 설치되어 제공되는 음성 엔진과 목소리를 사용합니다.</p></div>
+                                <label class="glass-checkbox-label"><input id="broadcast-tts-enabled" type="checkbox" class="glass-checkbox-input"><span class="glass-checkbox-box"></span><span class="text-sm">방송 메시지를 TTS로 읽기</span></label>
+                                <div class="broadcast-settings-grid"><label class="block space-y-1 text-sm">TTS 엔진<select id="broadcast-tts-engine" class="glass-input w-full"><option value="auto">사용 가능한 모든 엔진</option></select></label><label class="block space-y-1 text-sm">목소리<select id="broadcast-tts-voice" class="glass-input w-full"><option value="">기본 목소리</option></select></label></div>
+                                <div class="flex items-center gap-3 flex-wrap"><button id="broadcast-tts-preview-btn" type="button" class="glass-button">목소리 미리 듣기</button><span id="broadcast-tts-status" class="text-xs text-white/60" aria-live="polite"></span></div>
+                            </section>
+                            <section class="glass-section p-4 space-y-4"><div><h5 class="font-semibold">효과음</h5><p class="text-xs text-white/60 mt-1">브라우저의 Web Audio 기능으로 효과음을 만들어 방송 메시지와 함께 재생합니다.</p></div>
+                                <label class="glass-checkbox-label"><input id="broadcast-sound-enabled" type="checkbox" class="glass-checkbox-input"><span class="glass-checkbox-box"></span><span class="text-sm">기본 효과음 사용 (알림별 설정 적용)</span></label>
+                                <div class="broadcast-settings-grid"><label class="block space-y-1 text-sm">효과음<select id="broadcast-sound-type" class="glass-input w-full"><option value="siren">사이렌</option><option value="bell">종소리</option><option value="chime">차임</option><option value="beep">알림음</option></select></label><label class="block space-y-1 text-sm">음량 <span id="broadcast-sound-volume-label">50%</span><input id="broadcast-sound-volume" type="range" min="0" max="100" value="100" class="glass-input w-full"></label></div>
+                                <div class="flex items-center gap-3 flex-wrap"><button id="broadcast-sound-preview-btn" type="button" class="glass-button">효과음 미리 듣기</button><span id="broadcast-sound-status" class="text-xs text-white/60" aria-live="polite"></span></div>
+                            </section>
+                            <section class="glass-section p-4 space-y-4">
+                                <div><h5 class="font-semibold">교시·급식 시간 알림</h5><p class="text-xs text-white/60 mt-1">선택한 요일에 반복됩니다. 교시별 시작·종료 시각과 급식 시간, 급식 시간 안의 학년별 이동 시각을 설정하세요.</p></div>
+                                <div class="flex flex-wrap items-center gap-2 text-sm"><span class="text-white/80">적용 요일</span>
+                                    <label class="broadcast-day-label"><input type="checkbox" data-bell-day="1" checked> 월</label><label class="broadcast-day-label"><input type="checkbox" data-bell-day="2" checked> 화</label><label class="broadcast-day-label"><input type="checkbox" data-bell-day="3" checked> 수</label><label class="broadcast-day-label"><input type="checkbox" data-bell-day="4" checked> 목</label><label class="broadcast-day-label"><input type="checkbox" data-bell-day="5" checked> 금</label><label class="broadcast-day-label"><input type="checkbox" data-bell-day="6"> 토</label><label class="broadcast-day-label"><input type="checkbox" data-bell-day="0"> 일</label>
+                                    <label class="ml-auto flex items-center gap-2">교시 수<input id="broadcast-period-count" type="number" min="1" max="12" value="7" class="glass-input w-20"></label></div>
+                                <div id="broadcast-period-list" class="space-y-2"></div>
+                                <div class="glass-section p-3 space-y-3"><div><h6 class="font-semibold">급식 시간</h6><p class="text-xs text-white/60 mt-1">교시와 겹치지 않는 쉬는 시간으로 설정하세요.</p></div>
+                                    <div class="broadcast-settings-grid"><label class="block space-y-1 text-sm">시작<input id="broadcast-lunch-start" type="time" class="glass-input w-full"></label><label class="block space-y-1 text-sm">종료<input id="broadcast-lunch-end" type="time" class="glass-input w-full"></label></div><div id="broadcast-grade-list" class="space-y-2"></div>
+                                </div><p id="broadcast-bell-status" class="text-xs text-white/60" aria-live="polite"></p>
+                            </section>
                         </div>
                         <div id="main-menu-view" class="settings-view space-y-4">
                             <div class="p-4 space-y-5">
@@ -1573,8 +1771,11 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         <div id="school-view" class="flex items-center gap-4 transition-all duration-300">
             <img id="school-logo-img" src="https://daeryun.dge.hs.kr/images/schl/web/daeryunh/common/logo.png" alt="학교 로고" class="h-10 w-auto">
             <span id="school-name-bottom" class="text-white text-lg font-semibold">대륜고등학교</span>
+            <button id="school-pill-broadcast-fallback" class="hidden" type="button" aria-label="긴급 방송 메뉴 열기">📢 방송</button>
         </div>
 
+        <div id="broadcast-view" class="hidden items-center" hidden><div id="broadcast-text-viewport" class="font-family-notosanskr" role="status" aria-live="assertive" aria-atomic="true"><div id="broadcast-marquee-track"><span class="broadcast-copy"></span><span class="broadcast-copy" aria-hidden="true"></span></div></div></div>
+        <div id="broadcast-menu" class="glass-section" aria-label="긴급·기타 방송 목록"><h3>긴급 방송</h3><div id="broadcast-menu-list"><div id="broadcast-menu-hint">긴급 방송을 설정에서 등록하세요.</div></div><div class="broadcast-quick-compose"><label for="broadcast-quick-message">기타 메시지 바로 방송</label><div class="broadcast-quick-compose-row"><input id="broadcast-quick-message" type="text" maxlength="180" autocomplete="off" placeholder="방송할 내용을 입력하세요"><button id="broadcast-quick-send-btn" type="button">송출</button></div></div><button id="broadcast-open-settings-btn" type="button">긴급·예약 방송 설정</button></div>
         <div id="music-view" class="hidden items-center gap-4 transition-all duration-300">
             <img id="music-thumb" src="" alt="Album Art" class="h-10 w-10 rounded-full object-cover cursor-pointer border border-white/20 hover:border-blue-300 transition-colors animate-[spin_10s_linear_infinite]" style="animation-play-state: paused;">
             
@@ -2195,17 +2396,234 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             saveAndRefreshPlaylist();
         }
 
+
+        let broadcastMessages=[],bellSchedule=null,broadcastTimelineOrder=[],broadcastEditingId=null,broadcastActiveMessage=null,broadcastQueue=[],broadcastTimer=0,broadcastSpeechTimer=0,broadcastMarqueeAnimation=null,broadcastEntryAnimation=null,broadcastMenuOpen=false,broadcastMenuCloseTimer=0,broadcastVoices=[],broadcastAudioContext=null,broadcastSoundNodes=[];
+        const BROADCAST_FONT_CLASSES=['font-family-system','font-family-notosanskr','font-family-pretendard','font-family-nanum','font-family-gowun','font-family-jua','font-family-blackhan'];
+        const BROADCAST_FONT_OPTIONS=[['font-family-notosanskr','Noto Sans KR'],['font-family-system','시스템 기본'],['font-family-pretendard','Pretendard'],['font-family-nanum','Nanum Gothic'],['font-family-gowun','Gowun Dodum'],['font-family-jua','Jua'],['font-family-blackhan','Black Han Sans']];
+        const BROADCAST_SOUND_OPTIONS=[['default','기본 효과음 설정 사용'],['off','효과음 없음'],['siren','사이렌'],['bell','종소리'],['chime','차임'],['beep','알림음']];
+        function broadcastSoundOptions(selected){return BROADCAST_SOUND_OPTIONS.map(x=>'<option value='+x[0]+' '+(x[0]===selected?'selected':'')+'>'+x[1]+'</option>').join('')}
+        function normalizeBroadcastSoundType(value){return BROADCAST_SOUND_OPTIONS.some(x=>x[0]===value)?value:'default'}
+        function broadcastColor(v,f){return /^#[0-9a-f]{6}$/i.test(v||'')?v:f}
+        function broadcastEscape(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+        function makeBellEvent(n,edge){return {enabled:false,text:n+'교시 '+(edge==='end'?'종료':'시작')+'합니다.',pillColor:edge==='end'?'#2563eb':'#059669',textColor:'#ffffff',fontClass:'font-family-notosanskr',displayMode:'minutes',displayMinutes:1,soundType:'default'}}
+        function defaultBellSchedule(){return {days:[1,2,3,4,5],periods:Array.from({length:7},(_,i)=>({number:i+1,start:'',end:'',startEvent:makeBellEvent(i+1,'start'),endEvent:makeBellEvent(i+1,'end')})),lunch:{start:'',end:''},grades:[1,2,3].map(g=>({grade:g,time:'',event:{enabled:false,text:g+'학년 급식실로 이동합니다.',pillColor:'#d97706',textColor:'#ffffff',fontClass:'font-family-notosanskr',displayMode:'minutes',displayMinutes:1}}))}}
+        function normalizeBellSchedule(raw){const fallback=defaultBellSchedule(),src=raw&&typeof raw==='object'?raw:{},count=Math.max(1,Math.min(12,Number(src.periods?.length)||7));const periods=Array.from({length:count},(_,i)=>{const old=src.periods?.[i]||{},n=i+1;return {number:n,start:old.start||'',end:old.end||'',startEvent:{...makeBellEvent(n,'start'),...(old.startEvent||{})},endEvent:{...makeBellEvent(n,'end'),...(old.endEvent||{})}}});const grades=[1,2,3].map(g=>{const old=src.grades?.find?.(x=>Number(x.grade)===g)||fallback.grades[g-1];return {grade:g,time:old.time||'',event:{...fallback.grades[g-1].event,...(old.event||{})}}});return {days:Array.isArray(src.days)?src.days.map(Number).filter(d=>d>=0&&d<=6):fallback.days,periods,lunch:{start:src.lunch?.start||'',end:src.lunch?.end||''},grades}}
+        function loadBroadcastMessages(){try{const a=JSON.parse(localStorage.getItem('dashboardBroadcastMessages')||'[]');return Array.isArray(a)?a.filter(x=>x&&typeof x==='object'):[]}catch{return []}}
+        function saveBroadcastMessages(){try{localStorage.setItem('dashboardBroadcastMessages',JSON.stringify(broadcastMessages))}catch(e){console.warn('방송 메시지 저장 실패',e)}}
+        function saveBellSchedule(){try{localStorage.setItem('dashboardBellSchedule',JSON.stringify(bellSchedule))}catch(e){console.warn('교시·급식 설정 저장 실패',e)}}
+        function saveTimelineOrder(){try{localStorage.setItem('dashboardBroadcastTimelineOrder',JSON.stringify(broadcastTimelineOrder))}catch{}}
+        function bellTimeValue(v){return /^([01]\d|2[0-3]):[0-5]\d$/.test(v||'')}
+        function bellEventEditor(event,kind,label){
+            const font=BROADCAST_FONT_CLASSES.includes(event.fontClass)?event.fontClass:'font-family-notosanskr',mode=event.displayMode==='minutes'?'minutes':'next',options=BROADCAST_FONT_OPTIONS.map(x=>'<option value="'+x[0]+'" '+(x[0]===font?'selected':'')+'>'+x[1]+'</option>').join(''),soundOptions=broadcastSoundOptions(normalizeBroadcastSoundType(event.soundType));
+            return '<div class="bell-event-editor" data-bell-event="'+kind+'"><label class="glass-checkbox-label"><input type="checkbox" data-bell-field="enabled" class="glass-checkbox-input" '+(event.enabled?'checked':'')+'><span class="glass-checkbox-box"></span><span class="text-sm">'+label+' 알림 표시</span></label><div class="space-y-2 mt-2"><label class="block space-y-1 text-xs">메시지<input type="text" maxlength="180" data-bell-field="text" class="glass-input w-full" value="'+broadcastEscape(event.text)+'"></label><label class="block space-y-1 text-xs">표시 기간<select data-bell-field="displayMode" class="glass-input w-full"><option value="next" '+(mode==='next'?'selected':'')+'>다음 메시지 전까지</option><option value="minutes" '+(mode==='minutes'?'selected':'')+'>분 단위로 지정</option></select></label><label class="block space-y-1 text-xs" data-bell-duration-wrap '+(mode==='minutes'?'':'hidden')+'>표시 시간(분)<input type="number" min="1" max="1440" data-bell-field="displayMinutes" class="glass-input w-full" value="'+Math.max(1,Number(event.displayMinutes)||1)+'"></label><label class="block space-y-1 text-xs">알림음<select data-bell-field="soundType" class="glass-input w-full">'+soundOptions+'</select></label><details><summary>색과 글꼴</summary><div class="bell-event-fields"><label class="broadcast-color-field block space-y-1 text-xs">pill 색<input type="color" data-bell-field="pillColor" value="'+broadcastColor(event.pillColor,'#2563eb')+'"></label><label class="broadcast-color-field block space-y-1 text-xs">글자 색<input type="color" data-bell-field="textColor" value="'+broadcastColor(event.textColor,'#ffffff')+'"></label><label class="block space-y-1 text-xs full-span">글꼴<select data-bell-field="fontClass" class="glass-input w-full">'+options+'</select></label></div></details></div></div>';
+        }
+        function renderBellSettings(){
+            const count=document.getElementById('broadcast-period-count'),list=document.getElementById('broadcast-period-list'),grades=document.getElementById('broadcast-grade-list');if(!list||!grades)return;
+            if(count)count.value=String(bellSchedule.periods.length);document.querySelectorAll('[data-bell-day]').forEach(x=>x.checked=bellSchedule.days.includes(Number(x.dataset.bellDay)));
+            document.getElementById('broadcast-lunch-start').value=bellSchedule.lunch.start||'';document.getElementById('broadcast-lunch-end').value=bellSchedule.lunch.end||'';
+            list.innerHTML=bellSchedule.periods.map(p=>'<article class="bell-period-card" data-period-number="'+p.number+'"><div class="bell-period-main"><h5 class="font-semibold">'+p.number+'교시</h5><label class="block space-y-1 text-xs">시작 시간<input type="time" data-period-time="start" class="glass-input w-full" value="'+broadcastEscape(p.start)+'"></label><label class="block space-y-1 text-xs">종료 시간<input type="time" data-period-time="end" class="glass-input w-full" value="'+broadcastEscape(p.end)+'"></label></div><details><summary>시작·종료 메시지와 표시 모양</summary><div class="bell-event-editors">'+bellEventEditor(p.startEvent,'startEvent','시작')+bellEventEditor(p.endEvent,'endEvent','종료')+'</div></details></article>').join('');
+            grades.innerHTML=bellSchedule.grades.map(g=>'<article class="bell-grade-card" data-grade-number="'+g.grade+'"><h6 class="font-semibold">'+g.grade+'학년</h6><label class="block space-y-1 text-xs">급식 이동 시간<input type="time" data-grade-time class="glass-input w-full" value="'+broadcastEscape(g.time)+'"></label><div class="min-w-0 text-xs text-white/60">급식 시간 안에 설정</div><details><summary>급식 메시지·표시 모양</summary>'+bellEventEditor(g.event,'gradeEvent','급식 이동')+'</details></article>').join('');
+            updateBellDurationVisibility();updateBellScheduleStatus();
+        }
+        function readBellEvent(editor,old){const out={...old};if(!editor)return out;editor.querySelectorAll('[data-bell-field]').forEach(input=>{const k=input.dataset.bellField;out[k]=input.type==='checkbox'?input.checked:k==='displayMinutes'?Math.max(1,Math.min(1440,Number(input.value)||1)):input.value});out.pillColor=broadcastColor(out.pillColor,'#2563eb');out.textColor=broadcastColor(out.textColor,'#ffffff');out.soundType=normalizeBroadcastSoundType(out.soundType);if(!BROADCAST_FONT_CLASSES.includes(out.fontClass))out.fontClass='font-family-notosanskr';return out}
+        function captureBellSchedule(){
+            if(!bellSchedule)return;bellSchedule.days=Array.from(document.querySelectorAll('[data-bell-day]:checked')).map(x=>Number(x.dataset.bellDay));bellSchedule.lunch={start:document.getElementById('broadcast-lunch-start').value,end:document.getElementById('broadcast-lunch-end').value};
+            bellSchedule.periods=Array.from(document.querySelectorAll('.bell-period-card')).map(card=>{const n=Number(card.dataset.periodNumber),old=bellSchedule.periods[n-1]||{number:n,startEvent:makeBellEvent(n,'start'),endEvent:makeBellEvent(n,'end')};return {number:n,start:card.querySelector('[data-period-time="start"]').value,end:card.querySelector('[data-period-time="end"]').value,startEvent:readBellEvent(card.querySelector('[data-bell-event="startEvent"]'),old.startEvent),endEvent:readBellEvent(card.querySelector('[data-bell-event="endEvent"]'),old.endEvent)}});
+            bellSchedule.grades=Array.from(document.querySelectorAll('.bell-grade-card')).map(card=>{const n=Number(card.dataset.gradeNumber),old=bellSchedule.grades[n-1],event=readBellEvent(card.querySelector('[data-bell-event="gradeEvent"]'),old.event);return {grade:n,time:card.querySelector('[data-grade-time]').value,event}});
+            saveBellSchedule();updateBellScheduleStatus();renderBroadcastTimeline();
+        }
+        function updateBellDurationVisibility(){document.querySelectorAll('.bell-event-editor').forEach(e=>{const w=e.querySelector('[data-bell-duration-wrap]');if(w)w.hidden=e.querySelector('[data-bell-field="displayMode"]')?.value!=='minutes'})}
+        function updateBellScheduleStatus(){
+            const status=document.getElementById('broadcast-bell-status');if(!status||!bellSchedule)return;const problems=[],l=bellSchedule.lunch;
+            if(l.start&&l.end){if(l.start>=l.end)problems.push('급식 종료 시각은 시작보다 뒤여야 합니다.');else if(bellSchedule.periods.some(p=>bellTimeValue(p.start)&&bellTimeValue(p.end)&&p.start<l.end&&p.end>l.start))problems.push('급식 시간이 교시 시간과 겹칩니다.');bellSchedule.grades.forEach(g=>{if(g.time&&(g.time<l.start||g.time>=l.end))problems.push(g.grade+'학년 이동 시각을 급식 시간 안으로 설정하세요.')})}
+            status.textContent=problems.length?problems.join(' '):'교시·급식 설정이 저장되었습니다.';status.classList.toggle('text-amber-200',problems.length>0);
+        }
+        function timelineEntries(){
+            const entries=broadcastMessages.map(m=>({id:'message:'+m.id,name:m.title||m.category||'알림',meta:m.mode==='scheduled'?'예약 '+(m.scheduledAt?new Date(Number(m.scheduledAt)).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'시각 미설정'):'긴급 버튼'}));
+            if(bellSchedule){bellSchedule.periods.forEach(p=>[['start','startEvent','시작'],['end','endEvent','종료']].forEach(x=>{const e=p[x[1]];if(e?.enabled&&bellTimeValue(p[x[0]]))entries.push({id:'bell:period-'+p.number+'-'+x[0]+'-'+p[x[0]],name:p.number+'교시 '+x[2],meta:p[x[0]]})}));bellSchedule.grades.forEach(g=>{if(g.event?.enabled&&bellTimeValue(g.time))entries.push({id:'bell:grade-'+g.grade+'-'+g.time,name:g.grade+'학년 급식 이동',meta:g.time})})}
+            return entries;
+        }
+        function deleteTimelineEntry(id){
+            if(id.startsWith('message:')){const messageId=id.slice('message:'.length);if(!broadcastMessages.some(m=>m.id===messageId))return;broadcastMessages=broadcastMessages.filter(m=>m.id!==messageId);saveBroadcastMessages();if(broadcastEditingId===messageId)clearBroadcastForm();renderBroadcastMessages();return}
+            let changed=false;
+            for(const period of bellSchedule?.periods||[]){for(const edge of ['start','end'])if(id===`bell:period-${period.number}-${edge}-${period[edge]}`){period[edge+'Event'].enabled=false;changed=true}}
+            for(const grade of bellSchedule?.grades||[])if(id===`bell:grade-${grade.grade}-${grade.time}`){grade.event.enabled=false;changed=true}
+            if(changed){saveBellSchedule();renderBellSettings();renderBroadcastTimeline()}
+        }
+        function renderBroadcastTimeline(){
+            const list=document.getElementById('broadcast-timeline-list');if(!list)return;
+            const entries=timelineEntries(),ids=entries.map(x=>x.id);
+            broadcastTimelineOrder=broadcastTimelineOrder.filter(id=>ids.includes(id));ids.forEach(id=>{if(!broadcastTimelineOrder.includes(id))broadcastTimelineOrder.push(id)});saveTimelineOrder();
+            const by=new Map(entries.map(x=>[x.id,x]));
+            list.innerHTML=entries.length?broadcastTimelineOrder.map((id,i)=>{
+                const entry=by.get(id);if(!entry)return '';
+                const editButton=id.startsWith('message:')?'<button type="button" class="timeline-edit-btn" data-timeline-edit aria-label="메시지 편집">편집</button>':'';
+                return '<article class="broadcast-timeline-item" draggable="true" data-timeline-id="'+broadcastEscape(id)+'"><span class="timeline-grip" aria-hidden="true">⠿</span><div class="min-w-0"><strong class="block text-sm truncate">'+broadcastEscape(entry.name)+'</strong><span class="timeline-meta">'+broadcastEscape(entry.meta)+'</span></div><div class="broadcast-timeline-actions">'+editButton+'<button class="timeline-order-btn" type="button" data-timeline-move="-1" aria-label="위로 이동" '+(i===0?'disabled':'')+'>↑</button><button class="timeline-order-btn" type="button" data-timeline-move="1" aria-label="아래로 이동" '+(i===broadcastTimelineOrder.length-1?'disabled':'')+'>↓</button><button type="button" class="timeline-delete-btn" data-timeline-delete aria-label="타임라인 항목 삭제" title="삭제">×</button></div></article>'
+            }).join(''):'<p class="text-sm text-white/55">알림을 등록하면 타임라인이 표시됩니다.</p>';
+            updateBroadcastMenu()
+        }
+        function timelineRank(id){const i=broadcastTimelineOrder.indexOf(id);return i<0?9999:i}
+        function moveTimeline(id,target,delta){const from=broadcastTimelineOrder.indexOf(id);if(from<0)return;let to=target?broadcastTimelineOrder.indexOf(target):from+delta;if(to<0||to>=broadcastTimelineOrder.length)return;broadcastTimelineOrder.splice(from,1);if(target&&from<to)to--;broadcastTimelineOrder.splice(to,0,id);saveTimelineOrder();renderBroadcastTimeline()}
+        function updateBroadcastMenu(){
+            const list=document.getElementById('broadcast-menu-list');if(!list)return;const urgent=broadcastMessages.filter(m=>m.mode==='urgent'&&m.text?.trim()).sort((a,b)=>timelineRank('message:'+a.id)-timelineRank('message:'+b.id));
+            list.innerHTML=urgent.length?urgent.map(m=>'<button type="button" class="broadcast-choice" data-broadcast-id="'+broadcastEscape(m.id)+'" style="--broadcast-choice-color:'+broadcastColor(m.pillColor,'#dc2626')+'"><span class="broadcast-choice-icon" aria-hidden="true">'+(m.category==='화재'?'🔥':m.category==='지진'?'🌎':m.category==='공습'?'⚠':'📢')+'</span><span class="min-w-0"><span class="block font-semibold truncate">'+broadcastEscape(m.title||m.category||'긴급 방송')+'</span><span class="block text-xs text-white/60 truncate">'+broadcastEscape(m.category||'긴급 방송')+'</span></span></button>').join(''):'<div id="broadcast-menu-hint">긴급 방송을 설정에서 등록하세요.</div>'
+        }
+        function sendQuickBroadcastMessage(){
+            const input=document.getElementById('broadcast-quick-message'),text=input?.value.trim();if(!text){input?.focus();return}
+            const message={id:'quick-'+Date.now(),mode:'urgent',category:'기타',title:'기타 메시지',text,displayMode:'minutes',displayMinutes:1,pillColor:'#2563eb',textColor:'#ffffff',fontClass:'font-family-notosanskr'};input.value='';setBroadcastMenuOpen(false);queueBroadcastMessage(message,true,'bell')
+        }
+        function renderBroadcastMessages(){
+            const list=document.getElementById('broadcast-message-list');if(list)list.innerHTML=broadcastMessages.length?broadcastMessages.map(m=>{const status=m.mode==='scheduled'?(m.sent?'예약 완료':'예약 '+(m.scheduledAt?new Date(Number(m.scheduledAt)).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'')):(m.category||'긴급 방송')+' · 버튼';return '<article class="broadcast-message-card"><div class="min-w-0"><div class="flex items-center gap-2"><span class="inline-block w-2.5 h-2.5 rounded-full" style="background:'+broadcastColor(m.pillColor,'#dc2626')+'"></span><strong class="truncate">'+broadcastEscape(m.title||m.category||'알림')+'</strong></div><p class="text-xs text-white/60 mt-1">'+broadcastEscape(status)+' · '+(m.displayMode==='minutes'?Math.max(1,Number(m.displayMinutes)||1)+'분':'다음 메시지 전까지')+'</p><p class="text-xs text-white/70 mt-1 truncate">'+broadcastEscape(m.text||'')+'</p></div><div class="broadcast-message-actions"><button type="button" data-broadcast-edit="'+broadcastEscape(m.id)+'">편집</button><button type="button" data-broadcast-delete="'+broadcastEscape(m.id)+'">삭제</button></div></article>'}).join(''):'<p class="text-sm text-white/55 py-2">저장된 메시지가 없습니다.</p>';renderBroadcastTimeline()
+        }
+        function setBroadcastMenuOpen(open){const bar=document.getElementById('dynamic-bottom-bar');broadcastMenuOpen=!!open;if(bar){bar.classList.toggle('menu-open',broadcastMenuOpen);bar.setAttribute('aria-expanded',String(broadcastMenuOpen))}document.body.classList.toggle('broadcast-menu-open',broadcastMenuOpen)}
+        function scheduleBroadcastMenuClose(){if(broadcastMenuCloseTimer)return;broadcastMenuCloseTimer=window.setTimeout(()=>{broadcastMenuCloseTimer=0;const bar=document.getElementById('dynamic-bottom-bar');if(!bar?.matches(':hover')&&!bar?.contains(document.activeElement))setBroadcastMenuOpen(false)},1800)}
+        function setBroadcastFormMode(){const scheduled=document.getElementById('broadcast-mode-select')?.value==='scheduled',w=document.getElementById('broadcast-scheduled-at-wrap'),input=document.getElementById('broadcast-scheduled-at-input');if(w)w.hidden=!scheduled;if(input)input.required=scheduled;const d=document.getElementById('broadcast-duration-minutes-wrap');if(d)d.hidden=document.getElementById('broadcast-duration-mode')?.value!=='minutes'}
+        function updateBroadcastPreview(){const p=document.getElementById('broadcast-preview');if(!p)return;p.textContent=document.getElementById('broadcast-message-input').value.trim()||'방송 메시지 미리보기';p.style.background=broadcastColor(document.getElementById('broadcast-pill-color').value,'#dc2626');p.style.color=broadcastColor(document.getElementById('broadcast-text-color').value,'#fff');p.classList.remove(...BROADCAST_FONT_CLASSES);p.classList.add(document.getElementById('broadcast-font-select').value||'font-family-notosanskr')}
+        function clearBroadcastForm(){broadcastEditingId=null;['broadcast-title-input','broadcast-message-input','broadcast-scheduled-at-input'].forEach(id=>document.getElementById(id).value='');document.getElementById('broadcast-mode-select').value='urgent';document.getElementById('broadcast-category-select').value='공습';document.getElementById('broadcast-duration-mode').value='next';document.getElementById('broadcast-duration-minutes').value='1';document.getElementById('broadcast-pill-color').value='#dc2626';document.getElementById('broadcast-text-color').value='#ffffff';document.getElementById('broadcast-font-select').value='font-family-notosanskr';document.getElementById('broadcast-message-sound').value='default';document.getElementById('broadcast-save-message-btn').textContent='메시지 저장';document.getElementById('broadcast-cancel-edit-btn').hidden=true;document.getElementById('broadcast-form-status').textContent='';setBroadcastFormMode();updateBroadcastPreview()}
+        function editBroadcastMessage(id){const m=broadcastMessages.find(x=>x.id===id);if(!m)return;broadcastEditingId=id;document.getElementById('broadcast-mode-select').value=m.mode||'urgent';document.getElementById('broadcast-category-select').value=m.category||'기타';document.getElementById('broadcast-title-input').value=m.title||'';document.getElementById('broadcast-message-input').value=m.text||'';document.getElementById('broadcast-duration-mode').value=m.displayMode||'next';document.getElementById('broadcast-duration-minutes').value=String(Math.max(1,Number(m.displayMinutes)||1));document.getElementById('broadcast-pill-color').value=broadcastColor(m.pillColor,'#dc2626');document.getElementById('broadcast-text-color').value=broadcastColor(m.textColor,'#ffffff');document.getElementById('broadcast-font-select').value=BROADCAST_FONT_CLASSES.includes(m.fontClass)?m.fontClass:'font-family-notosanskr';document.getElementById('broadcast-message-sound').value=normalizeBroadcastSoundType(m.soundType);document.getElementById('broadcast-scheduled-at-input').value=m.mode==='scheduled'&&m.scheduledAt?new Date(Number(m.scheduledAt)-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16):'';document.getElementById('broadcast-save-message-btn').textContent='변경 저장';document.getElementById('broadcast-cancel-edit-btn').hidden=false;setBroadcastFormMode();updateBroadcastPreview()}
+        function saveBroadcastMessageFromForm(){
+            const mode=document.getElementById('broadcast-mode-select').value,title=document.getElementById('broadcast-title-input').value.trim(),text=document.getElementById('broadcast-message-input').value.trim(),input=document.getElementById('broadcast-scheduled-at-input'),status=document.getElementById('broadcast-form-status');
+            if(!title){status.textContent='알림 이름을 입력하세요.';return}if(!text){status.textContent='표시할 메시지를 입력하세요.';return}const at=mode==='scheduled'?Date.parse(input.value):0;if(mode==='scheduled'&&(!Number.isFinite(at)||at<=Date.now())){status.textContent='예약 시간은 현재보다 뒤로 설정하세요.';return}
+            const old=broadcastMessages.find(x=>x.id===broadcastEditingId),mins=Math.max(1,Math.min(1440,Number(document.getElementById('broadcast-duration-minutes').value)||1)),m={...(old||{}),id:broadcastEditingId||('broadcast-'+Date.now()+'-'+Math.random().toString(36).slice(2,8)),mode,category:document.getElementById('broadcast-category-select').value,title,text,scheduledAt:mode==='scheduled'?at:0,sent:false,displayMode:document.getElementById('broadcast-duration-mode').value==='minutes'?'minutes':'next',displayMinutes:mins,pillColor:broadcastColor(document.getElementById('broadcast-pill-color').value,'#dc2626'),textColor:broadcastColor(document.getElementById('broadcast-text-color').value,'#ffffff'),fontClass:document.getElementById('broadcast-font-select').value,soundType:normalizeBroadcastSoundType(document.getElementById('broadcast-message-sound').value)};
+            if(old)broadcastMessages=broadcastMessages.map(x=>x.id===old.id?m:x);else broadcastMessages.push(m);saveBroadcastMessages();renderBroadcastMessages();clearBroadcastForm()
+        }
+        function updateBroadcastMarquee(){
+            const v=document.getElementById('broadcast-text-viewport'),t=document.getElementById('broadcast-marquee-track');if(!v||!t||!broadcastActiveMessage)return;if(broadcastEntryAnimation){broadcastEntryAnimation.cancel();broadcastEntryAnimation=null}if(broadcastMarqueeAnimation){broadcastMarqueeAnimation.cancel();broadcastMarqueeAnimation=null}
+            const a=t.children[0],b=t.children[1];a.textContent=broadcastActiveMessage.text||'';b.textContent='';v.classList.remove('is-static');t.style.transform='translateX(0px)';b.hidden=true;const w=a.scrollWidth,avail=v.clientWidth;if(w<=avail+1){v.classList.add('is-static');return}const loop=a.getBoundingClientRect().width,travel=Math.max(0,loop-avail),speed=42,entry=Math.max(450,avail/speed*1000),cycle=Math.max(1200,travel/speed*1000);t.style.transform='translateX('+avail+'px)';broadcastEntryAnimation=t.animate([{transform:'translateX('+avail+'px)'},{transform:'translateX(0px)'}],{duration:entry,easing:'linear'});broadcastEntryAnimation.onfinish=()=>{t.style.transform='translateX(0px)';broadcastEntryAnimation=null;broadcastMarqueeAnimation=t.animate([{transform:'translateX(0px)'},{transform:'translateX(-'+travel+'px)'}],{duration:cycle,iterations:1,easing:'linear',fill:'forwards'})}
+        }
+        function setBroadcastFont(target,font){if(!target)return;target.classList.remove(...BROADCAST_FONT_CLASSES);target.classList.add(BROADCAST_FONT_CLASSES.includes(font)?font:'font-family-notosanskr')}
+        function getTtsEngine(voice){const t=((voice.voiceURI||'')+' '+(voice.name||'')).toLowerCase();if(t.includes('google'))return 'google';if(t.includes('microsoft'))return 'microsoft';if(t.includes('apple'))return 'apple';if(t.includes('samsung'))return 'samsung';return voice.localService?'local':'network'}
+        function ttsEngineLabel(key){return ({google:'Google 음성 엔진',microsoft:'Microsoft 음성 엔진',apple:'Apple 음성 엔진',samsung:'Samsung 음성 엔진',local:'기기 설치 음성 엔진',network:'네트워크 음성 엔진'})[key]||key}
+        function ttsVoiceId(voice){return voice.voiceURI||voice.name+'|'+voice.lang}
+        function refreshTtsVoices(){
+            if(!window.speechSynthesis)return;broadcastVoices=window.speechSynthesis.getVoices();const engine=document.getElementById('broadcast-tts-engine'),voiceSelect=document.getElementById('broadcast-tts-voice');if(!engine||!voiceSelect)return;
+            const savedEngine=localStorage.getItem('dashboardBroadcastTtsEngine')||'auto',groups=[...new Set(broadcastVoices.map(getTtsEngine))];engine.innerHTML='<option value="auto">사용 가능한 모든 엔진</option>'+groups.map(k=>'<option value="'+k+'">'+ttsEngineLabel(k)+'</option>').join('');engine.value=groups.includes(savedEngine)?savedEngine:'auto';
+            const savedVoice=localStorage.getItem('dashboardBroadcastTtsVoice')||'',visible=broadcastVoices.filter(v=>engine.value==='auto'||getTtsEngine(v)===engine.value);voiceSelect.innerHTML='<option value="">기본 목소리</option>'+visible.map(v=>'<option value="'+broadcastEscape(ttsVoiceId(v))+'">'+broadcastEscape(v.name)+' · '+broadcastEscape(v.lang)+(v.localService?'':' · 네트워크')+'</option>').join('');
+            voiceSelect.value=visible.some(v=>ttsVoiceId(v)===savedVoice)?savedVoice:(visible.find(v=>(v.lang||'').toLowerCase().startsWith('ko'))?ttsVoiceId(visible.find(v=>(v.lang||'').toLowerCase().startsWith('ko'))):'');
+            const status=document.getElementById('broadcast-tts-status');if(status)status.textContent=broadcastVoices.length?'사용 가능한 음성 '+broadcastVoices.length+'개':'음성을 불러오는 중이거나 이 브라우저는 TTS를 지원하지 않습니다.';
+        }
+        function persistTtsSettings(){localStorage.setItem('dashboardBroadcastTtsEnabled',String(document.getElementById('broadcast-tts-enabled').checked));localStorage.setItem('dashboardBroadcastTtsEngine',document.getElementById('broadcast-tts-engine').value);localStorage.setItem('dashboardBroadcastTtsVoice',document.getElementById('broadcast-tts-voice').value)}
+        function stopBroadcastSpeech(){if(window.speechSynthesis)window.speechSynthesis.cancel()}
+        function speakBroadcastText(text,force,onComplete){
+            if((!force&&localStorage.getItem('dashboardBroadcastTtsEnabled')!=='true')||!window.speechSynthesis||!window.SpeechSynthesisUtterance){onComplete?.();return false}
+            stopBroadcastSpeech();const utterance=new SpeechSynthesisUtterance(text);let completed=false;const complete=()=>{if(completed)return;completed=true;onComplete?.()};utterance.onend=complete;utterance.onerror=complete;utterance.lang='ko-KR';const id=document.getElementById('broadcast-tts-voice')?.value||localStorage.getItem('dashboardBroadcastTtsVoice'),voice=broadcastVoices.find(v=>ttsVoiceId(v)===id);if(voice){utterance.voice=voice;utterance.lang=voice.lang||'ko-KR'}window.speechSynthesis.speak(utterance);return true
+        }
+        let broadcastSoundRequestId=0;
+        function stopBroadcastSound(){broadcastSoundRequestId++;broadcastSoundNodes.forEach(node=>{try{node.stop()}catch{}});broadcastSoundNodes=[]}
+        function playBroadcastCue(force,soundTypeOverride='default',repeatCount=1,volumeOverride=null){
+            const enabled=document.getElementById('broadcast-sound-enabled'),useDefault=normalizeBroadcastSoundType(soundTypeOverride)==='default',type=useDefault?(document.getElementById('broadcast-sound-type')?.value||'bell'):normalizeBroadcastSoundType(soundTypeOverride);
+            if((!force&&useDefault&&!enabled?.checked)||type==='off')return 0;
+            const AudioCtor=window.AudioContext||window.webkitAudioContext;if(!AudioCtor){const status=document.getElementById('broadcast-sound-status');if(status)status.textContent='이 브라우저는 Web Audio를 지원하지 않습니다.';return 0}
+            try{
+                broadcastAudioContext=broadcastAudioContext||new AudioCtor();const ctx=broadcastAudioContext;stopBroadcastSound();const requestId=broadcastSoundRequestId;
+                const repeat=Math.max(1,Math.min(10,Math.floor(Number(repeatCount)||1))),volume=Math.max(0,Math.min(1,Number(volumeOverride??document.getElementById('broadcast-sound-volume')?.value??100)/100))*.18;
+                const schedule=()=>{
+                    if(requestId!==broadcastSoundRequestId||ctx.state!=='running')return;const now=ctx.currentTime;
+                    const tone=(frequency,start,duration,wave,peak,frequencyEnd)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type=wave||'sine';osc.frequency.setValueAtTime(frequency,start);if(frequencyEnd)osc.frequency.linearRampToValueAtTime(frequencyEnd,start+duration);gain.gain.setValueAtTime(.0001,start);gain.gain.linearRampToValueAtTime(volume*(peak||1),start+.025);gain.gain.exponentialRampToValueAtTime(.0001,start+duration);osc.connect(gain);gain.connect(ctx.destination);osc.start(start);osc.stop(start+duration+.02);broadcastSoundNodes.push(osc);osc.onended=()=>{broadcastSoundNodes=broadcastSoundNodes.filter(x=>x!==osc)}};
+                    if(type==='siren'){for(let i=0;i<repeat;i++){const start=now+i*1160;tone(520,start,.52,'sawtooth',.7,950);tone(950,start+.52,.52,'sawtooth',.7,520)}return}
+                    if(type==='bell'){tone(880,now,1.25,'sine',1);tone(1320,now,.92,'sine',.32);tone(1760,now,.7,'sine',.16);return}
+                    if(type==='chime'){tone(660,now,.62,'sine',.75);tone(880,now+.22,.72,'sine',.65);tone(1175,now+.46,.9,'sine',.55);return}
+                    tone(880,now,.2,'square',.5);tone(660,now+.3,.22,'square',.5);
+                };
+                const duration=type==='siren'?repeat*1160:type==='bell'?1250:type==='chime'?1380:540;
+                (ctx.state==='running'?Promise.resolve():ctx.resume()).then(schedule).catch(error=>console.warn('효과음을 재생하지 못했습니다.',error));
+                return duration;
+            }catch(error){console.warn('효과음을 재생하지 못했습니다.',error);return 0}
+        }
+        function startUrgentBroadcastCycle(message){
+            if(broadcastActiveMessage!==message)return;
+            const cueDuration=playBroadcastCue(false,'siren',5,100);
+            broadcastSpeechTimer=window.setTimeout(()=>{
+                broadcastSpeechTimer=0;if(broadcastActiveMessage!==message)return;
+                speakBroadcastText(message.text||'',true,()=>{if(broadcastActiveMessage===message)broadcastSpeechTimer=window.setTimeout(()=>{broadcastSpeechTimer=0;startUrgentBroadcastCycle(message)},250)})
+            },cueDuration)
+        }
+        function showBroadcastMessage(m,soundProfile='default'){
+            const bar=document.getElementById('dynamic-bottom-bar'),view=document.getElementById('broadcast-view');if(!bar||!view)return;const active=!!broadcastActiveMessage;broadcastActiveMessage=m;if(broadcastTimer){clearTimeout(broadcastTimer);broadcastTimer=0}if(broadcastSpeechTimer){clearTimeout(broadcastSpeechTimer);broadcastSpeechTimer=0}stopBroadcastSpeech();stopBroadcastSound();
+            if(!active){bar.style.width=bar.getBoundingClientRect().width+'px';bar.classList.add('broadcast-active');document.body.classList.add('broadcast-active');requestAnimationFrame(()=>bar.style.width=Math.min(window.innerWidth-24,900,Math.max(280,window.innerWidth*.88))+'px')}
+            document.getElementById('school-view')?.classList.add('hidden');document.getElementById('music-view')?.classList.add('hidden');view.hidden=false;view.classList.remove('hidden');view.classList.add('flex');bar.style.setProperty('--broadcast-pill-color',broadcastColor(m.pillColor,'#dc2626'));bar.style.setProperty('--broadcast-text-color',broadcastColor(m.textColor,'#ffffff'));setBroadcastFont(document.getElementById('broadcast-text-viewport'),m.fontClass);
+            requestAnimationFrame(updateBroadcastMarquee);if(document.fonts?.ready)document.fonts.ready.then(()=>{if(broadcastActiveMessage===m)updateBroadcastMarquee()});window.setTimeout(()=>{if(broadcastActiveMessage===m)updateBroadcastMarquee()},680);if(soundProfile==='siren')startUrgentBroadcastCycle(m);else{const cueDuration=soundProfile==='bell'?playBroadcastCue(false,'bell'):playBroadcastCue(false,m.soundType);broadcastSpeechTimer=window.setTimeout(()=>{broadcastSpeechTimer=0;speakBroadcastText(m.text||'',false)},cueDuration)}
+            if(m.displayMode==='minutes')broadcastTimer=window.setTimeout(()=>finishBroadcast(true),Math.max(1,Math.min(1440,Number(m.displayMinutes)||1))*60000)
+        }
+        function queueBroadcastMessage(m,urgent,soundProfile='default'){if(urgent){broadcastQueue=[];showBroadcastMessage(m,soundProfile);return}if(!broadcastActiveMessage||broadcastActiveMessage.displayMode==='next'){showBroadcastMessage(m,soundProfile);return}broadcastQueue.push({message:m,soundProfile})}
+        function finishBroadcast(next){
+            if(broadcastTimer){clearTimeout(broadcastTimer);broadcastTimer=0}if(broadcastSpeechTimer){clearTimeout(broadcastSpeechTimer);broadcastSpeechTimer=0}broadcastActiveMessage=null;stopBroadcastSpeech();stopBroadcastSound();if(broadcastMarqueeAnimation){broadcastMarqueeAnimation.cancel();broadcastMarqueeAnimation=null}if(broadcastEntryAnimation){broadcastEntryAnimation.cancel();broadcastEntryAnimation=null}if(next&&broadcastQueue.length){const item=broadcastQueue.shift();showBroadcastMessage(item.message,item.soundProfile);return}
+            const bar=document.getElementById('dynamic-bottom-bar'),view=document.getElementById('broadcast-view');view?.classList.add('hidden');if(view){view.classList.remove('flex');view.hidden=true}if(!bar)return;const from=bar.getBoundingClientRect().width;bar.style.width=from+'px';bar.classList.remove('broadcast-active');document.body.classList.remove('broadcast-active');bar.style.width='max-content';const to=bar.getBoundingClientRect().width;bar.style.width=from+'px';requestAnimationFrame(()=>bar.style.width=to+'px');window.setTimeout(()=>{if(!broadcastActiveMessage)bar.style.width=''},700);updateMusicBarVisibility()
+        }
+        function eventForTime(now,time){if(!bellTimeValue(time))return NaN;const a=time.split(':').map(Number),d=new Date(now);d.setHours(a[0],a[1],0,0);return d.getTime()}
+        function scanBroadcastSchedules(){
+            const now=new Date(),ms=now.getTime(),date=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');let fired={date,events:[]};try{const old=JSON.parse(localStorage.getItem('dashboardBellFiredEvents')||'null');if(old?.date===date&&Array.isArray(old.events))fired=old}catch{}
+            const due=[];if(bellSchedule?.days.includes(now.getDay())){
+                bellSchedule.periods.forEach(p=>[['start','startEvent','시작'],['end','endEvent','종료']].forEach(x=>{const edge=x[0],e=p[x[1]],time=p[edge],key='period-'+p.number+'-'+edge+'-'+time;if(!e?.enabled||!bellTimeValue(time)||fired.events.includes(key))return;const at=eventForTime(now,time);if(ms>=at&&ms-at<90000){fired.events.push(key);due.push({at,id:'bell:'+key,message:{title:p.number+'교시 '+x[2],text:e.text,pillColor:e.pillColor,textColor:e.textColor,fontClass:e.fontClass,displayMode:e.displayMode,displayMinutes:e.displayMinutes,soundType:e.soundType}})}else if(ms>at+90000)fired.events.push(key)}));
+                const l=bellSchedule.lunch;bellSchedule.grades.forEach(g=>{const e=g.event,time=g.time,inLunch=bellTimeValue(l.start)&&bellTimeValue(l.end)&&l.start<l.end&&time>=l.start&&time<l.end,key='grade-'+g.grade+'-'+time;if(!e?.enabled||!bellTimeValue(time)||!inLunch||fired.events.includes(key))return;const at=eventForTime(now,time);if(ms>=at&&ms-at<90000){fired.events.push(key);due.push({at,id:'bell:'+key,message:{title:g.grade+'학년 급식 이동',text:e.text,pillColor:e.pillColor,textColor:e.textColor,fontClass:e.fontClass,displayMode:e.displayMode,displayMinutes:e.displayMinutes,soundType:e.soundType}})}else if(ms>at+90000)fired.events.push(key)})
+            }
+            if(fired.events.length)try{localStorage.setItem('dashboardBellFiredEvents',JSON.stringify(fired))}catch{}
+            let changed=false;broadcastMessages.forEach(m=>{if(m.mode!=='scheduled'||m.sent||!Number.isFinite(Number(m.scheduledAt)))return;const at=Number(m.scheduledAt);if(ms>=at&&ms-at<120000){m.sent=true;changed=true;due.push({at,id:'message:'+m.id,message:m})}else if(ms>=at+120000){m.sent=true;changed=true}});
+            if(changed){saveBroadcastMessages();renderBroadcastMessages()}due.sort((a,b)=>a.at-b.at||timelineRank(a.id)-timelineRank(b.id)).forEach(x=>queueBroadcastMessage(x.message,false,x.id.startsWith('message:')?'bell':'default'))
+        }
+        function renderBroadcastMessages(){
+            const list=document.getElementById('broadcast-message-list');if(list)list.innerHTML=broadcastMessages.length?broadcastMessages.map(m=>{const status=m.mode==='scheduled'?(m.sent?'예약 완료':'예약 '+(m.scheduledAt?new Date(Number(m.scheduledAt)).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'')):(m.category||'긴급 방송')+' · 버튼';return '<article class="broadcast-message-card"><div class="min-w-0"><div class="flex items-center gap-2"><span class="inline-block w-2.5 h-2.5 rounded-full" style="background:'+broadcastColor(m.pillColor,'#dc2626')+'"></span><strong class="truncate">'+broadcastEscape(m.title||m.category||'알림')+'</strong></div><p class="text-xs text-white/60 mt-1">'+broadcastEscape(status)+' · '+(m.displayMode==='minutes'?Math.max(1,Number(m.displayMinutes)||1)+'분':'다음 메시지 전까지')+'</p><p class="text-xs text-white/70 mt-1 truncate">'+broadcastEscape(m.text||'')+'</p></div><div class="broadcast-message-actions"><button type="button" data-broadcast-edit="'+broadcastEscape(m.id)+'">편집</button><button type="button" data-broadcast-delete="'+broadcastEscape(m.id)+'">삭제</button></div></article>'}).join(''):'<p class="text-sm text-white/55 py-2">저장된 메시지가 없습니다.</p>';renderBroadcastTimeline()
+        }
+        function setBroadcastFormMode(){const scheduled=document.getElementById('broadcast-mode-select')?.value==='scheduled',w=document.getElementById('broadcast-scheduled-at-wrap'),input=document.getElementById('broadcast-scheduled-at-input');if(w)w.hidden=!scheduled;if(input)input.required=scheduled;const d=document.getElementById('broadcast-duration-minutes-wrap');if(d)d.hidden=document.getElementById('broadcast-duration-mode')?.value!=='minutes'}
+        function updateBroadcastPreview(){const p=document.getElementById('broadcast-preview');if(!p)return;p.textContent=document.getElementById('broadcast-message-input').value.trim()||'방송 메시지 미리보기';p.style.background=broadcastColor(document.getElementById('broadcast-pill-color').value,'#dc2626');p.style.color=broadcastColor(document.getElementById('broadcast-text-color').value,'#fff');p.classList.remove(...BROADCAST_FONT_CLASSES);p.classList.add(document.getElementById('broadcast-font-select').value||'font-family-notosanskr')}
+        function clearBroadcastForm(){broadcastEditingId=null;['broadcast-title-input','broadcast-message-input','broadcast-scheduled-at-input'].forEach(id=>document.getElementById(id).value='');document.getElementById('broadcast-mode-select').value='urgent';document.getElementById('broadcast-category-select').value='공습';document.getElementById('broadcast-duration-mode').value='next';document.getElementById('broadcast-duration-minutes').value='1';document.getElementById('broadcast-pill-color').value='#dc2626';document.getElementById('broadcast-text-color').value='#ffffff';document.getElementById('broadcast-font-select').value='font-family-notosanskr';document.getElementById('broadcast-save-message-btn').textContent='메시지 저장';document.getElementById('broadcast-cancel-edit-btn').hidden=true;document.getElementById('broadcast-form-status').textContent='';setBroadcastFormMode();updateBroadcastPreview()}
+        function editBroadcastMessage(id){const m=broadcastMessages.find(x=>x.id===id);if(!m)return;broadcastEditingId=id;document.getElementById('broadcast-mode-select').value=m.mode||'urgent';document.getElementById('broadcast-category-select').value=m.category||'기타';document.getElementById('broadcast-title-input').value=m.title||'';document.getElementById('broadcast-message-input').value=m.text||'';document.getElementById('broadcast-duration-mode').value=m.displayMode||'next';document.getElementById('broadcast-duration-minutes').value=String(Math.max(1,Number(m.displayMinutes)||1));document.getElementById('broadcast-pill-color').value=broadcastColor(m.pillColor,'#dc2626');document.getElementById('broadcast-text-color').value=broadcastColor(m.textColor,'#ffffff');document.getElementById('broadcast-font-select').value=BROADCAST_FONT_CLASSES.includes(m.fontClass)?m.fontClass:'font-family-notosanskr';document.getElementById('broadcast-scheduled-at-input').value=m.mode==='scheduled'&&m.scheduledAt?new Date(Number(m.scheduledAt)-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16):'';document.getElementById('broadcast-save-message-btn').textContent='변경 저장';document.getElementById('broadcast-cancel-edit-btn').hidden=false;setBroadcastFormMode();updateBroadcastPreview()}
+        function saveBroadcastMessageFromForm(){
+            const mode=document.getElementById('broadcast-mode-select').value,title=document.getElementById('broadcast-title-input').value.trim(),text=document.getElementById('broadcast-message-input').value.trim(),input=document.getElementById('broadcast-scheduled-at-input'),status=document.getElementById('broadcast-form-status');
+            if(!title){status.textContent='알림 이름을 입력하세요.';return}if(!text){status.textContent='표시할 메시지를 입력하세요.';return}const at=mode==='scheduled'?Date.parse(input.value):0;if(mode==='scheduled'&&(!Number.isFinite(at)||at<=Date.now())){status.textContent='예약 시간은 현재보다 뒤로 설정하세요.';return}
+            const old=broadcastMessages.find(x=>x.id===broadcastEditingId),mins=Math.max(1,Math.min(1440,Number(document.getElementById('broadcast-duration-minutes').value)||1)),m={...(old||{}),id:broadcastEditingId||('broadcast-'+Date.now()+'-'+Math.random().toString(36).slice(2,8)),mode,category:document.getElementById('broadcast-category-select').value,title,text,scheduledAt:mode==='scheduled'?at:0,sent:false,displayMode:document.getElementById('broadcast-duration-mode').value==='minutes'?'minutes':'next',displayMinutes:mins,pillColor:broadcastColor(document.getElementById('broadcast-pill-color').value,'#dc2626'),textColor:broadcastColor(document.getElementById('broadcast-text-color').value,'#ffffff'),fontClass:document.getElementById('broadcast-font-select').value};
+            if(old)broadcastMessages=broadcastMessages.map(x=>x.id===old.id?m:x);else broadcastMessages.push(m);saveBroadcastMessages();renderBroadcastMessages();clearBroadcastForm()
+        }
+        function initBroadcastFeature(){
+            broadcastMessages=loadBroadcastMessages();try{bellSchedule=normalizeBellSchedule(JSON.parse(localStorage.getItem('dashboardBellSchedule')||'null'))}catch{bellSchedule=defaultBellSchedule()}try{broadcastTimelineOrder=JSON.parse(localStorage.getItem('dashboardBroadcastTimelineOrder')||'[]')}catch{broadcastTimelineOrder=[]}
+            renderBroadcastMessages();renderBellSettings();const view=document.getElementById('broadcasts-view'),bar=document.getElementById('dynamic-bottom-bar');if(!view||!bar)return;
+            document.getElementById('broadcast-mode-select').addEventListener('change',setBroadcastFormMode);document.getElementById('broadcast-duration-mode').addEventListener('change',setBroadcastFormMode);
+            ['broadcast-message-input','broadcast-pill-color','broadcast-text-color','broadcast-font-select'].forEach(id=>document.getElementById(id).addEventListener('input',updateBroadcastPreview));['broadcast-pill-color','broadcast-text-color','broadcast-font-select'].forEach(id=>document.getElementById(id).addEventListener('change',updateBroadcastPreview));
+            document.getElementById('broadcast-save-message-btn').addEventListener('click',saveBroadcastMessageFromForm);document.getElementById('broadcast-cancel-edit-btn').addEventListener('click',clearBroadcastForm);
+            document.getElementById('broadcast-message-list').addEventListener('click',e=>{const edit=e.target.closest('[data-broadcast-edit]'),del=e.target.closest('[data-broadcast-delete]');if(edit)editBroadcastMessage(edit.dataset.broadcastEdit);if(del){broadcastMessages=broadcastMessages.filter(x=>x.id!==del.dataset.broadcastDelete);saveBroadcastMessages();renderBroadcastMessages();if(broadcastEditingId===del.dataset.broadcastDelete)clearBroadcastForm()}});
+            document.getElementById('broadcast-period-count').addEventListener('change',e=>{captureBellSchedule();const n=Math.max(1,Math.min(12,Number(e.target.value)||7)),old=bellSchedule.periods.slice();bellSchedule.periods=Array.from({length:n},(_,i)=>old[i]||({number:i+1,start:'',end:'',startEvent:makeBellEvent(i+1,'start'),endEvent:makeBellEvent(i+1,'end')}));renderBellSettings();saveBellSchedule();renderBroadcastTimeline()});
+            view.addEventListener('input',e=>{if(e.target.matches('[data-bell-field="displayMode"]'))updateBellDurationVisibility();if(e.target.matches('[data-bell-day],[data-period-time],[data-grade-time],[data-bell-field]'))captureBellSchedule()});
+            view.addEventListener('change',e=>{if(e.target.matches('[data-bell-field="displayMode"]'))updateBellDurationVisibility();if(e.target.matches('[data-bell-day],[data-period-time],[data-grade-time],[data-bell-field]'))captureBellSchedule()});
+            const timeline=document.getElementById('broadcast-timeline-list');timeline.addEventListener('click',e=>{const item=e.target.closest('[data-timeline-id]');if(!item)return;if(e.target.closest('[data-timeline-edit]')){const id=item.dataset.timelineId;if(!id.startsWith('message:'))return;setBroadcastMenuOpen(false);settingsModal.classList.remove('hidden');settingsContainer.style.opacity='0';switchSettingsView('broadcasts');editBroadcastMessage(id.slice('message:'.length));return}if(e.target.closest('[data-timeline-delete]')){deleteTimelineEntry(item.dataset.timelineId);return}const b=e.target.closest('[data-timeline-move]');if(b)moveTimeline(item.dataset.timelineId,null,Number(b.dataset.timelineMove))});
+            timeline.addEventListener('dragstart',e=>{const item=e.target.closest('[data-timeline-id]');if(!item)return;e.dataTransfer.setData('text/plain',item.dataset.timelineId);e.dataTransfer.effectAllowed='move';item.classList.add('is-dragging')});
+            timeline.addEventListener('dragend',e=>e.target.closest('[data-timeline-id]')?.classList.remove('is-dragging'));
+            timeline.addEventListener('dragover',e=>{const item=e.target.closest('[data-timeline-id]');if(item){e.preventDefault();item.classList.add('is-drop-target');e.dataTransfer.dropEffect='move'}});
+            timeline.addEventListener('dragleave',e=>e.target.closest('[data-timeline-id]')?.classList.remove('is-drop-target'));
+            timeline.addEventListener('drop',e=>{const target=e.target.closest('[data-timeline-id]'),id=e.dataTransfer.getData('text/plain');if(target&&id&&id!==target.dataset.timelineId){e.preventDefault();moveTimeline(id,target.dataset.timelineId,0)}timeline.querySelectorAll('.is-drop-target').forEach(x=>x.classList.remove('is-drop-target'))});
+            document.addEventListener('click',e=>{if(broadcastMenuOpen&&!bar.contains(e.target))setBroadcastMenuOpen(false)});
+            bar.addEventListener('click',e=>{if(e.target.closest('#broadcast-menu'))return;if(broadcastActiveMessage){broadcastQueue=[];setBroadcastMenuOpen(false);finishBroadcast(false);return}if(bar.contains(e.target))setBroadcastMenuOpen(!broadcastMenuOpen)});
+            document.getElementById('broadcast-menu-list').addEventListener('click',e=>{const b=e.target.closest('[data-broadcast-id]');if(!b)return;if(broadcastAudioContext?.state==='suspended')broadcastAudioContext.resume().catch(()=>{});const m=broadcastMessages.find(x=>x.id===b.dataset.broadcastId);if(m){setBroadcastMenuOpen(false);queueBroadcastMessage(m,true,'siren')}});
+            const quickMessageInput=document.getElementById('broadcast-quick-message');document.getElementById('broadcast-quick-send-btn').addEventListener('click',sendQuickBroadcastMessage);quickMessageInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();sendQuickBroadcastMessage()}});
+            document.getElementById('broadcast-open-settings-btn').addEventListener('click',()=>{setBroadcastMenuOpen(false);settingsModal.classList.remove('hidden');settingsContainer.style.opacity='0';switchSettingsView('broadcasts')});
+            document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(broadcastMenuOpen)setBroadcastMenuOpen(false);else if(broadcastActiveMessage)finishBroadcast(true)}});
+            const enabled=document.getElementById('broadcast-tts-enabled'),engine=document.getElementById('broadcast-tts-engine'),voice=document.getElementById('broadcast-tts-voice');
+            enabled.checked=localStorage.getItem('dashboardBroadcastTtsEnabled')==='true';
+            if(window.speechSynthesis){refreshTtsVoices();window.speechSynthesis.addEventListener?.('voiceschanged',refreshTtsVoices);window.setTimeout(refreshTtsVoices,500)}
+            else document.getElementById('broadcast-tts-status').textContent='이 브라우저는 TTS를 지원하지 않습니다.';
+            enabled.addEventListener('change',persistTtsSettings);engine.addEventListener('change',()=>{localStorage.setItem('dashboardBroadcastTtsEngine',engine.value);refreshTtsVoices()});voice.addEventListener('change',()=>localStorage.setItem('dashboardBroadcastTtsVoice',voice.value));
+            document.getElementById('broadcast-tts-preview-btn').addEventListener('click',()=>speakBroadcastText('방송 메시지 음성 안내 시험입니다.',true));
+            const soundEnabled=document.getElementById('broadcast-sound-enabled'),soundType=document.getElementById('broadcast-sound-type'),soundVolume=document.getElementById('broadcast-sound-volume'),soundLabel=document.getElementById('broadcast-sound-volume-label');
+            soundEnabled.checked=localStorage.getItem('dashboardBroadcastSoundEnabled')!=='false';soundType.value=localStorage.getItem('dashboardBroadcastSoundType')||'bell';soundVolume.value=localStorage.getItem('dashboardBroadcastSoundVolume')||'100';soundLabel.textContent=soundVolume.value+'%';
+            soundEnabled.addEventListener('change',()=>localStorage.setItem('dashboardBroadcastSoundEnabled',String(soundEnabled.checked)));soundType.addEventListener('change',()=>localStorage.setItem('dashboardBroadcastSoundType',soundType.value));soundVolume.addEventListener('input',()=>{soundLabel.textContent=soundVolume.value+'%';localStorage.setItem('dashboardBroadcastSoundVolume',soundVolume.value)});
+            document.addEventListener('pointerdown',()=>{const AudioCtor=window.AudioContext||window.webkitAudioContext;if(AudioCtor&&!broadcastAudioContext)broadcastAudioContext=new AudioCtor();if(broadcastAudioContext?.state==='suspended')broadcastAudioContext.resume().catch(()=>{})},{once:true});
+            document.getElementById('broadcast-sound-preview-btn').addEventListener('click',()=>playBroadcastCue(true));
+            window.addEventListener('resize',()=>{if(broadcastActiveMessage){bar.style.width=Math.min(window.innerWidth-24,900,Math.max(280,window.innerWidth*.88))+'px';updateBroadcastMarquee()}});
+            setBroadcastFormMode();updateBroadcastPreview();scanBroadcastSchedules();window.setInterval(scanBroadcastSchedules,1000)
+        }
+
         function applySchoolPillSettings() {
             const showLogo = localStorage.getItem('dashboardShowSchoolLogo') !== 'false';
             const showName = localStorage.getItem('dashboardShowSchoolName') === 'true';
             const logo = document.getElementById('school-logo-img');
             const name = document.getElementById('school-name-bottom');
+            const fallback = document.getElementById('school-pill-broadcast-fallback');
             const pill = document.getElementById('dynamic-bottom-bar');
             const logoToggle = document.getElementById('show-school-logo');
             const nameToggle = document.getElementById('show-school-name');
             if (logo) logo.classList.toggle('hidden', !showLogo);
             if (name) name.classList.toggle('hidden', !showName);
-            if (pill) pill.classList.toggle('hidden', !showLogo && !showName);
+            if (fallback) fallback.classList.toggle('hidden', showLogo || showName);
+            if (pill) pill.classList.remove('hidden');
             if (logoToggle) logoToggle.checked = showLogo;
             if (nameToggle) nameToggle.checked = showName;
         }
@@ -2214,6 +2632,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             const musicView = document.getElementById('music-view');
             const showMusicBar = localStorage.getItem('dashboardShowMusicBar') !== 'false';
             
+            if(broadcastActiveMessage) { schoolView?.classList.add('hidden'); musicView?.classList.add('hidden'); const broadcastView=document.getElementById('broadcast-view'); if(broadcastView){broadcastView.hidden=false;broadcastView.classList.remove('hidden');broadcastView.classList.add('flex');} return; }
             if(ytMusicPlaylist.length > 0 && showMusicBar) {
                 schoolView.classList.add('hidden');
                 musicView.classList.remove('hidden');
@@ -2668,13 +3087,15 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             const profileViewEl = document.getElementById('profile-view');
             const infoViewEl = document.getElementById('info-view');
             
-            [mainMenuView, displayView, customTextView, scheduleEditView, playView, backgroundView, profileViewEl, infoViewEl, systemView, updateView, releaseNotesView, pipView].forEach(view => view && view.classList.add('hidden'));
+            [mainMenuView, displayView, customTextView, scheduleEditView, playView, backgroundView, profileViewEl, infoViewEl, systemView, updateView, releaseNotesView, pipView, document.getElementById('broadcasts-view')].forEach(view => view && view.classList.add('hidden'));
             
             let titleText = '대시보드 설정';
             let showBackButton = false;
             let targetView = mainMenuView;
 
-            if (viewName === 'display') {
+            if (viewName === 'broadcasts') {
+                titleText = '긴급·예약 방송 설정'; showBackButton = true; targetView = document.getElementById('broadcasts-view');
+            } else if (viewName === 'display') {
                 titleText = '화면 표시 설정'; showBackButton = true; targetView = displayView;
             } else if (viewName === 'custom-text') {
                 titleText = '커스텀 메시지 설정'; showBackButton = true; targetView = customTextView;
@@ -3764,6 +4185,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         }
 
         function initApp() {
+            initBroadcastFeature();
             updateTime();
             setInterval(updateTime, 1000);
             loadSettings(); // 이 내부에서 설정 로딩 및 renderPipMedia() 호출
