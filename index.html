@@ -579,6 +579,15 @@
         .weather-design-choice[aria-pressed="true"] { background:rgba(255,255,255,.2); color:#fff; box-shadow:inset 0 1px 1px rgba(255,255,255,.18),0 2px 8px rgba(0,0,0,.12); }
         :root[data-theme="weather"][data-weather-design="simple"] #transition-settings-container { display:none!important; }
         #weather-modern-clock, #weather-modern-date, #simple-weather-clock, #simple-weather-time, #simple-weather-date, #simple-weather-temperature, #simple-meal { display:none; }
+        #simple-schedule-pills { display:none; position:fixed; top:calc(var(--safe-top) + 14px); left:calc(var(--safe-left) + 20px); right:calc(var(--safe-right) + 20px); height:clamp(42px,6vh,64px); z-index:48; pointer-events:none; overflow:hidden; }
+        #simple-schedule-pills .simple-schedule-pill { position:absolute; top:50%; transform:translateY(-50%) scale(var(--pill-scale,1)); transform-origin:left center; display:inline-flex; align-items:center; gap:.62rem; width:max-content; max-width:min(34vw,420px); overflow:hidden; padding:.12rem 1.05rem .12rem .38rem; border:1px solid rgba(255,255,255,.24); border-radius:999px; color:#fff; background:rgba(255,255,255,.14); box-shadow:none; backdrop-filter:blur(14px) saturate(145%); -webkit-backdrop-filter:blur(14px) saturate(145%); font-size:clamp(.86rem,1.35vw,1.12rem); font-weight:800; line-height:1.05; white-space:nowrap; }
+        #simple-schedule-pills .simple-schedule-label { display:block; min-width:0; overflow:hidden; text-overflow:ellipsis; }
+#simple-schedule-pills .simple-schedule-count { display:inline-flex; flex:0 0 2.95em; width:2.95em; height:2.95em; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.3); border-radius:50%; background:rgba(255,255,255,.14); box-shadow:inset 0 1px 2px rgba(255,255,255,.2),0 2px 8px rgba(0,0,0,.12); font-size:.7em; font-weight:800; letter-spacing:-.04em; }
+#simple-schedule-pills .simple-schedule-pill.is-soon .simple-schedule-count { background:rgba(255,70,70,.2); border-color:rgba(255,155,155,.42); }
+#simple-schedule-pills .simple-schedule-pill.is-dday { background:rgba(255,255,255,.2); border-color:rgba(255,255,255,.42); }
+        :root[data-theme="weather"][data-weather-design="simple"] #dday-banner { display:none!important; }
+        :root[data-theme="weather"][data-weather-design="simple"] #simple-schedule-pills.has-schedules { display:block; }
+        @media(max-width:640px) { #simple-schedule-pills { left:calc(var(--safe-left) + 12px); right:calc(var(--safe-right) + 12px); top:calc(var(--safe-top) + 10px); height:46px; } #simple-schedule-pills .simple-schedule-pill { max-width:min(62vw,280px); padding:.08rem .72rem .08rem .3rem; gap:.48rem; font-size:.82rem; } }
         :root[data-theme="weather"][data-weather-design="simple"] .screen { display:none!important; visibility:hidden!important; opacity:0!important; pointer-events:none!important; }
         :root[data-theme="weather"][data-weather-design="simple"] #dynamic-bottom-bar,
         :root[data-theme="weather"][data-weather-design="simple"] #weather-modern-clock,
@@ -588,7 +597,7 @@
         :root[data-theme="weather"][data-weather-design="simple"] #simple-weather-clock,
         :root[data-theme="weather"][data-weather-design="simple"] #simple-weather-temperature,
         :root[data-theme="weather"][data-weather-design="simple"] #simple-meal { display:block; position:fixed; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.72); }
-        :root[data-theme="weather"][data-weather-design="simple"] #simple-weather-clock { z-index:49; top:21vh; left:50%; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:stretch; width:max-content; }
+        :root[data-theme="weather"][data-weather-design="simple"] #simple-weather-clock { z-index:49; top:calc(var(--safe-top) + (100vh - var(--safe-top) - var(--safe-bottom)) * .21); left:calc(var(--safe-left) + (100vw - var(--safe-left) - var(--safe-right)) / 2); transform:translate(-50%,-50%); max-width:calc(100vw - var(--safe-left) - var(--safe-right) - 24px); display:flex; flex-direction:column; align-items:stretch; width:max-content; }
         :root[data-theme="weather"][data-weather-design="simple"] #simple-weather-time,
         :root[data-theme="weather"][data-weather-design="simple"] #simple-weather-date { display:block; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.72); }
         :root[data-theme="weather"][data-weather-design="simple"] #simple-weather-time { position:static; width:100%; transform:none; text-align:center; font-size:clamp(2.8rem,6.2vw,5.4rem); font-weight:800; line-height:1; letter-spacing:-.04em; white-space:nowrap; }
@@ -598,7 +607,7 @@
         :root[data-theme="weather"][data-weather-design="simple"] #simple-meal-title { margin-bottom:.5rem; font-size:.85rem; font-weight:700; color:rgba(255,255,255,.7); }
         :root[data-theme="weather"][data-weather-design="simple"] #simple-meal-items { font-size:clamp(.8rem,1.4vw,1rem); line-height:1.5; }
         :root[data-theme="weather"][data-weather-design="simple"] #simple-meal-items p + p { margin-top:.12rem; }
-        @media(max-width:640px) { :root[data-theme="weather"][data-weather-design="simple"] #simple-meal { right:12px; bottom:calc(var(--safe-bottom) + 1.75rem); width:min(58vw,300px); max-height:34vh; padding:.75rem .9rem; } :root[data-theme="weather"][data-weather-design="simple"] #simple-weather-temperature { left:12px; bottom:calc(var(--safe-bottom) + 16px); } :root[data-theme="weather"][data-weather-design="simple"] #simple-weather-date { right:12px; top:calc(var(--safe-top) + 1rem); font-size:.9rem; } }
+        @media(max-width:640px) { :root[data-theme="weather"][data-weather-design="simple"] #simple-meal { right:calc(var(--safe-right) + 12px); bottom:calc(var(--safe-bottom) + 1.75rem); width:min(58vw,300px); max-height:34vh; padding:.75rem .9rem; } :root[data-theme="weather"][data-weather-design="simple"] #simple-weather-temperature { left:calc(var(--safe-left) + 12px); bottom:calc(var(--safe-bottom) + 16px); } :root[data-theme="weather"][data-weather-design="simple"] #simple-weather-date { right:calc(var(--safe-right) + 12px); top:calc(var(--safe-top) + 1rem); font-size:.9rem; } }
         #weather-modern-clock, #weather-modern-date { display:none; }
         :root[data-theme="weather"][data-weather-design="modern"] .screen { transition:none!important; }
         :root[data-theme="weather"][data-weather-design="modern"] .screen .aux-clock { display:none!important; }
@@ -610,7 +619,9 @@
         :root[data-theme="weather"][data-weather-design="modern"] #meal-screen > div:first-of-type > .glass-card,
         :root[data-theme="weather"][data-weather-design="modern"] #schedule-screen > div:first-of-type > .glass-card,
         :root[data-theme="weather"][data-weather-design="modern"] #custom-text-screen > div:first-of-type > .glass-card { position:absolute; right:clamp(16px,3vw,48px); bottom:4vh; width:min(42vw,620px); height:min(49vh,560px); min-width:0; max-width:none; margin:0; overflow:auto; pointer-events:auto; border-radius:28px; transition:opacity .65s ease,transform .65s ease; }
-        :root[data-theme="weather"][data-weather-design="modern"] #schedule-screen-title,
+        :root[data-theme="weather"][data-weather-design="modern"] #weather-screen > div:first-of-type > .glass-card { display:flex; flex-direction:column; }
+:root[data-theme="weather"][data-weather-design="modern"] #weather-screen > div:first-of-type > .glass-card > div { flex:1; min-height:0; align-items:center; }
+:root[data-theme="weather"][data-weather-design="modern"] #schedule-screen-title,
 :root[data-theme="weather"][data-weather-design="modern"] #schedule-screen h2,
 :root[data-theme="weather"][data-weather-design="modern"] #schedule-screen .glass-card > div:first-child { display:none!important; }
 :root[data-theme="weather"][data-weather-design="modern"] #schedule-screen .schedule-source-badge { display:none!important; }
@@ -1058,7 +1069,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                             <div class="p-4 space-y-5">
                                 <section class="theme-settings glass-section p-4" aria-labelledby="theme-settings-title">
                                     <div class="flex items-center justify-between gap-4">
-                                        <div><h4 id="theme-settings-title" class="font-semibold">화면 테마</h4><p class="text-sm text-white/60 mt-1">대기화면의 밝기를 선택하세요.</p></div>
+                                        <div><h4 id="theme-settings-title" class="font-semibold">화면 테마</h4><p class="text-sm text-white/60 mt-1">화면 테마를 다크, 라이트, 날씨로 변경 할 수 있습니다.</p></div>
                                         <div class="theme-picker" role="group" aria-label="화면 테마 선택">
                                             <button type="button" class="theme-choice" data-theme-choice="dark" aria-pressed="true"><span aria-hidden="true">☾</span> 다크</button>
                                             <button type="button" class="theme-choice" data-theme-choice="light" aria-pressed="false"><span aria-hidden="true">☼</span> 라이트</button>
@@ -1067,8 +1078,8 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                     </div>
                                 </section>
                                 <section class="weather-settings-panel glass-section p-4 space-y-4" aria-labelledby="weather-scene-title">
-                                    <div class="weather-design-control flex items-center justify-between gap-4"><div><h5 class="font-semibold">디자인 옵션</h5><p class="text-xs text-white/60 mt-1">날씨 화면의 시계와 정보 배치를 선택합니다.</p></div><div class="theme-picker" role="group" aria-label="날씨 화면 디자인 선택"><button type="button" class="weather-design-choice" data-weather-design-choice="default" aria-pressed="true">기본</button><button type="button" class="weather-design-choice" data-weather-design-choice="modern" aria-pressed="false">모던</button><button type="button" class="weather-design-choice" data-weather-design-choice="simple" aria-pressed="false">심플</button></div></div>
-                                    <div><h4 id="weather-scene-title" class="font-semibold">실시간 날씨 배경</h4><p class="text-sm text-white/60 mt-1">시간대와 날씨에 따라 하늘, 구름, 잔디와 강수 효과를 표현합니다.</p></div>
+                                    <div class="weather-design-control flex items-center justify-between gap-4"><div><h5 class="font-semibold">디자인 옵션</h5><p class="text-xs text-white/60 mt-1"></p></div><div class="theme-picker" role="group" aria-label="날씨 화면 디자인 선택"><button type="button" class="weather-design-choice" data-weather-design-choice="default" aria-pressed="true">기본</button><button type="button" class="weather-design-choice" data-weather-design-choice="modern" aria-pressed="false">모던</button><button type="button" class="weather-design-choice" data-weather-design-choice="simple" aria-pressed="false">심플</button></div></div>
+                                    <div><h4 id="weather-scene-title" class="font-semibold">실시간 날씨 배경</h4><p class="text-sm text-white/60 mt-1"></p></div>
                                     <div class="flex flex-wrap gap-x-5 gap-y-2">
                                       <label class="glass-checkbox-label"><input type="checkbox" id="weather-reflect-toggle" class="glass-checkbox-input" checked><span class="glass-checkbox-box"></span><span class="text-sm">날씨 반영</span></label>
                                       <label class="glass-checkbox-label"><input type="checkbox" id="weather-time-reflect-toggle" class="glass-checkbox-input" checked><span class="glass-checkbox-box"></span><span class="text-sm">시간대 반영</span></label>
@@ -1085,7 +1096,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                       <label class="block space-y-1 text-sm">수동 시간대<select id="weather-time" class="glass-input w-full"><option value="auto">현재 시간</option><option value="dawn">새벽</option><option value="sunrise">일출</option><option value="day">낮</option><option value="sunset">일몰</option><option value="night">밤</option><option value="timeline">타임라인</option></select></label>
                                       <label class="block space-y-1 text-sm">강수<select id="weather-kind" class="glass-input w-full"><option value="none">없음</option><option value="rain">비</option><option value="snow">눈</option></select></label>
                                     </div>
-                                    <div id="weather-timeline-controls" class="weather-control-grid" hidden><label class="block space-y-1 text-sm">타임라인 한 바퀴 (분)<input id="weather-timeline-duration" class="glass-input w-full" type="number" min="1" max="1440" step="1" value="120"></label><p class="text-xs text-white/60 self-center">일출부터 다음 일출까지 하늘이 반복되고, 낮에는 맑음→비→맑음→눈→맑음 순서로 바뀝니다.</p></div>
+                                    <div id="weather-timeline-controls" class="weather-control-grid" hidden><label class="block space-y-1 text-sm">타임라인 한 바퀴 (분)<input id="weather-timeline-duration" class="glass-input w-full" type="number" min="1" max="1440" step="1" value="120"></label><p class="text-xs text-white/60 self-center">타임라인 선택시 일출부터 다음 일출까지 하늘이 반복되고, 낮에는 맑음→비→맑음→눈→맑음 순서로 바뀝니다.</p></div>
                                     <label class="block space-y-1 text-sm">천구 회전 속도 <span id="weather-rotation-value">10%</span><input id="weather-rotation-speed" type="range" min="0" max="300" step="10" value="10" aria-label="천구 회전 속도 조절" class="glass-input w-full"></label>
                                     <p id="weather-detail" class="text-xs text-white/60">Open-Meteo 공개 날씨 API를 사용합니다. 위치 접근 없이 기본 대구 좌표로 시작합니다.</p>
                                 </section>
@@ -1181,7 +1192,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                     <input type="text" id="yt-music-url-input" class="glass-input flex-1" placeholder="YouTube 영상 링크를 입력하세요..." autocomplete="off">
                                     <button id="add-yt-music-btn" class="glass-button bg-blue-500/30 hover:bg-blue-500/50 shadow-md">항목 추가</button>
                                 </div>
-                                <p class="text-xs text-gray-400 mt-1">* 링크 추가 시 자동으로 영상 정보(제목/게시자/섬네일)를 불러옵니다.</p>
+                                <p class="text-xs text-gray-400 mt-1"></p>
 
                                 <div class="border-t border-white/10 pt-4 mt-4">
                                     <h5 class="text-lg font-semibold text-white mb-3">현재 플레이리스트</h5>
@@ -1392,6 +1403,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         <span class="dday-count"></span>
         <span class="dday-title"></span>
     </div>
+    <div id="simple-schedule-pills" aria-label="다가오는 학사 일정" aria-live="polite"></div>
 
     <div id="weather-modern-clock" class="weather-modern-clock" aria-label="현재 시각"><div class="weather-modern-clock-face"><span id="weather-modern-time">00:00</span><span id="weather-modern-seconds">:00</span></div><div id="weather-modern-date" class="weather-modern-date"></div></div>
     <div id="simple-weather-clock" aria-label="현재 시각과 날짜">
@@ -1407,7 +1419,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             <h1 id="current-time" class="text-6xl sm:text-8xl font-extrabold tracking-tight text-white">00:00:00</h1>
 
             <div class="glass-card no-initial-blur p-6 sm:p-8 rounded-[40px] shadow-2xl mt-12">
-                <p class="text-xl sm:text-2xl font-semibold text-gray-200 mb-4">현재 위치: 대구 수성구 만촌 3동</p>
+                <p class="text-xl sm:text-2xl font-semibold text-gray-200 mb-4">현재 위치: 대구 수성구 교학로 2700</p>
                 <div class="flex flex-col sm:flex-row justify-around items-center">
                     <div class="flex items-center space-x-4 mb-6 sm:mb-0">
                         <span class="text-6xl sm:text-7xl">☀️</span>
@@ -1440,7 +1452,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                 </div>
                 
                 <div class="w-full sm:w-1/3 border-t sm:border-t-0 sm:border-l border-white/20 pt-6 sm:pt-0 sm:pl-8 text-left overflow-y-auto flex flex-col justify-center">
-                    <h3 class="text-xl font-bold text-gray-300 mb-4 tracking-wide">알레르기 정보 안내</h3>
+                    <h3 class="text-xl font-bold text-gray-300 mb-4 tracking-wide">식품 알러지 정보</h3>
                     <ul class="text-sm sm:text-base text-gray-100 leading-relaxed grid grid-cols-2 gap-x-2 gap-y-1">
                         <li>1. 난류</li>
                         <li>2. 우유</li>
@@ -1492,8 +1504,8 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             </div>
             <div class="glass-card no-initial-blur p-8 sm:p-12 rounded-[40px] shadow-2xl w-full">
                 <h2 id="custom-title" class="text-4xl sm:text-5xl font-extrabold text-white mb-6">대륜고등학교 방송부</h2>
-                <p id="custom-message" class="text-4xl font-light leading-relaxed whitespace-pre-wrap text-white">지금은 방송 시간이 아닙니다.</p>
-                <p id="custom-message-placeholder" class="text-xl sm:text-2xl text-gray-400 italic mt-4 hidden">By. ADK</p>
+                <p id="custom-message" class="text-4xl font-light leading-relaxed whitespace-pre-wrap text-white">방송을 쉬어가는 시간입니다.</p>
+                <p id="custom-message-placeholder" class="text-xl sm:text-2xl text-gray-400 italic mt-4 hidden">by. ADK</p>
             </div>
         </div>
     </div>
@@ -1555,6 +1567,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             const previousDesign=document.documentElement.dataset.weatherDesign;
             const selectedDesign = ['modern','simple'].includes(design) ? design : 'default';
             document.documentElement.dataset.weatherDesign = selectedDesign;
+            try { updateSimpleSchedulePills(true); } catch (error) {}
             if(selectedDesign==='simple'&&document.documentElement.dataset.theme==='weather') { if(slideTimeout) clearTimeout(slideTimeout); slideTimeout=null; try { updatePipVisibility(currentScreenIndex); } catch(error) {} }
             else if(previousDesign==='simple'&&document.documentElement.dataset.theme==='weather') { try { updatePipVisibility(currentScreenIndex); startScreenLoop(); } catch(error) {} }
             syncModernScheduleTitle();
@@ -1565,6 +1578,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             const previousTheme=document.documentElement.dataset.theme;
             const selectedTheme = ['light','weather'].includes(theme) ? theme : 'dark';
             document.documentElement.dataset.theme = selectedTheme;
+            try { updateSimpleSchedulePills(true); } catch (error) {}
             if(document.documentElement.dataset.weatherDesign==='simple') {
                 if(selectedTheme==='weather') { if(slideTimeout) clearTimeout(slideTimeout); slideTimeout=null; try { updatePipVisibility(currentScreenIndex); } catch(error) {} }
                 else if(previousTheme==='weather') { try { updatePipVisibility(currentScreenIndex); startScreenLoop(); } catch(error) {} }
@@ -1825,6 +1839,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
 
         let schedules = [];
         let apiSchedules = []; 
+        let simpleSchedulePillsDay = '';
         const currentScreenElements = [weatherScreen, mealScreen, scheduleScreen, customTextScreen];
 
         const OPENWEATHER_API_KEY = 'af8f2f48035d25a72c21fb5c4a576d5b';
@@ -2398,6 +2413,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                 const simpleTime=document.getElementById('simple-weather-time'), simpleDate=document.getElementById('simple-weather-date');
                 if(simpleTime) simpleTime.textContent=now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Seoul'});
                 if(simpleDate) { const parts=new Intl.DateTimeFormat('en-GB',{year:'numeric',month:'2-digit',day:'2-digit',timeZone:'Asia/Seoul'}).formatToParts(now); const values=Object.fromEntries(parts.map(part=>[part.type,part.value])); simpleDate.textContent=`${values.year}/${values.month}/${values.day}`; }
+                updateSimpleSchedulePills();
                 return;
             }
             const dateOptions = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long', timeZone: 'Asia/Seoul' };
@@ -2624,6 +2640,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             schedules.sort((a, b) => new Date(a.date.replace(/\./g, '/')) - new Date(b.date.replace(/\./g, '/')));
             localStorage.setItem('daeryunSchedules', JSON.stringify(schedules));
             updateDdayBanner();
+            updateSimpleSchedulePills(true);
         }
 
         function calcDdayDiffDays(targetDateStr) {
@@ -2635,6 +2652,73 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             return Math.round((targetMid - todayMid) / (24 * 3600 * 1000));
         }
 
+        function updateSimpleSchedulePills(force = false) {
+            const container = document.getElementById('simple-schedule-pills');
+            if (!container) return;
+            const dayKey = new Intl.DateTimeFormat('en-CA', { timeZone:'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit' }).format(new Date());
+            if (!force && simpleSchedulePillsDay === dayKey) return;
+            simpleSchedulePillsDay = dayKey;
+
+            const allSchedules = getCombinedSchedules();
+            const upcoming = allSchedules
+                .map(schedule => ({ schedule, diff:calcDdayDiffDays(schedule.date) }))
+                .filter(item => item.diff >= 0)
+                .sort((a,b) => a.diff-b.diff || a.schedule.event.localeCompare(b.schedule.event, 'ko'));
+            const marked = allSchedules
+                .filter(schedule => schedule.dday)
+                .map(schedule => ({ schedule, diff:calcDdayDiffDays(schedule.date) }))
+                .sort((a,b) => {
+                    const aFuture = a.diff >= 0, bFuture = b.diff >= 0;
+                    if (aFuture !== bFuture) return aFuture ? -1 : 1;
+                    return aFuture ? a.diff-b.diff : Math.abs(a.diff)-Math.abs(b.diff);
+                })[0] || null;
+            const items = [];
+            if (marked) items.push({ ...marked, isDday:true });
+            for (const item of upcoming) {
+                if (marked && item.schedule.date === marked.schedule.date && item.schedule.event === marked.schedule.event) continue;
+                items.push({ ...item, isDday:false });
+            }
+            const visibleItems = items.slice(0,14);
+            container.replaceChildren();
+            container.classList.toggle('has-schedules', visibleItems.length > 0);
+            if (!visibleItems.length) return;
+
+            const maxDiff = Math.max(1, ...visibleItems.map(item => Math.abs(item.diff)));
+            const pills = visibleItems.map(item => {
+                const pill = document.createElement('span');
+                pill.className = 'simple-schedule-pill' + (item.isDday ? ' is-dday' : '');
+                const countText = item.diff > 0 ? `D-${item.diff}` : item.diff === 0 ? 'D-Day' : `D+${Math.abs(item.diff)}`;
+                if (item.diff >= 0 && item.diff <= 7) pill.classList.add('is-soon');
+                const count = document.createElement('span');
+                count.className = 'simple-schedule-count';
+                count.textContent = countText;
+                count.setAttribute('aria-hidden', 'true');
+                const label = document.createElement('span');
+                label.className = 'simple-schedule-label';
+                label.textContent = item.schedule.event;
+                pill.append(count,label);
+                pill.title = `${item.schedule.event} (${countText})`;
+                pill.setAttribute('aria-label', pill.title);
+                const distanceRatio = Math.min(1, Math.abs(item.diff)/maxDiff);
+                const scale = Math.max(.38, 1 - distanceRatio*.62);
+                pill.style.setProperty('--pill-scale', String(scale));
+                pill.style.opacity = String(1 - distanceRatio*.68);
+                pill.style.filter = `blur(${(distanceRatio*1.35).toFixed(2)}px)`;
+                // Closer dates sit above farther ones; the D-Day item remains first in reading order.
+                pill.style.zIndex = String(10000 - Math.abs(item.diff));
+                container.appendChild(pill);
+                return { element:pill, scale };
+            });
+            const available = container.clientWidth;
+            const widths = pills.map(({element}) => element.getBoundingClientRect().width);
+            if (pills.length === 1) { pills[0].element.style.left = '0px'; return; }
+
+            let left = 0;
+            pills.forEach(({element},index) => {
+                element.style.left = `${left}px`;
+                if (index < pills.length-1) left += widths[index] + 12;
+            });
+        }
         function updateDdayBanner() {
             const banner = document.getElementById('dday-banner');
             const countEl = banner.querySelector('.dday-count');
@@ -2778,6 +2862,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                 futureSchedules.forEach(schedule => createScheduleElement(schedule, scheduleList, false));
             }
             updateDdayBanner();
+            updateSimpleSchedulePills(true);
         }
 
         function renderModalSchedules() {
@@ -4847,7 +4932,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     const precipitationEnded=visualPrecipitationKind!=='none'&&weather.kind!==visualPrecipitationKind;
     if(lastWeatherVisualSignature && visualSignature!==lastWeatherVisualSignature && !state.aurora && !twilightActive) fadeWeatherFrame(!precipitationEnded);
     lastWeatherVisualSignature=visualSignature;
-    const phase = state.time==='timeline' ? solarPhase() : setSky(), wind = windVector(), cloudiness = (weather.kind==='rain'||weather.kind==='snow') ? .1 : clamp(state.cloud/100,0,1);
+    const phase = setSky(), wind = windVector(), cloudiness = (weather.kind==='rain'||weather.kind==='snow') ? .1 : clamp(state.cloud/100,0,1);
     updateGroundPalette(phase,weather,dt*16.67);
     const auroraPhase=['night','dawn','sunrise','sunset','bluehour'].includes(phase);
     scene.classList.toggle('aurora-enabled',state.aurora===true);
@@ -4862,6 +4947,10 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     drawClouds(wind,cloudiness,dt);
     if(state.time!=='timeline') drawCelestial();
     effectCtx.clearRect(0,0,width,height);
+    const safeStyle=getComputedStyle(document.documentElement);
+    const safeLeft=parseFloat(safeStyle.getPropertyValue('--safe-left'))||0, safeRight=parseFloat(safeStyle.getPropertyValue('--safe-right'))||0;
+    const safeTop=parseFloat(safeStyle.getPropertyValue('--safe-top'))||0, safeBottom=parseFloat(safeStyle.getPropertyValue('--safe-bottom'))||0;
+    effectCtx.save(); effectCtx.beginPath(); effectCtx.rect(safeLeft,safeTop,Math.max(0,width-safeLeft-safeRight),Math.max(0,height-safeTop-safeBottom)); effectCtx.clip();
     const targetKind=weather.kind==='rain'||weather.kind==='snow'?weather.kind:'none';
     if(targetKind==='none') {
       if(visualPrecipitationKind!=='none') { rain=[]; flakes=[]; clearAccumulatedWeather(); }
@@ -4872,22 +4961,13 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     if (visualPrecipitationKind === 'rain' && intensity > 0) { flakes = []; snowPatches = []; snowClumps=[]; drawRain(wind,intensity,dt); }
     else if (visualPrecipitationKind === 'snow' && intensity > 0) { rain = []; beads = []; splashes=[]; drawSnow(wind,intensity,dt); }
     else { rain = []; flakes = []; beads = []; splashes=[]; snowPatches = []; snowClumps=[]; }
+    effectCtx.restore();
     } catch(error) { if(!frameErrorNotified) { console.warn('날씨 애니메이션 렌더링을 복구합니다.',error); frameErrorNotified=true; } }
     previousFrameCost=performance.now()-frameStartedAt;
     // Start at 30 fps. If the previous render itself was expensive, back off to 25 or 20 fps.
     const frameInterval=previousFrameCost>18?50:previousFrameCost>10?40:1000/30;
     nextFrameAt=now+frameInterval;
     requestAnimationFrame(frame);
-  }
-  function timelineMotionFrame() {
-    const active=state.time==='timeline'&&!document.hidden&&document.documentElement.dataset.theme==='weather';
-    if(active) {
-      drawCelestial();
-      setSky();
-      requestAnimationFrame(timelineMotionFrame);
-    } else {
-      window.setTimeout(()=>requestAnimationFrame(timelineMotionFrame),250);
-    }
   }
   function persist() { try { localStorage.setItem('standbyWeather',JSON.stringify(state)); } catch (e) { console.warn('날씨 설정 저장 실패',e); } }
   function sync() {
@@ -4972,7 +5052,6 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     window.addEventListener('resize',resize,{passive:true});
     document.addEventListener('fullscreenchange',()=>{ window.setTimeout(resize,60); window.setTimeout(resize,240); });
     requestAnimationFrame(frame);
-    requestAnimationFrame(timelineMotionFrame);
     if(state.mode==='live') fetchWeather(); window.setInterval(()=>{ if(state.mode==='live') fetchWeather(); },60000);
   }
   window.addEventListener('load',init,{once:true});
