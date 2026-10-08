@@ -2723,7 +2723,9 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             const pills = visibleItems.map(item => {
                 const pill = document.createElement('span');
                 pill.className = 'simple-schedule-pill' + (item.isDday ? ' is-dday' : '');
-                const countText = item.diff > 0 ? `D-${item.diff}` : item.diff === 0 ? 'D-Day' : `D+${Math.abs(item.diff)}`;
+                const dateValue = new Date(String(item.schedule.date).replace(/\./g, '/'));
+                const calendarText = Number.isNaN(dateValue.getTime()) ? item.schedule.date : `${String(dateValue.getMonth()+1).padStart(2,'0')}/${String(dateValue.getDate()).padStart(2,'0')}`;
+                const countText = item.diff > 7 ? calendarText : item.diff > 0 ? `D-${item.diff}` : item.diff === 0 ? 'D-Day' : `D+${Math.abs(item.diff)}`;
                 if (item.diff >= 0 && item.diff <= 7) pill.classList.add('is-soon');
                 const count = document.createElement('span');
                 count.className = 'simple-schedule-count';
