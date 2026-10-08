@@ -617,48 +617,83 @@
         :root[data-theme="weather"][data-weather-design="simple"] #simple-meal-items { font-size:clamp(.8rem,1.4vw,1rem); line-height:1.5; }
         :root[data-theme="weather"][data-weather-design="simple"] #simple-meal-items p + p { margin-top:.12rem; }
         @media(max-width:640px) { :root[data-theme="weather"][data-weather-design="simple"] #simple-meal { right:calc(var(--safe-right) + 12px); bottom:calc(var(--safe-bottom) + 1.75rem); width:min(58vw,300px); max-height:34vh; padding:.75rem .9rem; } :root[data-theme="weather"][data-weather-design="simple"] #simple-weather-temperature { left:calc(var(--safe-left) + 12px); bottom:calc(var(--safe-bottom) + 16px); } :root[data-theme="weather"][data-weather-design="simple"] #simple-weather-date { right:calc(var(--safe-right) + 12px); top:calc(var(--safe-top) + 1rem); font-size:.9rem; } }
+        /* Simple layout for dark and light themes; weather keeps its weather-specific treatment above. */
+        :root:not([data-theme="weather"])[data-weather-design="simple"] .screen { z-index:-1!important; display:none!important; visibility:hidden!important; opacity:0!important; pointer-events:none!important; }
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #dday-banner { display:none!important; }
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-schedule-pills.has-schedules { display:block; }
+        :root:not([data-theme="weather"])[data-weather-design="simple"] .aux-clock,
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #current-date,
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #current-time,
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #weather-modern-clock,
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #weather-modern-date,
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #pip-container { display:none!important; }
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-weather-clock,
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-weather-temperature,
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-meal { display:block; position:fixed; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.72); }
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-weather-clock { z-index:49; top:calc(var(--safe-top) + (100vh - var(--safe-top) - var(--safe-bottom)) * .21); left:calc(var(--safe-left) + (100vw - var(--safe-left) - var(--safe-right)) / 2); transform:translate(-50%,-50%); max-width:calc(100vw - var(--safe-left) - var(--safe-right) - 24px); display:flex; flex-direction:column; align-items:stretch; width:max-content; }
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-weather-time,
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-weather-date { display:block; width:100%; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.72); text-align:center; white-space:nowrap; }
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-weather-time { font-size:clamp(2.8rem,6.2vw,5.4rem); font-weight:800; line-height:1; letter-spacing:-.04em; }
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-weather-date { margin-top:.16em; font-size:clamp(.8rem,1.5vw,1rem); font-weight:700; line-height:1; }
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-weather-temperature { z-index:49; left:calc(var(--safe-left) + 1.5rem); bottom:calc(var(--safe-bottom) + 1.25rem); font-size:clamp(.9rem,1.8vw,1.4rem); font-weight:800; white-space:nowrap; }
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-meal { z-index:42; right:calc(var(--safe-right) + 1.5rem); bottom:calc(var(--safe-bottom) + 2rem); width:min(360px,42vw); max-height:38vh; overflow:auto; padding:1rem 1.25rem; border-radius:20px; background:var(--standby-glass-bg,rgba(255,255,255,.13))!important; border:0!important; backdrop-filter:blur(24px) saturate(150%); -webkit-backdrop-filter:blur(24px) saturate(150%); box-shadow:inset 0 1px 1px var(--standby-glass-highlight,rgba(255,255,255,.18)),0 16px 44px var(--standby-glass-shadow,rgba(0,0,0,.2)); }
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-meal-title { margin-bottom:.5rem; font-size:.85rem; font-weight:700; color:rgba(255,255,255,.7); }
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-meal-items { font-size:clamp(.8rem,1.4vw,1rem); line-height:1.5; }
+        :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-meal-items p + p { margin-top:.12rem; }
+        :root[data-theme="light"][data-weather-design="simple"] #simple-weather-clock,
+        :root[data-theme="light"][data-weather-design="simple"] #simple-weather-time,
+        :root[data-theme="light"][data-weather-design="simple"] #simple-weather-date,
+        :root[data-theme="light"][data-weather-design="simple"] #simple-weather-temperature,
+        :root[data-theme="light"][data-weather-design="simple"] #simple-meal { color:#263247!important; text-shadow:0 1px 4px rgba(255,255,255,.75)!important; }
+        :root[data-theme="light"][data-weather-design="simple"] #simple-meal { background:rgba(255,255,255,.78)!important; box-shadow:0 14px 36px rgba(30,45,65,.13)!important; }
+        :root[data-theme="light"][data-weather-design="simple"] #simple-meal-title { color:rgba(38,50,71,.68)!important; }
+        :root[data-theme="light"][data-weather-design="simple"] #simple-schedule-pills .simple-schedule-pill { color:#263247; background:rgba(255,255,255,.74); border-color:rgba(60,76,100,.18); }
+        @media(max-width:640px) { :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-meal { right:calc(var(--safe-right) + 12px); bottom:calc(var(--safe-bottom) + 1.75rem); width:min(58vw,300px); max-height:34vh; padding:.75rem .9rem; } :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-weather-temperature { left:calc(var(--safe-left) + 12px); bottom:calc(var(--safe-bottom) + 16px); } }
+
         #weather-modern-clock, #weather-modern-date { display:none; }
-        :root[data-theme="weather"][data-weather-design="modern"] .screen { transition:none!important; }
-        :root[data-theme="weather"][data-weather-design="modern"] .screen .aux-clock { display:none!important; }
-        :root[data-theme="weather"][data-weather-design="modern"] #weather-screen > div:first-of-type,
-        :root[data-theme="weather"][data-weather-design="modern"] #meal-screen > div:first-of-type,
-        :root[data-theme="weather"][data-weather-design="modern"] #schedule-screen > div:first-of-type,
-        :root[data-theme="weather"][data-weather-design="modern"] #custom-text-screen > div:first-of-type { position:absolute; inset:0; display:block; width:100%; max-width:none; height:100%; margin:0; text-align:left; pointer-events:none; }
-        :root[data-theme="weather"][data-weather-design="modern"] #weather-screen > div:first-of-type > .glass-card,
-        :root[data-theme="weather"][data-weather-design="modern"] #meal-screen > div:first-of-type > .glass-card,
-        :root[data-theme="weather"][data-weather-design="modern"] #schedule-screen > div:first-of-type > .glass-card,
-        :root[data-theme="weather"][data-weather-design="modern"] #custom-text-screen > div:first-of-type > .glass-card { position:absolute; right:clamp(16px,3vw,48px); bottom:4vh; width:min(42vw,620px); height:min(49vh,560px); min-width:0; max-width:none; margin:0; overflow:auto; pointer-events:auto; border-radius:28px; transition:opacity .65s ease,transform .65s ease; }
-        :root[data-theme="weather"][data-weather-design="modern"] #weather-screen > div:first-of-type > .glass-card { display:flex; flex-direction:column; }
-:root[data-theme="weather"][data-weather-design="modern"] #weather-screen > div:first-of-type > .glass-card > div { flex:1; min-height:0; align-items:center; }
-:root[data-theme="weather"][data-weather-design="modern"] #schedule-screen-title,
-:root[data-theme="weather"][data-weather-design="modern"] #schedule-screen h2,
-:root[data-theme="weather"][data-weather-design="modern"] #schedule-screen .glass-card > div:first-child { display:none!important; }
-:root[data-theme="weather"][data-weather-design="modern"] #schedule-screen .schedule-source-badge { display:none!important; }
-:root[data-theme="weather"][data-weather-design="modern"] #meal-screen > div:first-of-type > .glass-card { left:clamp(260px,22vw,360px); right:clamp(16px,3vw,48px); width:auto; }
-:root[data-theme="weather"][data-weather-design="modern"] #meal-screen .glass-card > div:last-child > h3 { font-size:.95rem!important; margin-bottom:.5rem!important; }
-:root[data-theme="weather"][data-weather-design="modern"] #meal-screen .glass-card > div:last-child > ul { font-size:.75rem!important; line-height:1.3!important; column-gap:.45rem; row-gap:.2rem; }
-:root[data-theme="weather"][data-weather-design="modern"] #current-date,
-        :root[data-theme="weather"][data-weather-design="modern"] #current-time { display:none!important; }
+        :root[data-weather-design="modern"] .screen { transition:none!important; }
+        :root[data-weather-design="modern"] .screen .aux-clock { display:none!important; }
+        :root[data-weather-design="modern"] #weather-screen > div:first-of-type,
+        :root[data-weather-design="modern"] #meal-screen > div:first-of-type,
+        :root[data-weather-design="modern"] #schedule-screen > div:first-of-type,
+        :root[data-weather-design="modern"] #custom-text-screen > div:first-of-type { position:absolute; inset:0; display:block; width:100%; max-width:none; height:100%; margin:0; text-align:left; pointer-events:none; }
+        :root[data-weather-design="modern"] #weather-screen > div:first-of-type > .glass-card,
+        :root[data-weather-design="modern"] #meal-screen > div:first-of-type > .glass-card,
+        :root[data-weather-design="modern"] #schedule-screen > div:first-of-type > .glass-card,
+        :root[data-weather-design="modern"] #custom-text-screen > div:first-of-type > .glass-card { position:absolute; right:clamp(16px,3vw,48px); bottom:4vh; width:min(42vw,620px); height:fit-content; max-height:min(49vh,560px); min-width:0; max-width:none; margin:0; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; pointer-events:auto; border-radius:28px; transition:opacity .65s ease,transform .65s ease; }
+        :root[data-weather-design="modern"] #weather-screen > div:first-of-type > .glass-card { display:flex; flex-direction:column; }
+:root[data-weather-design="modern"] #weather-screen > div:first-of-type > .glass-card > div { flex:1; min-height:0; align-items:center; }
+:root[data-weather-design="modern"] #schedule-screen-title,
+:root[data-weather-design="modern"] #schedule-screen h2,
+:root[data-weather-design="modern"] #schedule-screen .glass-card > div:first-child { display:none!important; }
+:root[data-weather-design="modern"] #schedule-screen .schedule-source-badge { display:none!important; }
+:root[data-weather-design="modern"] #meal-screen > div:first-of-type > .glass-card { left:clamp(320px,40vw,1000px); right:clamp(16px,3vw,48px); width:min(42vw,620px); }
+:root[data-weather-design="modern"] #meal-screen .glass-card > div:last-child > h3 { font-size:.95rem!important; margin-bottom:.5rem!important; }
+:root[data-weather-design="modern"] #meal-screen .glass-card > div:last-child > ul { font-size:.75rem!important; line-height:1.3!important; column-gap:.45rem; row-gap:.2rem; }
+:root[data-weather-design="modern"] #current-date,
+        :root[data-weather-design="modern"] #current-time { display:none!important; }
         :root[data-theme="weather"][data-weather-design="simple"] .aux-clock,
         :root[data-theme="weather"][data-weather-design="simple"] #current-date,
         :root[data-theme="weather"][data-weather-design="simple"] #current-time { display:none!important; }
-        :root[data-theme="weather"][data-weather-design="modern"] #weather-modern-clock { display:flex; flex-direction:column; position:fixed; left:calc(var(--safe-left) + clamp(4px,.5vw,10px)); top:auto; bottom:calc(100vh - var(--weather-modern-horizon,42vh)); z-index:15; transform:none; align-items:stretch; width:max-content; gap:0; color:rgba(255,255,255,.54)!important; font-size:clamp(10.5rem,22vw,24rem); font-weight:800; line-height:.9; letter-spacing:-.055em; text-shadow:0 3px 16px rgba(0,0,0,.42)!important; white-space:nowrap; }
-        :root[data-theme="weather"][data-weather-design="modern"] .weather-modern-clock-face { display:flex; align-items:flex-end; gap:.1em; transform:translateY(.08em); }
-        :root[data-theme="weather"][data-weather-design="modern"] #weather-modern-seconds { font-size:.34em; font-weight:800; letter-spacing:-.025em; opacity:.55; }
-        :root[data-theme="weather"][data-weather-design="modern"] #weather-modern-date { display:block; position:fixed; left:auto; right:calc(var(--safe-right) + clamp(4px,.5vw,10px)); bottom:calc(100vh - var(--weather-modern-horizon,42vh) - .08em); width:auto; text-align:right; transform:none; color:rgba(255,255,255,.54)!important; font-size:clamp(1.5rem,3vw,2.7rem); font-weight:800; line-height:1; letter-spacing:.025em; text-shadow:0 2px 12px rgba(0,0,0,.4)!important; white-space:nowrap; }
+        :root[data-weather-design="modern"] #weather-modern-clock { display:flex; flex-direction:column; position:fixed; left:calc(var(--safe-left) + clamp(4px,.5vw,10px)); top:auto; bottom:calc(100vh - var(--weather-modern-horizon,42vh)); z-index:15; transform:none; align-items:stretch; width:max-content; gap:0; color:rgba(255,255,255,.54)!important; font-size:clamp(7rem,14vw,18rem); font-weight:800; line-height:.9; letter-spacing:-.055em; text-shadow:0 3px 16px rgba(0,0,0,.42)!important; white-space:nowrap; }
+        :root[data-weather-design="modern"] .weather-modern-clock-face { display:flex; align-items:flex-end; gap:.1em; transform:translateY(.08em); }
+        :root[data-weather-design="modern"] #weather-modern-seconds { font-size:.34em; font-weight:800; letter-spacing:-.025em; opacity:.55; }
+        :root[data-weather-design="modern"] #weather-modern-date { display:block; position:fixed; left:auto; right:calc(var(--safe-right) + clamp(4px,.5vw,10px)); bottom:calc(100vh - var(--weather-modern-horizon,42vh) - .08em); width:auto; text-align:right; transform:none; color:rgba(255,255,255,.54)!important; font-size:clamp(1.5rem,3vw,2.7rem); font-weight:800; line-height:1; letter-spacing:.025em; text-shadow:0 2px 12px rgba(0,0,0,.4)!important; white-space:nowrap; }
         
-        :root[data-theme="weather"][data-weather-design="modern"] #dynamic-bottom-bar { position:fixed!important; left:calc(var(--safe-left) + clamp(16px,3vw,48px))!important; right:auto!important; bottom:calc(var(--safe-bottom) + 20px)!important; transform:none!important; margin-left:0!important; }
+        :root[data-theme="light"][data-weather-design="modern"] #weather-modern-clock,
+        :root[data-theme="light"][data-weather-design="modern"] #weather-modern-date { color:rgba(31,41,55,.68)!important; text-shadow:0 3px 14px rgba(255,255,255,.72)!important; }
+        :root[data-weather-design="modern"] #dynamic-bottom-bar { position:fixed!important; left:calc(var(--safe-left) + clamp(16px,3vw,48px))!important; right:auto!important; bottom:calc(var(--safe-bottom) + 20px)!important; transform:none!important; margin-left:0!important; }
         @media (max-width:720px) {
-          :root[data-theme="weather"][data-weather-design="modern"] #weather-modern-clock { font-size:clamp(2.6rem,12vw,5rem); }
-          :root[data-theme="weather"][data-weather-design="modern"] #weather-modern-date { font-size:clamp(.6rem,1.5vw,.8rem); }
-          :root[data-theme="weather"][data-weather-design="modern"] .screen > div:first-of-type > .glass-card { right:16px; bottom:84px; width:min(68vw,480px); height:42vh; padding:1.1rem; }
-          :root[data-theme="weather"][data-weather-design="modern"] #meal-screen > div:first-of-type > .glass-card { left:16px; right:16px; width:auto; }
-          :root[data-theme="weather"][data-weather-design="modern"] #dynamic-bottom-bar { left:calc(var(--safe-left) + 12px); bottom:calc(var(--safe-bottom) + 12px); max-width:calc(100vw - 24px); min-width:0!important; padding:.55rem .8rem; gap:.6rem; }
+          :root[data-weather-design="modern"] #weather-modern-clock { font-size:clamp(2.6rem,12vw,5rem); }
+          :root[data-weather-design="modern"] #weather-modern-date { font-size:clamp(.6rem,1.5vw,.8rem); }
+          :root[data-weather-design="modern"] .screen > div:first-of-type > .glass-card { right:16px; bottom:calc(var(--safe-bottom) + 4vh); width:min(68vw,480px); height:fit-content; max-height:min(36vh,calc(100vh - var(--weather-modern-horizon,42vh) - var(--safe-bottom) - 5vh)); padding:1.1rem; }
+          :root[data-weather-design="modern"] #meal-screen > div:first-of-type > .glass-card { left:16px; right:16px; width:auto; }
+          :root[data-weather-design="modern"] #dynamic-bottom-bar { left:calc(var(--safe-left) + 12px); bottom:calc(var(--safe-bottom) + 12px); max-width:calc(100vw - 24px); min-width:0!important; padding:.55rem .8rem; gap:.6rem; }
         }
         @media (max-width:420px) {
-          :root[data-theme="weather"][data-weather-design="modern"] .screen > div:first-of-type > .glass-card { width:calc(100% - 32px); height:34vh; right:16px; bottom:78px; }
-          :root[data-theme="weather"][data-weather-design="modern"] #meal-screen > div:first-of-type > .glass-card { left:16px; right:16px; width:auto; }
-          :root[data-theme="weather"][data-weather-design="modern"] #weather-modern-date { font-size:clamp(.55rem,1.4vw,.7rem); }
+          :root[data-weather-design="modern"] .screen > div:first-of-type > .glass-card { width:calc(100% - 32px); height:fit-content; max-height:min(32vh,calc(100vh - var(--weather-modern-horizon,42vh) - var(--safe-bottom) - 5vh)); right:16px; bottom:calc(var(--safe-bottom) + 4vh); }
+          :root[data-weather-design="modern"] #meal-screen > div:first-of-type > .glass-card { left:16px; right:16px; width:auto; }
+          :root[data-weather-design="modern"] #weather-modern-date { font-size:clamp(.55rem,1.4vw,.7rem); }
         }
 
 
@@ -1006,6 +1041,14 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                             </h4>
                             <div class="glass-section p-4 max-h-[50vh] overflow-y-auto space-y-6">
                                 <div>
+                                    <h5 class="font-bold text-blue-300 text-lg">v2.6.0</h5>
+                                    <ul class="list-disc pl-5 text-sm text-gray-300 mt-2 space-y-1">
+                                        <li>모던·심플 화면 디자인을 다크·라이트 테마에서도 지원</li>
+                                        <li>테마 전환 중 급식·학사 일정 화면 표시 복원 개선</li>
+                                        <li>날씨 정보 상자의 현재 위치에 학교 이름 표시</li>
+                                    </ul>
+                                </div>
+                                <div class="pt-2 border-t border-white/10">
                                     <h5 class="font-bold text-blue-300 text-lg">v2.5.1</h5>
                                     <ul class="list-disc pl-5 text-sm text-gray-300 mt-2 space-y-1">
                                         <li>실시간 날씨와 수동 조절을 지원하는 날씨 모드 추가</li>
@@ -1088,9 +1131,9 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                             <button type="button" class="theme-choice" data-theme-choice="weather" aria-pressed="false"><span aria-hidden="true">☁</span> 날씨</button>
                                         </div>
                                     </div>
+                                    <div class="weather-design-control flex items-center justify-between gap-4 mt-4"><div><h5 class="font-semibold">화면 디자인</h5><p class="text-xs text-white/60 mt-1">모든 테마에서 기본·모던·심플 레이아웃을 선택합니다.</p></div><div class="theme-picker" role="group" aria-label="화면 디자인 선택"><button type="button" class="weather-design-choice" data-weather-design-choice="default" aria-pressed="true">기본</button><button type="button" class="weather-design-choice" data-weather-design-choice="modern" aria-pressed="false">모던</button><button type="button" class="weather-design-choice" data-weather-design-choice="simple" aria-pressed="false">심플</button></div></div>
                                 </section>
                                 <section class="weather-settings-panel glass-section p-4 space-y-4" aria-labelledby="weather-scene-title">
-                                    <div class="weather-design-control flex items-center justify-between gap-4"><div><h5 class="font-semibold">디자인 옵션</h5><p class="text-xs text-white/60 mt-1"></p></div><div class="theme-picker" role="group" aria-label="날씨 화면 디자인 선택"><button type="button" class="weather-design-choice" data-weather-design-choice="default" aria-pressed="true">기본</button><button type="button" class="weather-design-choice" data-weather-design-choice="modern" aria-pressed="false">모던</button><button type="button" class="weather-design-choice" data-weather-design-choice="simple" aria-pressed="false">심플</button></div></div>
                                     <div><h4 id="weather-scene-title" class="font-semibold">실시간 날씨 배경</h4><p class="text-sm text-white/60 mt-1"></p></div>
                                     <div class="flex flex-wrap gap-x-5 gap-y-2">
                                       <label class="glass-checkbox-label"><input type="checkbox" id="weather-reflect-toggle" class="glass-checkbox-input" checked><span class="glass-checkbox-box"></span><span class="text-sm">날씨 반영</span></label>
@@ -1400,7 +1443,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
 
                             <div id="info-version" class="info-tab-content hidden">
                                 <h5 class="font-semibold">버전</h5>
-                                <p id="app-version-text" class="text-gray-300" data-version="2.5.1">2.5.1</p>
+                                <p id="app-version-text" class="text-gray-300" data-version="2.6.0">2.6.0</p>
                             </div>
                         </div>
                         
@@ -1433,7 +1476,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             <h1 id="current-time" class="text-6xl sm:text-8xl font-extrabold tracking-tight text-white">00:00:00</h1>
 
             <div class="glass-card no-initial-blur p-6 sm:p-8 rounded-[40px] shadow-2xl mt-12">
-                <p class="text-xl sm:text-2xl font-semibold text-gray-200 mb-4">현재 위치: 대구 수성구 교학로 2700</p>
+                <p class="text-xl sm:text-2xl font-semibold text-gray-200 mb-4">현재 위치: <span data-weather-school-name>대륜고등학교</span></p>
                 <div class="flex flex-col sm:flex-row justify-around items-center">
                     <div class="flex items-center space-x-4 mb-6 sm:mb-0">
                         <span class="text-6xl sm:text-7xl">☀️</span>
@@ -1599,23 +1642,19 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         }
         function syncModernScheduleTitle() {
             const title = document.getElementById('schedule-screen-title');
-            if (title) title.hidden = document.documentElement.dataset.theme === 'weather' && document.documentElement.dataset.weatherDesign === 'modern';
+            if (title) title.hidden = document.documentElement.dataset.weatherDesign === 'modern';
         }
         function applyWeatherDesign(design, persist = false) {
             const previousDesign=document.documentElement.dataset.weatherDesign;
             const selectedDesign = ['modern','simple'].includes(design) ? design : 'default';
             document.documentElement.dataset.weatherDesign = selectedDesign;
-            syncSimpleWeatherScreens(document.documentElement.dataset.theme==='weather'&&selectedDesign==='simple');
-            const simpleWeatherMode=document.documentElement.dataset.theme==='weather'&&selectedDesign==='simple';
-            for(const id of ['current-time','current-date']) {
-                const clockElement=document.getElementById(id);
-                if(clockElement&&simpleWeatherMode) { clockElement.hidden=true; clockElement.style.setProperty('display','none','important'); }
-            }
+            syncSimpleWeatherScreens(selectedDesign==='simple');
+            const simpleDesignMode=selectedDesign==='simple';
             updateTime();
             try { updateSimpleSchedulePills(true); } catch (error) {}
-            if(selectedDesign==='simple'&&document.documentElement.dataset.theme==='weather') { applyAlwaysShowClock(false); if(slideTimeout) clearTimeout(slideTimeout); slideTimeout=null; try { updatePipVisibility(currentScreenIndex); } catch(error) {} }
-            else if(previousDesign==='simple'&&document.documentElement.dataset.theme==='weather') { try { updatePipVisibility(currentScreenIndex); startScreenLoop(); } catch(error) {} }
-            if(previousDesign==='simple'&&!isSimpleWeatherMode()) { syncCustomTextSettings(); syncDurationSliderFills(); applyAlwaysShowClock(localStorage.getItem('dashboardAlwaysShowClock')!=='0'); updateMusicBarUI(); }
+            if(simpleDesignMode) { applyAlwaysShowClock(false); if(slideTimeout) clearTimeout(slideTimeout); slideTimeout=null; try { updatePipVisibility(currentScreenIndex); } catch(error) {} }
+            else if(previousDesign==='simple') { try { updatePipVisibility(currentScreenIndex); startScreenLoop(); } catch(error) {} }
+            if(previousDesign==='simple'&&!isSimpleDesignMode()) { syncCustomTextSettings(); syncDurationSliderFills(); applyAlwaysShowClock(localStorage.getItem('dashboardAlwaysShowClock')!=='0'); updateMusicBarUI(); }
             syncModernScheduleTitle();
             document.querySelectorAll('[data-weather-design-choice]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.weatherDesignChoice === selectedDesign)));
             if (persist) { try { localStorage.setItem('adkWeatherDesign', selectedDesign); } catch (error) { console.warn('날씨 디자인 설정을 저장하지 못했습니다.', error); } }
@@ -1624,14 +1663,15 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             const previousTheme=document.documentElement.dataset.theme;
             const selectedTheme = ['light','weather'].includes(theme) ? theme : 'dark';
             document.documentElement.dataset.theme = selectedTheme;
-            syncSimpleWeatherScreens(selectedTheme==='weather'&&document.documentElement.dataset.weatherDesign==='simple');
+            syncSimpleWeatherScreens(document.documentElement.dataset.weatherDesign==='simple');
             updateTime();
             window.dispatchEvent(new CustomEvent('standby-theme-change',{detail:{theme:selectedTheme}}));
             try { updateSimpleSchedulePills(true); } catch (error) {}
-            if(document.documentElement.dataset.weatherDesign==='simple') {
-                if(selectedTheme==='weather') { applyAlwaysShowClock(false); if(slideTimeout) clearTimeout(slideTimeout); slideTimeout=null; try { updatePipVisibility(currentScreenIndex); } catch(error) {} }
-                else if(previousTheme==='weather') { try { updatePipVisibility(currentScreenIndex); startScreenLoop(); } catch(error) {} }
-                if(previousTheme==='weather'&&!isSimpleWeatherMode()) { syncCustomTextSettings(); syncDurationSliderFills(); applyAlwaysShowClock(localStorage.getItem('dashboardAlwaysShowClock')!=='0'); updateMusicBarUI(); }
+            if(isSimpleDesignMode()) {
+                applyAlwaysShowClock(false);
+                if(slideTimeout) clearTimeout(slideTimeout);
+                slideTimeout=null;
+                try { updatePipVisibility(currentScreenIndex); } catch(error) {}
             }
             syncModernScheduleTitle();
             document.querySelectorAll('[data-theme-choice]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.themeChoice === selectedTheme)));
@@ -2186,7 +2226,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         }
 
         function updateMusicBarUI() {
-            if (isSimpleWeatherMode() || ytMusicPlaylist.length === 0) return;
+            if (isSimpleDesignMode() || ytMusicPlaylist.length === 0) return;
             const current = ytMusicPlaylist[currentMusicIndex];
             if(current) {
                 document.getElementById('music-thumb').src = current.thumb;
@@ -2260,7 +2300,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                     weatherCard.innerHTML = `<div class="text-sm text-gray-300">날씨 정보를 불러오는 중 오류가 발생했습니다.</div>`;
                     return;
                 }
-                renderWeather(weather, name || '만촌3동');
+                renderWeather(weather);
             } catch (err) {
                 weatherCard.innerHTML = `<div class="text-sm text-gray-300">날씨 정보를 불러오는 중 오류가 발생했습니다.</div>`;
             }
@@ -2287,7 +2327,11 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         }
         const temperatureColor=value=>interpolateWeatherColor(value,temperatureColorStops);
 
-        function renderWeather(data, locationName = '') {
+        function updateWeatherLocationLabel(name = localStorage.getItem('dashboardSchoolName') || '대륜고등학교') {
+            document.querySelectorAll('[data-weather-school-name]').forEach(element => { element.textContent = name; });
+        }
+
+        function renderWeather(data) {
             const exactTemp = Number(data.main.temp);
             const exactFeels = Number(data.main.feels_like);
             const temp = Math.round(exactTemp);
@@ -2301,7 +2345,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             const temperatureTextColor=temperatureColor(exactTemp), feelsTextColor=temperatureColor(exactFeels), humidityTextColor=interpolateWeatherColor(humidity,humidityColorStops), windTextColor=wind===null?conditionColor:interpolateWeatherColor(wind,windSpeedColorStops);
 
             weatherCard.innerHTML = `
-                <p class="text-xl sm:text-2xl font-semibold text-gray-200 mb-4">현재 위치: ${locationName}</p>
+                <p class="text-xl sm:text-2xl font-semibold text-gray-200 mb-4">현재 위치: <span data-weather-school-name></span></p>
                 <div class="flex flex-col sm:flex-row justify-around items-center">
                     <div class="flex items-center space-x-4 mb-6 sm:mb-0">
                         <img src="${iconUrl}" alt="${description}" class="w-20 h-20">
@@ -2318,6 +2362,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                     </div>
                 </div>
             `;
+            updateWeatherLocationLabel();
             const simpleTemperature=document.getElementById('simple-weather-temperature');
             if(simpleTemperature) { simpleTemperature.textContent=`${temp}°C`; simpleTemperature.style.setProperty('--weather-dynamic-color',temperatureTextColor); }
         }
@@ -2460,7 +2505,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             prunePastSchedules();
             const now = new Date();
             const simpleClock=document.getElementById('simple-weather-clock');
-            const simpleMode=(document.documentElement.dataset.theme==='weather'&&document.documentElement.dataset.weatherDesign==='simple')||(simpleClock&&getComputedStyle(simpleClock).display!=='none');
+            const simpleMode=document.documentElement.dataset.weatherDesign==='simple'||(simpleClock&&getComputedStyle(simpleClock).display!=='none');
             if(simpleMode) {
                 if(timeElement) { timeElement.hidden=true; timeElement.style.setProperty('display','none','important'); }
                 if(dateElement) { dateElement.hidden=true; dateElement.style.setProperty('display','none','important'); }
@@ -2500,7 +2545,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         }
 
         function transitionToScreen(nextIndex) {
-            if (isSimpleWeatherMode()) return;
+            if (isSimpleDesignMode()) return;
             const currentElement = currentScreenElements[currentScreenIndex];
             const nextElement = currentScreenElements[nextIndex];
             if (document.documentElement.dataset.weatherDesign === 'modern') {
@@ -2551,7 +2596,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         }
 
         function showScreenImmediately(nextIndex) {
-            if (isSimpleWeatherMode()) return;
+            if (isSimpleDesignMode()) return;
             if (nextIndex < 0 || nextIndex >= currentScreenElements.length || nextIndex === currentScreenIndex) return;
             const currentElement = currentScreenElements[currentScreenIndex];
             const nextElement = currentScreenElements[nextIndex];
@@ -2576,7 +2621,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         }
         function startScreenLoop() {
             if (slideTimeout) clearTimeout(slideTimeout);
-            if (isSimpleWeatherMode()) { slideTimeout=null; return; }
+            if (isSimpleDesignMode()) { slideTimeout=null; return; }
             const activeScreens = screenDurations.reduce((indices, duration, index) => { if (duration > 0) indices.push(index); return indices; }, []);
             if (activeScreens.length <= 1) {
                 if (activeScreens.length === 1) showScreenImmediately(activeScreens[0]);
@@ -3092,7 +3137,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         }
 
         function updatePipVisibility(screenIdx) {
-            if(document.documentElement.dataset.theme==='weather'&&document.documentElement.dataset.weatherDesign==='simple') {
+            if(isSimpleDesignMode()) {
                 if(!pipContainer.classList.contains('hidden')) { pipContainer.classList.add('hidden'); pipContainer.classList.remove('flex'); if(pipState.type==='yt'&&pipYtPlayer&&typeof pipYtPlayer.pauseVideo==='function') { try { pipYtPlayer.pauseVideo(); } catch(error) {} } }
                 return;
             }
@@ -3357,8 +3402,8 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             button.setAttribute('aria-label', active ? '전체 화면 종료' : '전체 화면으로 전환');
             button.title=active ? '전체 화면 종료' : '전체 화면';
         }
-        function isSimpleWeatherMode() {
-            return document.documentElement.dataset.theme === 'weather' && document.documentElement.dataset.weatherDesign === 'simple';
+        function isSimpleDesignMode() {
+            return document.documentElement.dataset.weatherDesign === 'simple';
         }
         function syncCustomTextSettings() {
             const savedCustomText = localStorage.getItem('dashboardCustomText');
@@ -3399,6 +3444,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             schoolLogoImg.onerror = () => { schoolLogoImg.src = DEFAULT_LOGO_URL; };
 
             const savedSchoolName = localStorage.getItem('dashboardSchoolName') || '대륜고등학교';
+            updateWeatherLocationLabel(savedSchoolName);
             const sidebarName = document.getElementById('sidebar-school-name');
             const bottomName = document.getElementById('school-name-bottom');
             if (sidebarName) sidebarName.textContent = savedSchoolName;
@@ -3408,7 +3454,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             if (profileLogoPreview) profileLogoPreview.src = logoUrl;
             if (document.getElementById('sidebar-logo')) document.getElementById('sidebar-logo').src = logoUrl;
 
-            if (!isSimpleWeatherMode()) syncCustomTextSettings();
+            if (!isSimpleDesignMode()) syncCustomTextSettings();
 
             const savedWeatherSec = parseInt(localStorage.getItem('dashboardDurationWeather'), 10);
             const savedMealSec = parseInt(localStorage.getItem('dashboardDurationMeal'), 10);
@@ -3433,7 +3479,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             if (customDurationValue) customDurationValue.textContent = String(cSec);
 
             screenDurations = [wSec * 1000, mSec * 1000, sSec * 1000, cSec * 1000];
-            if (!isSimpleWeatherMode()) syncDurationSliderFills();
+            if (!isSimpleDesignMode()) syncDurationSliderFills();
 
             const savedAlwaysClock = localStorage.getItem('dashboardAlwaysShowClock') !== '0';
             const savedAutoDarken = localStorage.getItem('dashboardAutoDarken') === '1';
@@ -3445,7 +3491,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             if (autoDarkenEl) autoDarkenEl.checked = savedAutoDarken;
             if (lowPerformanceToggle) lowPerformanceToggle.checked = savedLowPerformance;
 
-            if (!isSimpleWeatherMode()) applyAlwaysShowClock(savedAlwaysClock);
+            if (!isSimpleDesignMode()) applyAlwaysShowClock(savedAlwaysClock);
             applyAutoDarkenSetting(savedAutoDarken);
             applyLowPerformanceMode(savedLowPerformance);
 
@@ -3728,7 +3774,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             checkForUpdates(); 
             updateMusicBarVisibility();
             updateMusicBarUI();
-            if (!isSimpleWeatherMode()) renderPlaylistUI();
+            if (!isSimpleDesignMode()) renderPlaylistUI();
 
             const ONE_HOUR = 60 * 60 * 1000;
             setInterval(fetchManchon3DongWeather, ONE_HOUR); // 날씨 1시간
@@ -3753,6 +3799,13 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             document.getElementById('show-school-name')?.addEventListener('change', event => { localStorage.setItem('dashboardShowSchoolName', String(event.target.checked)); applySchoolPillSettings(); });
             document.querySelectorAll('[data-theme-choice]').forEach(button => button.addEventListener('click', () => applyStandbyTheme(button.dataset.themeChoice)));
             document.querySelectorAll('[data-weather-design-choice]').forEach(button => button.addEventListener('click', () => applyWeatherDesign(button.dataset.weatherDesignChoice, true)));
+            currentScreenElements.forEach((el, index) => {
+                el.style.display = 'flex';
+                el.style.opacity = index === 0 ? '1' : '0';
+                el.style.visibility = index === 0 ? 'visible' : 'hidden';
+                el.style.zIndex = index === 0 ? '10' : '5';
+                el.style.pointerEvents = index === 0 ? 'auto' : 'none';
+            });
             applyWeatherDesign(document.documentElement.dataset.weatherDesign || 'default');
             applyStandbyTheme(document.documentElement.dataset.theme || 'dark');
             applySystemFont(localStorage.getItem('dashboardSystemFont') || 'font-system');
@@ -3812,6 +3865,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                 const newName = profileSchoolNameInput ? profileSchoolNameInput.value.trim() : null;
                 if (newName && newName.length > 0) {
                     try { localStorage.setItem('dashboardSchoolName', newName); } catch (err) {}
+                    updateWeatherLocationLabel(newName);
                     const sidebarName = document.getElementById('sidebar-school-name');
                     const bottomName = document.getElementById('school-name-bottom');
                     if (sidebarName) sidebarName.textContent = newName;
@@ -3971,14 +4025,6 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                 sidebarProfile.addEventListener('click', () => switchSettingsView('profile'));
                 sidebarProfile.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sidebarProfile.click(); } });
             }
-
-            currentScreenElements.forEach((el, index) => {
-                el.style.display = 'flex';
-                el.style.opacity = index === 0 ? '1' : '0';
-                el.style.visibility = index === 0 ? 'visible' : 'hidden';
-                el.style.zIndex = index === 0 ? '10' : '5';
-                el.style.pointerEvents = index === 0 ? 'auto' : 'none';
-            });
 
             toggleCardBlur(0, true);
             updatePipVisibility(0); // 처음 시작할 때 PiP 상태 동기화 및 렌더링(표시될 경우 API 초기화)
