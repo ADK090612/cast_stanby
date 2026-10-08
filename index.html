@@ -565,20 +565,31 @@
         .update-illustration.is-loading svg { animation:update-check-spin .85s linear infinite; }
         @keyframes update-check-spin { to { transform:rotate(360deg); } }
         
-        #weather-status { display:none !important; }
+
         :root[data-theme="weather"] #weather-scene { display:block; }
         :root:not([data-theme="weather"]) #weather-scene { display:none !important; }
         :root[data-theme="weather"] body { background-color:#07142d !important; background-image:none !important; }
         :root[data-theme="weather"] #default-animated-bg { display:none !important; }
-        :root:not([data-theme="weather"]) #weather-status, :root[data-theme="weather"] body:not(.settings-open) #weather-status { display:none !important; }
-        :root[data-theme="weather"] body.settings-open #weather-status { display:block !important; }
+
+
         :root:not([data-theme="weather"]) .weather-settings-panel { display:none !important; }
         :root[data-theme="weather"] { color-scheme:dark; }
         :root[data-theme="weather"] .theme-choice[data-theme-choice="weather"] { color:#fff; background:linear-gradient(120deg,rgba(76,151,221,.46),rgba(251,176,116,.38)); box-shadow:inset 0 1px rgba(255,255,255,.3),0 2px 12px rgba(74,145,208,.25); }
         .weather-design-choice { display:inline-flex; align-items:center; justify-content:center; min-width:64px; padding:8px 12px; border:0; border-radius:999px; background:transparent; color:rgba(255,255,255,.7); font-size:.82rem; font-weight:600; cursor:pointer; transition:background .2s,color .2s,box-shadow .2s; }
         .weather-design-choice[aria-pressed="true"] { background:rgba(255,255,255,.2); color:#fff; box-shadow:inset 0 1px 1px rgba(255,255,255,.18),0 2px 8px rgba(0,0,0,.12); }
-        :root[data-theme="weather"][data-weather-design="simple"] #transition-settings-container { display:none!important; }
-        #weather-modern-clock, #weather-modern-date, #simple-weather-clock, #simple-weather-time, #simple-weather-date, #simple-weather-temperature, #simple-meal { display:none; }
+        :root[data-theme="weather"] [data-view="background"],
+        :root[data-theme="weather"] #background-view,
+        :root[data-theme="weather"] #background-change-settings { display:none!important; }
+                #weather-modern-clock, #weather-modern-date, #simple-weather-clock, #simple-weather-time, #simple-weather-date, #simple-weather-temperature, #simple-meal { display:none; }
+        :root[data-theme="weather"][data-weather-design="simple"] [data-view="custom-text"],
+        :root[data-theme="weather"][data-weather-design="simple"] [data-view="pip"],
+        :root[data-theme="weather"][data-weather-design="simple"] #custom-text-view,
+        :root[data-theme="weather"][data-weather-design="simple"] #pip-view,
+        :root[data-theme="weather"][data-weather-design="simple"] #open-custom-text-btn,
+        :root[data-theme="weather"][data-weather-design="simple"] #screen-transition-title,
+        :root[data-theme="weather"][data-weather-design="simple"] #screen-duration-options,
+        :root[data-theme="weather"][data-weather-design="simple"] #always-clock-setting,
+        :root[data-theme="weather"][data-weather-design="simple"] #auto-darken-setting { display:none!important; }
         #simple-schedule-pills { display:none; position:fixed; top:calc(var(--safe-top) + 14px); left:calc(var(--safe-left) + 20px); right:calc(var(--safe-right) + 20px); height:clamp(42px,6vh,64px); z-index:48; pointer-events:none; overflow:hidden; }
         #simple-schedule-pills .simple-schedule-pill { position:absolute; top:50%; transform:translateY(-50%) scale(var(--pill-scale,1)); transform-origin:left center; display:inline-flex; align-items:center; gap:.62rem; width:max-content; max-width:min(34vw,420px); overflow:hidden; padding:.12rem 1.05rem .12rem .38rem; border:1px solid rgba(255,255,255,.24); border-radius:999px; color:#fff; background:rgba(255,255,255,.14); box-shadow:none; backdrop-filter:blur(14px) saturate(145%); -webkit-backdrop-filter:blur(14px) saturate(145%); font-size:clamp(.86rem,1.35vw,1.12rem); font-weight:800; line-height:1.05; white-space:nowrap; }
         #simple-schedule-pills .simple-schedule-label { display:block; min-width:0; overflow:hidden; text-overflow:ellipsis; }
@@ -593,7 +604,7 @@
         :root[data-theme="weather"][data-weather-design="simple"] #weather-modern-clock,
         :root[data-theme="weather"][data-weather-design="simple"] #weather-modern-date,
         :root[data-theme="weather"][data-weather-design="simple"] #pip-container,
-        :root[data-theme="weather"][data-weather-design="simple"] #weather-status { display:none!important; }
+
         :root[data-theme="weather"][data-weather-design="simple"] #simple-weather-clock,
         :root[data-theme="weather"][data-weather-design="simple"] #simple-weather-temperature,
         :root[data-theme="weather"][data-weather-design="simple"] #simple-meal { display:block; position:fixed; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.72); }
@@ -720,7 +731,7 @@
 .weather-water-lens{position:fixed;left:0;top:0;z-index:47;display:block;border-radius:50%;pointer-events:none;transform-origin:center;background:radial-gradient(ellipse at 34% 27%,rgba(255,255,255,.14) 0%,rgba(222,244,255,.045) 19%,rgba(145,203,235,.014) 54%,rgba(255,255,255,.004) 73%,transparent 78%);border:1px solid rgba(232,248,255,.14);box-shadow:inset 0 1px 2px rgba(255,255,255,.18),inset 0 -1px 2px rgba(111,176,211,.08),0 0 3px rgba(208,239,255,.05);-webkit-backdrop-filter:blur(.35px) saturate(1.06) url('#glass-refraction');backdrop-filter:blur(.35px) saturate(1.06) url('#glass-refraction');will-change:transform,opacity}
 :root:not([data-theme="weather"]) .weather-water-lens{display:none}
 body.low-performance-mode .weather-water-lens{-webkit-backdrop-filter:blur(.7px) saturate(1.2);backdrop-filter:blur(.7px) saturate(1.2)}
-#weather-status{display:none;position:fixed;left:1rem;bottom:1rem;z-index:61;padding:.45rem .8rem;border-radius:999px;background:rgba(10,23,35,.3);color:#fff;font-size:.75rem;backdrop-filter:blur(8px);pointer-events:none}
+
 #weather-timeline-controls[hidden]{display:none!important}.weather-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}.weather-settings-panel .weather-control-grid>label{text-align:center}.weather-settings-panel .weather-control-grid .glass-input:not([type="range"]){text-align:center;text-align-last:center}.weather-settings-panel>.glass-checkbox-label{justify-content:center}@media(max-width:700px){.weather-control-grid{grid-template-columns:1fr}}
 body.low-performance-mode #weather-scene canvas{display:none}body.low-performance-mode #weather-scene #weather-sky{display:block}body.low-performance-mode #weather-precip{display:block;opacity:.82}body.low-performance-mode #weather-scene #weather-stars,body.low-performance-mode #weather-scene #weather-celestial,body.low-performance-mode #weather-scene #weather-clouds{display:block!important}
 :root[data-theme="weather"] .screen .glass-card,:root[data-theme="weather"] .screen .glass-section{background:linear-gradient(145deg,rgba(7,13,21,.32),rgba(13,22,31,.22))!important;backdrop-filter:blur(7px) saturate(125%)!important;-webkit-backdrop-filter:blur(7px) saturate(125%)!important;border-color:rgba(226,237,248,.22);box-shadow:0 12px 32px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.12)}
@@ -761,7 +772,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
 
     <div id="weather-scene" aria-hidden="true"><div id="weather-sky"></div><div id="weather-aurora"><span class="aurora-sheet aurora-sheet-one"></span><span class="aurora-sheet aurora-sheet-two"></span><span class="aurora-sheet aurora-sheet-three"></span></div><canvas id="weather-stars"></canvas><canvas id="weather-celestial"></canvas><canvas id="weather-clouds"></canvas><canvas id="weather-mountains"></canvas><div id="weather-ground" aria-hidden="true"></div><canvas id="weather-grass"></canvas><div id="weather-twilight" aria-hidden="true"></div></div>
     <canvas id="weather-precip" aria-hidden="true"></canvas>
-    <div id="weather-status">날씨 연동 대기</div>
+
     <div id="default-animated-bg">
         <div class="glow-circle glow-green"></div>
         <div class="glow-circle glow-blue"></div>
@@ -1087,7 +1098,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                     </div>
                                     <div class="weather-control-grid">
                                       <label class="block space-y-1 text-sm">연동 방식<select id="weather-mode" class="glass-input w-full"><option value="live">실시간 날씨 연동</option><option value="manual">수동 날씨 조절</option></select></label>
-                                      <label class="block space-y-1 text-sm">위치 이름<input id="weather-location" class="glass-input w-full" placeholder="예: 대구"></label>
+                                      <label class="block space-y-1 text-sm">학교 이름<input id="weather-location" class="glass-input w-full" placeholder="프로필 학교 이름" readonly></label>
                                       <label class="block space-y-1 text-sm">위도<input id="weather-lat" class="glass-input w-full" type="number" step="0.0001" value="35.8714"></label>
                                       <label class="block space-y-1 text-sm">경도<input id="weather-lon" class="glass-input w-full" type="number" step="0.0001" value="128.6014"></label>
                                     </div>
@@ -1100,11 +1111,12 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                     <label class="block space-y-1 text-sm">천구 회전 속도 <span id="weather-rotation-value">10%</span><input id="weather-rotation-speed" type="range" min="0" max="300" step="10" value="10" aria-label="천구 회전 속도 조절" class="glass-input w-full"></label>
                                     <p id="weather-detail" class="text-xs text-white/60">Open-Meteo 공개 날씨 API를 사용합니다. 위치 접근 없이 기본 대구 좌표로 시작합니다.</p>
                                 </section>
-                                <h3 class="text-lg font-semibold border-b border-white/30 pb-2 flex items-center gap-2">
+                                <h3 id="screen-transition-title" class="text-lg font-semibold border-b border-white/30 pb-2 flex items-center gap-2">
                                     <span class="settings-section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg></span> 화면 모드 (전환 타이밍)
                                 </h3>
 
                                 <div id="transition-settings-container" class="space-y-4 transition-all duration-300">
+                                    <div id="screen-duration-options" class="space-y-4">
                                     <div class="space-y-2">
                                         <label for="weather-duration-slider" class="flex justify-between text-sm text-gray-200">
                                             <span>날씨 및 시계</span>
@@ -1137,14 +1149,15 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                         <input type="range" id="custom-duration-slider" min="0" max="30" value="8" class="glass-input w-full">
                                     </div>
                                     
+                                    </div>
                                     <div class="pt-2 border-t border-white/10 space-y-2">
-                                        <label class="glass-checkbox-label">
+                                        <label id="always-clock-setting" class="glass-checkbox-label">
                                             <input type="checkbox" id="always-show-clock" class="glass-checkbox-input" /> 
                                             <span class="glass-checkbox-box"></span>
                                             <span class="text-sm text-gray-200">모든 화면에 시계 표시</span>
                                         </label>
                                         
-                                        <label class="glass-checkbox-label">
+                                        <label id="auto-darken-setting" class="glass-checkbox-label">
                                             <input type="checkbox" id="auto-darken-bg" class="glass-checkbox-input" /> 
                                             <span class="glass-checkbox-box"></span>
                                             <span class="text-sm text-gray-200">밝은 배경 어둡게 처리</span>
@@ -1171,7 +1184,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                 </button>
                             </div>
 
-                            <div class="p-4 space-y-3">
+                            <div id="background-change-settings" class="p-4 space-y-3">
                                 <h3 class="text-lg font-semibold border-b border-white/30 pb-2 flex items-center">
                                     <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-white/10 border border-white/20 backdrop-blur-sm shadow-lg mr-3 text-lg">
                                         <svg class="settings-inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 15-5-5L5 20"/></svg>
@@ -1570,6 +1583,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             try { updateSimpleSchedulePills(true); } catch (error) {}
             if(selectedDesign==='simple'&&document.documentElement.dataset.theme==='weather') { if(slideTimeout) clearTimeout(slideTimeout); slideTimeout=null; try { updatePipVisibility(currentScreenIndex); } catch(error) {} }
             else if(previousDesign==='simple'&&document.documentElement.dataset.theme==='weather') { try { updatePipVisibility(currentScreenIndex); startScreenLoop(); } catch(error) {} }
+            if(previousDesign==='simple'&&!isSimpleWeatherMode()) { syncCustomTextSettings(); syncDurationSliderFills(); applyAlwaysShowClock(localStorage.getItem('dashboardAlwaysShowClock')!=='0'); updateMusicBarUI(); }
             syncModernScheduleTitle();
             document.querySelectorAll('[data-weather-design-choice]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.weatherDesignChoice === selectedDesign)));
             if (persist) { try { localStorage.setItem('adkWeatherDesign', selectedDesign); } catch (error) { console.warn('날씨 디자인 설정을 저장하지 못했습니다.', error); } }
@@ -1578,10 +1592,12 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             const previousTheme=document.documentElement.dataset.theme;
             const selectedTheme = ['light','weather'].includes(theme) ? theme : 'dark';
             document.documentElement.dataset.theme = selectedTheme;
+            window.dispatchEvent(new CustomEvent('standby-theme-change',{detail:{theme:selectedTheme}}));
             try { updateSimpleSchedulePills(true); } catch (error) {}
             if(document.documentElement.dataset.weatherDesign==='simple') {
                 if(selectedTheme==='weather') { if(slideTimeout) clearTimeout(slideTimeout); slideTimeout=null; try { updatePipVisibility(currentScreenIndex); } catch(error) {} }
                 else if(previousTheme==='weather') { try { updatePipVisibility(currentScreenIndex); startScreenLoop(); } catch(error) {} }
+                if(previousTheme==='weather'&&!isSimpleWeatherMode()) { syncCustomTextSettings(); syncDurationSliderFills(); applyAlwaysShowClock(localStorage.getItem('dashboardAlwaysShowClock')!=='0'); updateMusicBarUI(); }
             }
             syncModernScheduleTitle();
             document.querySelectorAll('[data-theme-choice]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.themeChoice === selectedTheme)));
@@ -2106,7 +2122,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
 
         function applySchoolPillSettings() {
             const showLogo = localStorage.getItem('dashboardShowSchoolLogo') !== 'false';
-            const showName = localStorage.getItem('dashboardShowSchoolName') !== 'false';
+            const showName = localStorage.getItem('dashboardShowSchoolName') === 'true';
             const logo = document.getElementById('school-logo-img');
             const name = document.getElementById('school-name-bottom');
             const pill = document.getElementById('dynamic-bottom-bar');
@@ -2136,7 +2152,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         }
 
         function updateMusicBarUI() {
-            if(ytMusicPlaylist.length === 0) return;
+            if (isSimpleWeatherMode() || ytMusicPlaylist.length === 0) return;
             const current = ytMusicPlaylist[currentMusicIndex];
             if(current) {
                 document.getElementById('music-thumb').src = current.thumb;
@@ -2380,7 +2396,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                         let isDday = apiDdayList.includes(startF + '-' + m.event);
 
                         return { date: startF, endDate: endF, event: m.event, dday: isDday, isApi: true };
-                    });
+                    }).filter(schedule => calcDdayDiffDays(schedule.endDate || schedule.date) >= 0);
                 } else {
                     apiSchedules = [];
                 }
@@ -2407,6 +2423,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         }
 
         function updateTime() {
+            prunePastSchedules();
             const now = new Date();
             const simpleMode=document.documentElement.dataset.theme==='weather'&&document.documentElement.dataset.weatherDesign==='simple';
             if(simpleMode) {
@@ -2444,6 +2461,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         }
 
         function transitionToScreen(nextIndex) {
+            if (isSimpleWeatherMode()) return;
             const currentElement = currentScreenElements[currentScreenIndex];
             const nextElement = currentScreenElements[nextIndex];
             if (document.documentElement.dataset.weatherDesign === 'modern') {
@@ -2494,6 +2512,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         }
 
         function showScreenImmediately(nextIndex) {
+            if (isSimpleWeatherMode()) return;
             if (nextIndex < 0 || nextIndex >= currentScreenElements.length || nextIndex === currentScreenIndex) return;
             const currentElement = currentScreenElements[currentScreenIndex];
             const nextElement = currentScreenElements[nextIndex];
@@ -2518,7 +2537,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         }
         function startScreenLoop() {
             if (slideTimeout) clearTimeout(slideTimeout);
-            if(document.documentElement.dataset.theme==='weather'&&document.documentElement.dataset.weatherDesign==='simple') { slideTimeout=null; return; }
+            if (isSimpleWeatherMode()) { slideTimeout=null; return; }
             const activeScreens = screenDurations.reduce((indices, duration, index) => { if (duration > 0) indices.push(index); return indices; }, []);
             if (activeScreens.length <= 1) {
                 if (activeScreens.length === 1) showScreenImmediately(activeScreens[0]);
@@ -2624,7 +2643,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         function loadSchedules() {
             const storedSchedules = localStorage.getItem('daeryunSchedules');
             if (storedSchedules) {
-                try { schedules = JSON.parse(storedSchedules).map(s => ({ date: s.date, event: s.event, dday: !!s.dday })); } 
+                try { schedules = JSON.parse(storedSchedules).map(s => ({ date: s.date, endDate:s.endDate||null, event: s.event, dday: !!s.dday })); } 
                 catch (e) { schedules = []; }
             } else {
                 schedules = [
@@ -2633,10 +2652,12 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                     { date: '2021.09.15', event: '개교 100주년 기념식 거행', dday: false }
                 ];
             }
+            prunePastSchedules(true, false);
             renderDisplaySchedules();
         }
 
         function saveSchedules() {
+            prunePastSchedules(true, false);
             schedules.sort((a, b) => new Date(a.date.replace(/\./g, '/')) - new Date(b.date.replace(/\./g, '/')));
             localStorage.setItem('daeryunSchedules', JSON.stringify(schedules));
             updateDdayBanner();
@@ -2652,6 +2673,21 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             return Math.round((targetMid - todayMid) / (24 * 3600 * 1000));
         }
 
+        let lastSchedulePruneDay = '';
+        function prunePastSchedules(force = false, refresh = true) {
+            const dayKey = new Intl.DateTimeFormat('en-CA', { timeZone:'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit' }).format(new Date());
+            if (!force && lastSchedulePruneDay === dayKey) return false;
+            lastSchedulePruneDay = dayKey;
+            const isActive = schedule => calcDdayDiffDays(schedule.endDate || schedule.date) >= 0;
+            const oldManualCount = schedules.length, oldApiCount = apiSchedules.length;
+            schedules = schedules.filter(isActive);
+            apiSchedules = apiSchedules.filter(isActive);
+            const removed = oldManualCount !== schedules.length || oldApiCount !== apiSchedules.length;
+            if (!removed) return false;
+            try { localStorage.setItem('daeryunSchedules', JSON.stringify(schedules)); } catch (error) {}
+            if (refresh) { renderDisplaySchedules(); renderModalSchedules(); }
+            return true;
+        }
         function updateSimpleSchedulePills(force = false) {
             const container = document.getElementById('simple-schedule-pills');
             if (!container) return;
@@ -2716,7 +2752,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             let left = 0;
             pills.forEach(({element},index) => {
                 element.style.left = `${left}px`;
-                if (index < pills.length-1) left += widths[index] + 12;
+                if (index < pills.length-1) left += widths[index] + Math.max(2, widths[index]*.035);
             });
         }
         function updateDdayBanner() {
@@ -3280,6 +3316,32 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             button.setAttribute('aria-label', active ? '전체 화면 종료' : '전체 화면으로 전환');
             button.title=active ? '전체 화면 종료' : '전체 화면';
         }
+        function isSimpleWeatherMode() {
+            return document.documentElement.dataset.theme === 'weather' && document.documentElement.dataset.weatherDesign === 'simple';
+        }
+        function syncCustomTextSettings() {
+            const savedCustomText = localStorage.getItem('dashboardCustomText');
+            const savedCustomTitle = localStorage.getItem('dashboardCustomTitle') || '대륜고등학교 방송부';
+            const savedTextSize = localStorage.getItem('dashboardTextSize') || 'text-4xl';
+            const savedFontWeight = localStorage.getItem('dashboardFontWeight') || 'font-light';
+            const storedMessageFont = localStorage.getItem('dashboardFontFamily') || 'font-system';
+            const savedFontFamily = ({'font-system':'font-family-system','font-pretendard':'font-family-pretendard','font-gowun':'font-family-gowun','font-notosanskr':'font-family-notosanskr','font-nanum':'font-family-nanum','font-nanumgothic':'font-family-nanum','font-jua':'font-family-jua','font-blackhan':'font-family-blackhan'})[storedMessageFont] || storedMessageFont;
+            customTitleElement.textContent = savedCustomTitle;
+            customTitleInput.value = savedCustomTitle;
+            if (savedCustomText) {
+                customMessageElement.textContent = savedCustomText;
+                customTextInput.value = savedCustomText;
+                customMessagePlaceholder.classList.add('hidden');
+            } else {
+                customMessageElement.textContent = "지금은 방송 시간이 아닙니다.";
+                customTextInput.value = '';
+                customMessagePlaceholder.classList.remove('hidden');
+            }
+            applyStyleClasses(customMessageElement, 'text-', savedTextSize);
+            applyStyleClasses(customMessageElement, 'font-', savedFontWeight);
+            applyStyleClasses(customMessageElement, 'font-family-', savedFontFamily);
+            textSizeSelect.value = savedTextSize; fontWeightSelect.value = savedFontWeight; fontFamilySelect.value = savedFontFamily;
+        }
         function loadSettings() {
             const savedBg = localStorage.getItem('dashboardBackground');
             const defaultAnimatedBg = document.getElementById('default-animated-bg');
@@ -3305,30 +3367,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             if (profileLogoPreview) profileLogoPreview.src = logoUrl;
             if (document.getElementById('sidebar-logo')) document.getElementById('sidebar-logo').src = logoUrl;
 
-            const savedCustomText = localStorage.getItem('dashboardCustomText');
-            const savedCustomTitle = localStorage.getItem('dashboardCustomTitle') || '대륜고등학교 방송부';
-            const savedTextSize = localStorage.getItem('dashboardTextSize') || 'text-4xl';
-            const savedFontWeight = localStorage.getItem('dashboardFontWeight') || 'font-light';
-            const storedMessageFont = localStorage.getItem('dashboardFontFamily') || 'font-system';
-            const savedFontFamily = ({'font-system':'font-family-system','font-pretendard':'font-family-pretendard','font-gowun':'font-family-gowun','font-notosanskr':'font-family-notosanskr','font-nanum':'font-family-nanum','font-nanumgothic':'font-family-nanum','font-jua':'font-family-jua','font-blackhan':'font-family-blackhan'})[storedMessageFont] || storedMessageFont;
-
-            customTitleElement.textContent = savedCustomTitle;
-            customTitleInput.value = savedCustomTitle;
-            if (savedCustomText) {
-                customMessageElement.textContent = savedCustomText;
-                customTextInput.value = savedCustomText;
-                customMessagePlaceholder.classList.add('hidden');
-            } else {
-                customMessageElement.textContent = "지금은 방송 시간이 아닙니다.";
-                customTextInput.value = '';
-                customMessagePlaceholder.classList.remove('hidden');
-            }
-
-            applyStyleClasses(customMessageElement, 'text-', savedTextSize);
-            applyStyleClasses(customMessageElement, 'font-', savedFontWeight);
-            applyStyleClasses(customMessageElement, 'font-family-', savedFontFamily);
-
-            textSizeSelect.value = savedTextSize; fontWeightSelect.value = savedFontWeight; fontFamilySelect.value = savedFontFamily;
+            if (!isSimpleWeatherMode()) syncCustomTextSettings();
 
             const savedWeatherSec = parseInt(localStorage.getItem('dashboardDurationWeather'), 10);
             const savedMealSec = parseInt(localStorage.getItem('dashboardDurationMeal'), 10);
@@ -3353,9 +3392,9 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             if (customDurationValue) customDurationValue.textContent = String(cSec);
 
             screenDurations = [wSec * 1000, mSec * 1000, sSec * 1000, cSec * 1000];
-            syncDurationSliderFills();
+            if (!isSimpleWeatherMode()) syncDurationSliderFills();
 
-            const savedAlwaysClock = localStorage.getItem('dashboardAlwaysShowClock') === '1';
+            const savedAlwaysClock = localStorage.getItem('dashboardAlwaysShowClock') !== '0';
             const savedAutoDarken = localStorage.getItem('dashboardAutoDarken') === '1';
             const savedLowPerformance = localStorage.getItem('dashboardLowPerformanceMode') === '1';
             
@@ -3365,7 +3404,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             if (autoDarkenEl) autoDarkenEl.checked = savedAutoDarken;
             if (lowPerformanceToggle) lowPerformanceToggle.checked = savedLowPerformance;
 
-            applyAlwaysShowClock(savedAlwaysClock);
+            if (!isSimpleWeatherMode()) applyAlwaysShowClock(savedAlwaysClock);
             applyAutoDarkenSetting(savedAutoDarken);
             applyLowPerformanceMode(savedLowPerformance);
 
@@ -3459,6 +3498,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         }
 
         function checkBackgroundBrightnessAndApply() {
+            if (document.documentElement.dataset.theme === 'weather') { document.body.classList.remove('bg-darken'); return; }
             const autoEnabled = localStorage.getItem('dashboardAutoDarken') === '1';
             if (!autoEnabled) { document.body.classList.remove('bg-darken'); return; }
 
@@ -3647,15 +3687,12 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             checkForUpdates(); 
             updateMusicBarVisibility();
             updateMusicBarUI();
-            renderPlaylistUI();
+            if (!isSimpleWeatherMode()) renderPlaylistUI();
 
             const ONE_HOUR = 60 * 60 * 1000;
-            const THREE_HOURS = 3 * 60 * 60 * 1000;
-            
-            setInterval(fetchManchon3DongWeather, ONE_HOUR); // 날씨는 1시간 유지
-            setInterval(fetchTodayMeal, THREE_HOURS); // 급식 3시간
-            setInterval(fetchApiSchedules, THREE_HOURS); // 일정 3시간
-            setInterval(() => { renderDisplaySchedules(); }, THREE_HOURS);
+            setInterval(fetchManchon3DongWeather, ONE_HOUR); // 날씨 1시간
+            setInterval(fetchTodayMeal, ONE_HOUR); // 급식 1시간
+            setInterval(fetchApiSchedules, ONE_HOUR); // 학사 일정 1시간
 
             const togglePastSchedulesBtn = document.getElementById('toggle-past-schedules-btn');
             if (togglePastSchedulesBtn) {
@@ -3738,6 +3775,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                     const bottomName = document.getElementById('school-name-bottom');
                     if (sidebarName) sidebarName.textContent = newName;
                     if (bottomName) bottomName.textContent = newName;
+                    window.dispatchEvent(new CustomEvent('school-profile-updated',{detail:{name:newName}}));
                 }
                 
                 const rCode = document.getElementById('region-code-input').value.trim();
@@ -4103,13 +4141,13 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
   if (!scene || !sky || !ground || !starCanvas || !celestialCanvas || !cloudCanvas || !mountainCanvas || !grassCanvas || !effectCanvas) return;
   const starCtx = starCanvas.getContext('2d'), celestialCtx = celestialCanvas.getContext('2d'), cloudCtx = cloudCanvas.getContext('2d'), mountainCtx = mountainCanvas.getContext('2d'), grassCtx = grassCanvas.getContext('2d'), effectCtx = effectCanvas.getContext('2d');
   const state = {
-    mode: 'live', kind: 'none', amount: 0, cloud: 20, rotationSpeed: 10, time: 'auto', timelineDuration: 120, timelineStartedAt: 0, reflectWeather: true, reflectTime: true, aurora: false, weatherBackup: null, sunrise: '06:00', sunset: '18:00',
+    mode: 'live', kind: 'none', amount: 0, cloud: 20, rotationSpeed: 10, time: 'auto', timelineDuration: 120, timelineStartedAt: 0, reflectWeather: true, reflectTime: true, aurora: true, weatherBackup: null, sunrise: '06:00', sunset: '18:00',
     lat: 35.8714, lon: 128.6014, windSpeed: 8, windDir: 240, temperature: null, weatherTime: null, weatherFetchedAt: 0,
     location: '대구', detail: '', isDay: null, cloudLow: 20, cloudMid: 20, cloudHigh: 20, radiation: null
   };
-  let width = 0, height = 0, dpr = 1, sunVisibleArea = 0, clouds = [], cloudLayers = {high:[],mid:[],low:[]}, stars = [], shootingStars = [], nextShootingStarAt = 0, starRotation = 0, lastStarRotationAt = 0, rain = [], splashes = [], flakes = [], beads = [], snowPatches = [], snowClumps = [], shelves = [], snowBeds = new Map(), lastShelfScan = 0, lastFrame = 0, lastGrassPhase = '', lastSkyPaint = 0, lastSkyValue = '', lastWeatherVisualSignature = '', twilightWasVisible = false, weatherRequestId = 0, frameErrorNotified = false, starVisibility = 0, visualPrecipitation = 0, visualPrecipitationKind = 'none';
+  let width = 0, height = 0, dpr = 1, sunVisibleArea = 0, sunDiscCheckAt = 0, sunDiscCheckX = NaN, clouds = [], cloudLayers = {high:[],mid:[],low:[]}, stars = [], shootingStars = [], nextShootingStarAt = 0, starRotation = 0, lastStarRotationAt = 0, rain = [], splashes = [], flakes = [], beads = [], snowPatches = [], snowClumps = [], shelves = [], snowBeds = new Map(), lastShelfScan = 0, lastFrame = 0, lastGrassPhase = '', lastSkyPaint = 0, lastSkyValue = '', lastWeatherVisualSignature = '', twilightWasVisible = false, weatherRequestId = 0, frameErrorNotified = false, starVisibility = 0, visualPrecipitation = 0, visualPrecipitationKind = 'none';
   // A lower render cadence cuts repeated canvas and particle work while keeping motion time-based.
-  let nextFrameAt = 0, previousFrameCost = 0;
+  let nextFrameAt = 0, previousFrameCost = 0, weatherFrameRunning = false, weatherFetchIntervalId = 0;
   let grassGeometryCache={key:'',paths:null};
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const rand = (a, b) => a + Math.random() * (b - a);
@@ -4391,7 +4429,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     scene.style.setProperty('--twilight-x',`${sunX}px`);scene.style.setProperty('--twilight-y',`${sunY}px`);
     scene.style.setProperty('--twilight-warmth',hour>=timeNumber(state.sunset)-2&&hour<=timeNumber(state.sunset)+1.5?'255,157,111':'255,191,143');
     if(day) {
-      const r=clamp(Math.min(width,height)*.0115,6,12);sunVisibleArea=visibleDiscArea(sunX,sunY,r);
+      const r=clamp(Math.min(width,height)*.0115,6,12);if(Math.abs(sunX-sunDiscCheckX)>4||performance.now()-sunDiscCheckAt>180){sunVisibleArea=visibleDiscArea(sunX,sunY,r);sunDiscCheckX=sunX;sunDiscCheckAt=performance.now();}
       celestialCtx.save();celestialCtx.shadowColor='rgba(255,255,255,.52)';celestialCtx.shadowBlur=r*1.2;celestialCtx.fillStyle='rgba(255,255,255,.92)';celestialCtx.beginPath();celestialCtx.arc(sunX,sunY,r,0,Math.PI*2);celestialCtx.fill();celestialCtx.restore();
     } else sunVisibleArea=0;
     const moon=lunarPhase(visualDate()),moonRise=(timeNumber(state.sunrise)+moon.age*24/29.530588853)%24,moonElapsed=(hour-moonRise+24)%24,moonArcHours=12.4;
@@ -4448,7 +4486,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     const phaseGlow=timelineMode ? .12 : phase==='sunset' ? .37 : phase==='sunrise' ? .31 : phase==='dawn' ? .2 : phase==='bluehour' ? .13 : phase==='night' ? (snowy ? .13 : .055) : .12;
     const glowAlpha=clamp(phaseGlow*(.35+sunExposure*.65)*(rainy?.48:1),.008,.4);
     const skyValue=`radial-gradient(circle 44vmin at ${solarX} ${horizonStop},rgba(${glowRgb},${glowAlpha}) 0%,rgba(${glowRgb},${glowAlpha*.34}) 48%,rgba(${glowRgb},0) 100%),linear-gradient(180deg,${skyColors[0]} 0%,${skyColors[1]} ${middleStop},${skyColors[2]} 68%,${skyColors[2]} 100%)|${darken.toFixed(3)}`;
-    const now=performance.now(); if(forcePaint||(skyValue!==lastSkyValue&&(timelineMode||now-lastSkyPaint>420))) { const [background,brightness]=skyValue.split('|'); sky.style.background=background; sky.style.filter=`brightness(${brightness})`; lastSkyValue=skyValue; lastSkyPaint=now; }
+    const now=performance.now(); if(forcePaint||(skyValue!==lastSkyValue&&(timelineMode||now-lastSkyPaint>80))) { const [background,brightness]=skyValue.split('|'); sky.style.background=background; sky.style.filter=`brightness(${brightness})`; lastSkyValue=skyValue; lastSkyPaint=now; }
     scene.style.setProperty('--weather-light',darken.toFixed(2));
 
     return phase;
@@ -4915,15 +4953,13 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     window.setTimeout(()=>{snapshot.remove();precipitation?.remove();},duration+80);
   }
   function frame(now) {
+    if(!weatherFrameRunning) return;
+    if(document.hidden) { weatherFrameRunning=false; lastFrame=now; nextFrameAt=now; return; }
+    if(document.documentElement.dataset.theme!=='weather') { weatherFrameRunning=false; document.body.classList.remove('weather-light-ink','weather-dark-ink'); return; }
     if(width<1||height<1){requestAnimationFrame(frame);return;}
-    if(document.hidden) { lastFrame=now; nextFrameAt=now; window.setTimeout(()=>requestAnimationFrame(frame),250); return; }
     if(now<nextFrameAt) { requestAnimationFrame(frame); return; }
     const frameStartedAt=performance.now();
     const dt = clamp((now-lastFrame)/16.67 || 1, .5, 3.1); lastFrame = now;
-    if (document.documentElement.dataset.theme !== 'weather') {
-      document.body.classList.remove('weather-light-ink','weather-dark-ink');
-      window.setTimeout(()=>requestAnimationFrame(frame),250); return;
-    }
     try {
     const weather=weatherVisualState();
     const twilight=twilightStrength(), twilightActive=twilight>0||twilightWasVisible;
@@ -4967,19 +5003,31 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     // Start at 30 fps. If the previous render itself was expensive, back off to 25 or 20 fps.
     const frameInterval=previousFrameCost>18?50:previousFrameCost>10?40:1000/30;
     nextFrameAt=now+frameInterval;
-    requestAnimationFrame(frame);
+    if(weatherFrameRunning && !document.hidden && document.documentElement.dataset.theme==='weather') requestAnimationFrame(frame);
+    else weatherFrameRunning=false;
   }
+  function startWeatherFrameLoop() {
+    if(weatherFrameRunning || document.hidden || document.documentElement.dataset.theme!=='weather') return;
+    weatherFrameRunning=true; lastFrame=0; nextFrameAt=0; requestAnimationFrame(frame);
+  }
+  function stopWeatherFrameLoop() { weatherFrameRunning=false; }
+  function startWeatherDataRefresh() {
+    if(weatherFetchIntervalId || state.mode!=='live' || document.documentElement.dataset.theme!=='weather') return;
+    weatherFetchIntervalId=window.setInterval(fetchWeather,3600000);
+  }
+  function stopWeatherDataRefresh() { if(weatherFetchIntervalId) { window.clearInterval(weatherFetchIntervalId); weatherFetchIntervalId=0; } }
   function persist() { try { localStorage.setItem('standbyWeather',JSON.stringify(state)); } catch (e) { console.warn('날씨 설정 저장 실패',e); } }
   function sync() {
     const assign = (id,value) => { const el=$(id); if(el) el.value=value; };
-    assign('weather-mode',state.mode); assign('weather-kind',state.kind); assign('weather-time',state.time); assign('weather-timeline-duration',state.timelineDuration); assign('weather-rotation-speed',state.rotationSpeed); assign('weather-lat',state.lat); assign('weather-lon',state.lon); assign('weather-location',state.location||'대구');
+      state.location=localStorage.getItem('dashboardSchoolName')||'대륜고등학교';
+    assign('weather-mode',state.mode); assign('weather-kind',state.kind); assign('weather-time',state.time); assign('weather-timeline-duration',state.timelineDuration); assign('weather-rotation-speed',state.rotationSpeed); assign('weather-lat',state.lat); assign('weather-lon',state.lon); assign('weather-location',state.location);
     if ($('weather-timeline-controls')) $('weather-timeline-controls').hidden=state.time!=='timeline';
     if ($('weather-reflect-toggle')) $('weather-reflect-toggle').checked=state.reflectWeather;
     if ($('weather-time-reflect-toggle')) $('weather-time-reflect-toggle').checked=state.reflectTime;
     if ($('weather-aurora-toggle')) $('weather-aurora-toggle').checked=state.aurora;
     if ($('weather-rotation-value')) $('weather-rotation-value').textContent=state.rotationSpeed+'%';
     const statusWeather=weatherVisualState(), statusCloud=(statusWeather.kind==='rain'||statusWeather.kind==='snow')?10:state.cloud;
-    if ($('weather-status')) $('weather-status').textContent=`${state.location||'대구'} · ${statusWeather.kind==='rain'?'비':statusWeather.kind==='snow'?'눈':'맑음'} · 구름 ${statusCloud}%`;
+    if ($('weather-status')) $('weather-status').textContent=`${localStorage.getItem('dashboardSchoolName')||'대륜고등학교'} · ${statusWeather.kind==='rain'?'비':statusWeather.kind==='snow'?'눈':'맑음'} · 구름 ${statusCloud}%`;
     if ($('sun-times')) $('sun-times').textContent=`일출 ${state.sunrise} · 일몰 ${state.sunset}`;
     if ($('weather-detail')) $('weather-detail').textContent=state.detail||'Open-Meteo 공개 날씨 API를 사용합니다.';
   }
@@ -5003,21 +5051,25 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         state.amount=state.kind==='none'?0:70; if(state.kind!=='none') state.cloud=10;
       }
       lastSkyValue=''; setSky(); drawGrass();
-      state.location=$('weather-location')?.value.trim()||'현재 위치';
+      state.location=localStorage.getItem('dashboardSchoolName')||'대륜고등학교';
       state.detail=`${Number(c.temperature_2m).toFixed(1)}°C · 구름 ${Number(c.cloud_cover??25)}% · 강수 ${Number(c.precipitation||0).toFixed(1)}mm · 풍속 ${Number(c.wind_speed_10m??8)}km/h · 풍향 ${Number(c.wind_direction_10m??240)}°`;
       persist(); sync();
     } catch(error) { if(requestId!==weatherRequestId||state.mode!==requestedMode) return; if($('weather-detail')) $('weather-detail').textContent='날씨 정보를 가져오지 못했습니다. 네트워크를 확인하거나 수동 조절 모드를 사용하세요.'; console.warn('날씨 API 요청 실패',error); }
   }
   function init() {
     try { const saved=JSON.parse(localStorage.getItem('standbyWeather')||'{}'); Object.assign(state,saved); } catch {}
-    state.reflectWeather=state.reflectWeather!==false; state.reflectTime=state.reflectTime!==false; state.aurora=state.aurora===true;
+    try { if(localStorage.getItem('standbyWeatherDefaultsV2')!=='1') { state.reflectWeather=true; state.reflectTime=true; state.aurora=true; localStorage.setItem('standbyWeatherDefaultsV2','1'); localStorage.setItem('standbyWeather',JSON.stringify(state)); } } catch {}
+    state.reflectWeather=state.reflectWeather!==false; state.reflectTime=state.reflectTime!==false; state.aurora=state.aurora!==false;
     state.kind=['rain','snow'].includes(state.kind)?state.kind:'none'; state.amount=clamp(Number.isFinite(Number(state.amount))?Number(state.amount):0,0,100); if(state.kind!=='none'){state.amount=50;state.cloud=10;}
     state.rotationSpeed=clamp(Number.isFinite(Number(state.rotationSpeed))?Number(state.rotationSpeed):10,0,300);
     state.timelineDuration=clamp(Number.isFinite(Number(state.timelineDuration))?Number(state.timelineDuration):120,1,1440);
     if(state.time==='timeline'&&!Number(state.timelineStartedAt)) state.timelineStartedAt=Date.now();
     if(state.mode==='live') state.time='auto';
-    resize(); sync();
-    $('weather-mode')?.addEventListener('change',e=>{ weatherRequestId++; state.mode=e.target.value; if(state.mode==='live'){state.time='auto'; if($('weather-time')) $('weather-time').value='auto';} lastSkyValue=''; setSky(true); drawMountains(); drawGrass(); persist(); if(state.mode==='live') fetchWeather(); });
+    if(document.documentElement.dataset.theme==='weather') resize();
+    sky.style.transition='background 180ms linear, filter 180ms linear';
+    sync();
+    if(document.documentElement.dataset.theme==='weather') startWeatherFrameLoop();
+    $('weather-mode')?.addEventListener('change',e=>{ weatherRequestId++; state.mode=e.target.value; if(state.mode==='live'){state.time='auto'; if($('weather-time')) $('weather-time').value='auto';} lastSkyValue=''; if(document.documentElement.dataset.theme==='weather'){setSky(true); drawMountains(); drawGrass();} persist(); if(state.mode==='live'&&document.documentElement.dataset.theme==='weather'){fetchWeather();startWeatherDataRefresh();}else stopWeatherDataRefresh(); });
     $('weather-reflect-toggle')?.addEventListener('change',e=>{ weatherRequestId++;
       state.reflectWeather=e.target.checked;
       persist(); sync();
@@ -5048,11 +5100,17 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
       persist();
     });
     $('weather-fetch')?.addEventListener('click',fetchWeather);
-    ['weather-lat','weather-lon','weather-location'].forEach(id=>$(id)?.addEventListener('change',()=>{ state.lat=Number($('weather-lat').value); state.lon=Number($('weather-lon').value); state.location=$('weather-location').value.trim()||'대구'; persist(); if(state.mode==='live') fetchWeather(); }));
-    window.addEventListener('resize',resize,{passive:true});
-    document.addEventListener('fullscreenchange',()=>{ window.setTimeout(resize,60); window.setTimeout(resize,240); });
-    requestAnimationFrame(frame);
-    if(state.mode==='live') fetchWeather(); window.setInterval(()=>{ if(state.mode==='live') fetchWeather(); },60000);
+    window.addEventListener('school-profile-updated',event=>{ state.location=event.detail?.name||localStorage.getItem('dashboardSchoolName')||'대륜고등학교'; persist(); sync(); });
+    ['weather-lat','weather-lon'].forEach(id=>$(id)?.addEventListener('change',()=>{ state.lat=Number($('weather-lat').value); state.lon=Number($('weather-lon').value); persist(); if(state.mode==='live'&&document.documentElement.dataset.theme==='weather') fetchWeather(); }));
+    window.addEventListener('resize',()=>{ if(document.documentElement.dataset.theme==='weather') resize(); },{passive:true});
+
+    document.addEventListener('fullscreenchange',()=>{ if(document.documentElement.dataset.theme==='weather') { window.setTimeout(resize,60); window.setTimeout(resize,240); } });
+    window.addEventListener('standby-theme-change',event=>{
+      if(event.detail?.theme==='weather') { resize(); startWeatherFrameLoop(); if(state.mode==='live') { fetchWeather(); startWeatherDataRefresh(); } }
+      else { weatherRequestId++; stopWeatherFrameLoop(); stopWeatherDataRefresh(); document.body.classList.remove('weather-light-ink','weather-dark-ink'); }
+    });
+    document.addEventListener('visibilitychange',()=>{ if(document.hidden) stopWeatherFrameLoop(); else if(document.documentElement.dataset.theme==='weather') startWeatherFrameLoop(); });
+    if(document.documentElement.dataset.theme==='weather'&&state.mode==='live') { fetchWeather(); startWeatherDataRefresh(); }
   }
   window.addEventListener('load',init,{once:true});
 })();
