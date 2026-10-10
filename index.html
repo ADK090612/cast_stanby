@@ -591,14 +591,16 @@
         :root[data-theme="weather"][data-weather-design="simple"] #screen-duration-options,
         :root[data-theme="weather"][data-weather-design="simple"] #always-clock-setting,
         :root[data-theme="weather"][data-weather-design="simple"] #auto-darken-setting { display:none!important; }
+        #schedule-duration-option[hidden] { display:none!important; }
         #simple-schedule-pills { display:none; position:fixed; top:calc(var(--safe-top) + 14px); left:calc(var(--safe-left) + 20px); right:calc(var(--safe-right) + 20px); height:clamp(42px,6vh,64px); z-index:48; pointer-events:none; overflow:hidden; }
         #simple-schedule-pills .simple-schedule-pill { position:absolute; top:50%; transform:translateY(-50%) scale(var(--pill-scale,1)); transform-origin:left center; display:inline-flex; align-items:center; gap:.62rem; width:max-content; max-width:min(34vw,420px); overflow:hidden; padding:.12rem 1.05rem .12rem .38rem; border:1px solid rgba(255,255,255,.24); border-radius:999px; color:#fff; background:rgba(255,255,255,.14); box-shadow:none; backdrop-filter:blur(14px) saturate(145%); -webkit-backdrop-filter:blur(14px) saturate(145%); font-size:clamp(.86rem,1.35vw,1.12rem); font-weight:800; line-height:1.05; white-space:nowrap; }
         #simple-schedule-pills .simple-schedule-label { display:block; min-width:0; overflow:hidden; text-overflow:ellipsis; }
 #simple-schedule-pills .simple-schedule-count { display:inline-flex; flex:0 0 2.95em; width:2.95em; height:2.95em; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.3); border-radius:50%; background:rgba(255,255,255,.14); box-shadow:inset 0 1px 2px rgba(255,255,255,.2),0 2px 8px rgba(0,0,0,.12); font-size:.7em; font-weight:800; letter-spacing:-.04em; }
 #simple-schedule-pills .simple-schedule-pill.is-soon .simple-schedule-count { background:rgba(255,70,70,.2); border-color:rgba(255,155,155,.42); }
 #simple-schedule-pills .simple-schedule-pill.is-dday { background:rgba(255,255,255,.2); border-color:rgba(255,255,255,.42); }
-        :root[data-theme="weather"][data-weather-design="simple"] #dday-banner { display:none!important; }
-        :root[data-theme="weather"][data-weather-design="simple"] #simple-schedule-pills.has-schedules { display:block; }
+        :root[data-theme="weather"][data-weather-design="simple"] #dday-banner,
+        :root[data-schedule-pills="true"] #dday-banner { display:none!important; }
+        :root[data-schedule-pills="true"] #simple-schedule-pills.has-schedules { display:block; }
         @media(max-width:640px) { #simple-schedule-pills { left:calc(var(--safe-left) + 12px); right:calc(var(--safe-right) + 12px); top:calc(var(--safe-top) + 10px); height:46px; } #simple-schedule-pills .simple-schedule-pill { max-width:min(62vw,280px); padding:.08rem .72rem .08rem .3rem; gap:.48rem; font-size:.82rem; } }
         :root[data-theme="weather"][data-weather-design="simple"] .screen { z-index:-1!important; display:none!important; visibility:hidden!important; opacity:0!important; pointer-events:none!important; }
         :root[data-theme="weather"][data-weather-design="simple"] #dynamic-bottom-bar,
@@ -621,7 +623,6 @@
         /* Simple layout for dark and light themes; weather keeps its weather-specific treatment above. */
         :root:not([data-theme="weather"])[data-weather-design="simple"] .screen { z-index:-1!important; display:none!important; visibility:hidden!important; opacity:0!important; pointer-events:none!important; }
         :root:not([data-theme="weather"])[data-weather-design="simple"] #dday-banner { display:none!important; }
-        :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-schedule-pills.has-schedules { display:block; }
         :root:not([data-theme="weather"])[data-weather-design="simple"] .aux-clock,
         :root:not([data-theme="weather"])[data-weather-design="simple"] #current-date,
         :root:not([data-theme="weather"])[data-weather-design="simple"] #current-time,
@@ -648,8 +649,11 @@
         :root[data-theme="light"][data-weather-design="simple"] #simple-meal { color:#263247!important; text-shadow:0 1px 4px rgba(255,255,255,.75)!important; }
         :root[data-theme="light"][data-weather-design="simple"] #simple-meal { background:rgba(255,255,255,.78)!important; box-shadow:0 14px 36px rgba(30,45,65,.13)!important; }
         :root[data-theme="light"][data-weather-design="simple"] #simple-meal-title { color:rgba(38,50,71,.68)!important; }
-        :root[data-theme="light"][data-weather-design="simple"] #simple-schedule-pills .simple-schedule-pill { color:#263247; background:rgba(255,255,255,.74); border-color:rgba(60,76,100,.18); }
-        @media(max-width:640px) { :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-meal { right:calc(var(--safe-right) + 12px); bottom:calc(var(--safe-bottom) + 1.75rem); width:min(58vw,300px); max-height:34vh; padding:.75rem .9rem; } :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-weather-temperature { left:calc(var(--safe-left) + 12px); bottom:calc(var(--safe-bottom) + 16px); } }
+        :root[data-weather-design="default"] #simple-weather-temperature { display:block!important; position:fixed; z-index:49; left:calc(var(--safe-left) + 1.5rem); bottom:calc(var(--safe-bottom) + 1.25rem); color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.72); font-size:clamp(.9rem,1.8vw,1.4rem); font-weight:800; white-space:nowrap; }
+        :root[data-theme="light"][data-weather-design="default"] #simple-weather-temperature { color:#263247!important; text-shadow:0 1px 4px rgba(255,255,255,.75)!important; }
+        :root[data-theme="weather"][data-weather-design="default"] #simple-weather-temperature { color:var(--weather-dynamic-color)!important; text-shadow:0 2px 8px rgba(0,0,0,.72)!important; }
+        :root[data-theme="light"][data-schedule-pills="true"] #simple-schedule-pills .simple-schedule-pill { color:#263247; background:rgba(255,255,255,.74); border-color:rgba(60,76,100,.18); }
+        @media(max-width:640px) { :root[data-weather-design="default"] #simple-weather-temperature { left:calc(var(--safe-left) + 12px); bottom:calc(var(--safe-bottom) + 16px); } :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-meal { right:calc(var(--safe-right) + 12px); bottom:calc(var(--safe-bottom) + 1.75rem); width:min(58vw,300px); max-height:34vh; padding:.75rem .9rem; } :root:not([data-theme="weather"])[data-weather-design="simple"] #simple-weather-temperature { left:calc(var(--safe-left) + 12px); bottom:calc(var(--safe-bottom) + 16px); } }
 
         #weather-modern-clock, #weather-modern-date { display:none; }
         :root[data-weather-design="modern"] .screen { transition:none!important; }
@@ -1331,6 +1335,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                         </div>
                                     </div>
                                     <div class="weather-design-control flex items-center justify-between gap-4 mt-4"><div><h5 class="font-semibold">화면 디자인</h5><p class="text-xs text-white/60 mt-1">모든 테마에서 기본·모던·심플 레이아웃을 선택합니다.</p></div><div class="theme-picker" role="group" aria-label="화면 디자인 선택"><button type="button" class="weather-design-choice" data-weather-design-choice="default" aria-pressed="true">기본</button><button type="button" class="weather-design-choice" data-weather-design-choice="modern" aria-pressed="false">모던</button><button type="button" class="weather-design-choice" data-weather-design-choice="simple" aria-pressed="false">심플</button></div></div>
+                                    <div class="flex items-center justify-between gap-4 mt-3"><div><h5 class="font-semibold">상단 일정 pill</h5><p class="text-xs text-white/60 mt-1">켜면 일정 화면이 자동 전환에서 제외됩니다.</p></div><label class="glass-checkbox-label"><input type="checkbox" id="schedule-pills-toggle" class="glass-checkbox-input" aria-label="상단 일정 pill 표시"><span class="glass-checkbox-box"></span><span class="text-sm">표시</span></label></div>
                                 </section>
                                 <section class="weather-settings-panel glass-section p-4 space-y-4" aria-labelledby="weather-scene-title">
                                     <div><h4 id="weather-scene-title" class="font-semibold">실시간 날씨 배경</h4><p class="text-sm text-white/60 mt-1"></p></div>
@@ -1376,7 +1381,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                         <input type="range" id="meal-duration-slider" min="0" max="60" value="8" class="glass-input w-full">
                                     </div>
 
-                                    <div class="space-y-2">
+                                    <div id="schedule-duration-option" class="space-y-2">
                                         <label for="schedule-duration-slider" class="flex justify-between text-sm text-gray-200">
                                             <span>학사 일정</span>
                                             <span><span id="schedule-duration-value" class="font-bold text-white">6</span>초</span>
@@ -1845,6 +1850,37 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         function syncModernScheduleTitle() {
             const title = document.getElementById('schedule-screen-title');
             if (title) title.hidden = document.documentElement.dataset.weatherDesign === 'modern';
+        }
+        function isSchedulePillsEnabled() {
+            return document.documentElement.dataset.schedulePills === 'true';
+        }
+        function applySchedulePillsSetting(enabled, persist = false) {
+            const isEnabled = Boolean(enabled);
+            const toggle = document.getElementById('schedule-pills-toggle');
+            const durationOption = document.getElementById('schedule-duration-option');
+            document.documentElement.dataset.schedulePills = String(isEnabled);
+            if (toggle) toggle.checked = isEnabled;
+            if (durationOption) durationOption.hidden = isEnabled;
+            if (Array.isArray(screenDurations) && screenDurations.length > 2) {
+                if (isEnabled) {
+                    screenDurations[2] = 0;
+                    if (!isSimpleDesignMode() && currentScreenIndex === 2) {
+                        const next = screenDurations.findIndex((duration, index) => index !== 2 && duration > 0);
+                        showScreenImmediately(next >= 0 ? next : 0);
+                    }
+                } else {
+                    let savedSeconds;
+                    try { savedSeconds = Number.parseInt(localStorage.getItem('dashboardDurationSchedule'), 10); } catch (error) {}
+                    if (!Number.isFinite(savedSeconds)) savedSeconds = DEFAULT_DURATIONS[2] / 1000;
+                    screenDurations[2] = Math.max(0, Math.min(60, savedSeconds)) * 1000;
+                }
+                if (!isSimpleDesignMode()) startScreenLoop();
+            }
+            if (persist) {
+                try { localStorage.setItem('dashboardSchedulePillsEnabled', isEnabled ? '1' : '0'); }
+                catch (error) { console.warn('상단 일정 pill 설정을 저장하지 못했습니다.', error); }
+            }
+            try { updateSimpleSchedulePills(true); } catch (error) {}
         }
         function applyWeatherDesign(design, persist = false) {
             const previousDesign=document.documentElement.dataset.weatherDesign;
@@ -3197,6 +3233,14 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
         function updateSimpleSchedulePills(force = false) {
             const container = document.getElementById('simple-schedule-pills');
             if (!container) return;
+            if (!isSchedulePillsEnabled()) {
+                if (container.childElementCount || container.classList.contains('has-schedules')) {
+                    container.replaceChildren();
+                    container.classList.remove('has-schedules');
+                }
+                if (simpleSchedulePillsDay) simpleSchedulePillsDay = '';
+                return;
+            }
             const dayKey = new Intl.DateTimeFormat('en-CA', { timeZone:'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit' }).format(new Date());
             if (!force && simpleSchedulePillsDay === dayKey) return;
             simpleSchedulePillsDay = dayKey;
@@ -4064,6 +4108,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             document.querySelectorAll('input[type="range"]').forEach(updateRangeSliderFill);
         }
         function handleDurationChange(screenIndex, e) {
+            if (screenIndex === 2 && isSchedulePillsEnabled()) return;
             updateRangeSliderFill(e.target);
             const seconds = Math.max(0, parseInt(e.target.value, 10) || 0);
             if (screenIndex === 0 && weatherDurationValue) weatherDurationValue.textContent = String(seconds);
@@ -4189,6 +4234,14 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             updateTime();
             setInterval(updateTime, 1000);
             loadSettings(); // 이 내부에서 설정 로딩 및 renderPipMedia() 호출
+            const schedulePillsToggle = document.getElementById('schedule-pills-toggle');
+            let schedulePillsEnabled = isSimpleDesignMode();
+            try {
+                const savedSchedulePillsSetting = localStorage.getItem('dashboardSchedulePillsEnabled');
+                if (savedSchedulePillsSetting !== null) schedulePillsEnabled = savedSchedulePillsSetting !== '0';
+            } catch (error) {}
+            applySchedulePillsSetting(schedulePillsEnabled);
+            if (schedulePillsToggle) schedulePillsToggle.addEventListener('change', event => applySchedulePillsSetting(event.target.checked, true));
             loadSchedules();
             showInitialLoading();
             const mealSource=document.getElementById('meal-content');
@@ -4657,7 +4710,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
   };
   let width = 0, height = 0, dpr = 1, sunVisibleArea = 0, sunDiscCheckAt = 0, sunDiscCheckX = NaN, clouds = [], cloudLayers = {high:[],mid:[],low:[]}, stars = [], shootingStars = [], nextShootingStarAt = 0, starRotation = 0, lastStarRotationAt = 0, rain = [], splashes = [], flakes = [], beads = [], snowPatches = [], snowClumps = [], shelves = [], snowBeds = new Map(), lastShelfScan = 0, lastFrame = 0, lastGrassPhase = '', lastSkyPaint = 0, lastSkyValue = '', lastWeatherVisualSignature = '', twilightWasVisible = false, weatherRequestId = 0, frameErrorNotified = false, starVisibility = 0, visualPrecipitation = 0, visualPrecipitationKind = 'none';
   // A lower render cadence cuts repeated canvas and particle work while keeping motion time-based.
-  let nextFrameAt = 0, previousFrameCost = 0, weatherFrameRunning = false, weatherFetchIntervalId = 0;
+  let nextFrameAt = 0, previousFrameCost = 0, weatherFrameRunning = false, weatherFrameRequestId = null, weatherFrameGeneration = 0, weatherFetchIntervalId = 0;
   let grassGeometryCache={key:'',paths:null};
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const rand = (a, b) => a + Math.random() * (b - a);
@@ -5462,13 +5515,20 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     requestAnimationFrame(()=>{snapshot.style.opacity='0';if(precipitation) precipitation.style.opacity='0';});
     window.setTimeout(()=>{snapshot.remove();precipitation?.remove();},duration+80);
   }
-  function frame(now) {
+  function scheduleWeatherFrame(generation=weatherFrameGeneration) {
+    if(!weatherFrameRunning || generation!==weatherFrameGeneration || weatherFrameRequestId!==null || document.hidden || document.documentElement.dataset.theme!=='weather') return;
+    weatherFrameRequestId=window.requestAnimationFrame(now=>frame(now,generation));
+  }
+  function frame(now,generation=weatherFrameGeneration) {
+    if(generation!==weatherFrameGeneration) return;
+    weatherFrameRequestId=null;
     if(!weatherFrameRunning) return;
     if(document.hidden) { weatherFrameRunning=false; lastFrame=now; nextFrameAt=now; return; }
     if(document.documentElement.dataset.theme!=='weather') { weatherFrameRunning=false; document.body.classList.remove('weather-light-ink','weather-dark-ink'); return; }
-    if(width<1||height<1){requestAnimationFrame(frame);return;}
-    if(now<nextFrameAt) { requestAnimationFrame(frame); return; }
+    if(width<1||height<1){scheduleWeatherFrame(generation);return;}
+    if(now<nextFrameAt) { scheduleWeatherFrame(generation); return; }
     const frameStartedAt=performance.now();
+    let effectContextSaved=false;
     const dt = clamp((now-lastFrame)/16.67 || 1, .5, 3.1); lastFrame = now;
     try {
     const weather=weatherVisualState();
@@ -5496,7 +5556,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     const safeStyle=getComputedStyle(document.documentElement);
     const safeLeft=parseFloat(safeStyle.getPropertyValue('--safe-left'))||0, safeRight=parseFloat(safeStyle.getPropertyValue('--safe-right'))||0;
     const safeTop=parseFloat(safeStyle.getPropertyValue('--safe-top'))||0, safeBottom=parseFloat(safeStyle.getPropertyValue('--safe-bottom'))||0;
-    effectCtx.save(); effectCtx.beginPath(); effectCtx.rect(safeLeft,safeTop,Math.max(0,width-safeLeft-safeRight),Math.max(0,height-safeTop-safeBottom)); effectCtx.clip();
+    effectCtx.save(); effectContextSaved=true; effectCtx.beginPath(); effectCtx.rect(safeLeft,safeTop,Math.max(0,width-safeLeft-safeRight),Math.max(0,height-safeTop-safeBottom)); effectCtx.clip();
     const targetKind=weather.kind==='rain'||weather.kind==='snow'?weather.kind:'none';
     if(targetKind==='none') {
       if(visualPrecipitationKind!=='none') { rain=[]; flakes=[]; clearAccumulatedWeather(); }
@@ -5507,20 +5567,24 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     if (visualPrecipitationKind === 'rain' && intensity > 0) { flakes = []; snowPatches = []; snowClumps=[]; drawRain(wind,intensity,dt); }
     else if (visualPrecipitationKind === 'snow' && intensity > 0) { rain = []; beads = []; splashes=[]; drawSnow(wind,intensity,dt); }
     else { rain = []; flakes = []; beads = []; splashes=[]; snowPatches = []; snowClumps=[]; }
-    effectCtx.restore();
+    effectCtx.restore(); effectContextSaved=false;
     } catch(error) { if(!frameErrorNotified) { console.warn('날씨 애니메이션 렌더링을 복구합니다.',error); frameErrorNotified=true; } }
+    finally { if(effectContextSaved) { try { effectCtx.restore(); } catch(error) {} } }
     previousFrameCost=performance.now()-frameStartedAt;
     // Start at 30 fps. If the previous render itself was expensive, back off to 25 or 20 fps.
     const frameInterval=previousFrameCost>18?50:previousFrameCost>10?40:1000/30;
     nextFrameAt=now+frameInterval;
-    if(weatherFrameRunning && !document.hidden && document.documentElement.dataset.theme==='weather') requestAnimationFrame(frame);
+    if(weatherFrameRunning && !document.hidden && document.documentElement.dataset.theme==='weather') scheduleWeatherFrame(generation);
     else weatherFrameRunning=false;
   }
   function startWeatherFrameLoop() {
     if(weatherFrameRunning || document.hidden || document.documentElement.dataset.theme!=='weather') return;
-    weatherFrameRunning=true; lastFrame=0; nextFrameAt=0; requestAnimationFrame(frame);
+    weatherFrameRunning=true; weatherFrameGeneration++; lastFrame=0; nextFrameAt=0; scheduleWeatherFrame(weatherFrameGeneration);
   }
-  function stopWeatherFrameLoop() { weatherFrameRunning=false; }
+  function stopWeatherFrameLoop() {
+    weatherFrameRunning=false; weatherFrameGeneration++;
+    if(weatherFrameRequestId!==null) { window.cancelAnimationFrame(weatherFrameRequestId); weatherFrameRequestId=null; }
+  }
   function startWeatherDataRefresh() {
     if(weatherFetchIntervalId || state.mode!=='live' || document.documentElement.dataset.theme!=='weather') return;
     weatherFetchIntervalId=window.setInterval(fetchWeather,3600000);
