@@ -1018,7 +1018,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
             </button>
-            <h2 id="settings-title" class="text-2xl font-bold text-white flex-grow text-center sm:text-left">대시보드 설정</h2>
+            <h2 id="settings-title" class="text-2xl font-bold text-white flex-grow text-center sm:text-left">설정</h2>
             <button id="close-settings-btn" class="text-2xl text-white hover:text-sky-300 transition-colors">&times;</button>
         </div>
 
@@ -1100,7 +1100,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                         <span class="settings-tab-icon w-10 h-10 rounded-xl flex items-center justify-center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg></span>
                         <div class="text-sm">
                             <div class="font-semibold">정보</div>
-                            <div class="text-xs text-gray-300">앱 정보 및 버전</div>
+                            <div class="text-xs text-gray-300">정보 및 버전</div>
                         </div>
                     </div>
                 </aside>
@@ -1193,7 +1193,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                 <button id="save-update-settings-btn" class="glass-button w-full mt-2">알림 설정 저장</button>
                             </div>
 
-                            <p class="text-xs text-gray-400 mt-2 text-center">* 깃허브 저장소(adk090612.github.io/cast_stanby/)의 원본 코드와 비교하여 업데이트를 확인합니다.</p>
+                            <p class="text-xs text-gray-400 mt-2 text-center">* 깃허브(adk090612.github.io/cast_stanby/)의 원본 코드와 비교하여 업데이트를 확인합니다.</p>
                         </div>
 
                         <div id="release-notes-view" class="settings-view hidden space-y-4">
@@ -1204,9 +1204,11 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                 <div>
                                     <h5 class="font-bold text-blue-300 text-lg">v2.6.0</h5>
                                     <ul class="list-disc pl-5 text-sm text-gray-300 mt-2 space-y-1">
+                                        <li>기존 버전의 오류 해결</li>
                                         <li>모던·심플 화면 디자인을 다크·라이트 테마에서도 지원</li>
                                         <li>테마 전환 중 급식·학사 일정 화면 표시 복원 개선</li>
                                         <li>날씨 정보 상자의 현재 위치에 학교 이름 표시</li>
+                                        <li>연산 부하 최소화 및 최적화</li>
                                     </ul>
                                 </div>
                                 <div class="pt-2 border-t border-white/10">
@@ -1286,7 +1288,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                             <p class="text-sm text-gray-300">학교 pill을 가리키면 긴급 방송 버튼이 나타납니다. 알림마다 이름과 표시 기간, 색, 글꼴을 정할 수 있습니다. pill에는 입력한 메시지만 표시됩니다.</p>
                             <section class="glass-section p-4 space-y-3"><div><h5 class="font-semibold">알림 타임라인</h5><p class="text-xs text-white/60 mt-1">드래그 앤 드롭 또는 위·아래 버튼으로 순서를 바꿉니다. 긴급 버튼과 같은 시각에 도착한 알림 순서에 적용됩니다.</p></div><div id="broadcast-timeline-list"></div></section>
                             <section class="glass-section p-4 space-y-4">
-                                <div><h5 class="font-semibold">긴급·예약 메시지</h5><p class="text-xs text-white/60 mt-1">긴급 메시지는 pill 메뉴에서 즉시 표시되고 예약 메시지는 지정한 시각에 표시됩니다.</p></div>
+                                <div><h5 class="font-semibold">긴급·예약 메시지</h5><p class="text-xs text-white/60 mt-1">긴급 메시지는 하단 바에서 즉시 표시되고 예약 메시지는 지정한 시각에 표시됩니다.</p></div>
                                 <div class="broadcast-settings-grid">
                                     <label class="block space-y-1 text-sm">방송 방식<select id="broadcast-mode-select" class="glass-input w-full"><option value="urgent">긴급 방송 버튼</option><option value="scheduled">예약 방송</option></select></label>
                                     <label class="block space-y-1 text-sm">긴급 종류<select id="broadcast-category-select" class="glass-input w-full"><option value="공습">공습</option><option value="화재">화재</option><option value="지진">지진</option><option value="기타">기타 긴급 방송</option></select></label>
@@ -1295,7 +1297,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                     <label class="block space-y-1 text-sm full-span">표시할 메시지<textarea id="broadcast-message-input" rows="3" maxlength="500" class="glass-input w-full" placeholder="pill에 표시할 메시지를 입력하세요"></textarea></label>
                                     <label class="block space-y-1 text-sm">표시 기간<select id="broadcast-duration-mode" class="glass-input w-full"><option value="next">다음 메시지 전까지</option><option value="minutes">분 단위로 지정</option></select></label>
                                     <label id="broadcast-duration-minutes-wrap" class="block space-y-1 text-sm">표시 시간 (분)<input id="broadcast-duration-minutes" type="number" min="1" max="1440" value="1" class="glass-input w-full"></label>
-                                    <label class="broadcast-color-field block space-y-1 text-sm">pill 색<input id="broadcast-pill-color" type="color" value="#dc2626"></label>
+                                    <label class="broadcast-color-field block space-y-1 text-sm">배경 색<input id="broadcast-pill-color" type="color" value="#dc2626"></label>
                                     <label class="broadcast-color-field block space-y-1 text-sm">글자 색<input id="broadcast-text-color" type="color" value="#ffffff"></label>
                                     <label class="block space-y-1 text-sm full-span">글꼴<select id="broadcast-font-select" class="glass-input w-full"><option value="font-family-notosanskr">Noto Sans KR</option><option value="font-family-system">시스템 기본</option><option value="font-family-pretendard">Pretendard</option><option value="font-family-nanum">Nanum Gothic</option><option value="font-family-gowun">Gowun Dodum</option><option value="font-family-jua">Jua</option><option value="font-family-blackhan">Black Han Sans</option></select></label><label class="block space-y-1 text-sm full-span">이 알림의 효과음<select id="broadcast-message-sound" class="glass-input w-full"><option value="default">기본 효과음 설정 사용</option><option value="off">효과음 없음</option><option value="siren">사이렌</option><option value="bell">종소리</option><option value="chime">차임</option><option value="beep">알림음</option></select></label>
                                 </div>
@@ -1307,7 +1309,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                 <div class="broadcast-settings-grid"><label class="block space-y-1 text-sm">TTS 엔진<select id="broadcast-tts-engine" class="glass-input w-full"><option value="auto">사용 가능한 모든 엔진</option></select></label><label class="block space-y-1 text-sm">목소리<select id="broadcast-tts-voice" class="glass-input w-full"><option value="">기본 목소리</option></select></label></div>
                                 <div class="flex items-center gap-3 flex-wrap"><button id="broadcast-tts-preview-btn" type="button" class="glass-button">목소리 미리 듣기</button><span id="broadcast-tts-status" class="text-xs text-white/60" aria-live="polite"></span></div>
                             </section>
-                            <section class="glass-section p-4 space-y-4"><div><h5 class="font-semibold">효과음</h5><p class="text-xs text-white/60 mt-1">브라우저의 Web Audio 기능으로 효과음을 만들어 방송 메시지와 함께 재생합니다.</p></div>
+                            <section class="glass-section p-4 space-y-4"><div><h5 class="font-semibold">효과음</h5><p class="text-xs text-white/60 mt-1">각 브라우저에 내장된 Web Audio 기능으로 효과음을 만들어 방송 메시지와 함께 재생합니다.</p></div>
                                 <label class="glass-checkbox-label"><input id="broadcast-sound-enabled" type="checkbox" class="glass-checkbox-input"><span class="glass-checkbox-box"></span><span class="text-sm">기본 효과음 사용 (알림별 설정 적용)</span></label>
                                 <div class="broadcast-settings-grid"><label class="block space-y-1 text-sm">효과음<select id="broadcast-sound-type" class="glass-input w-full"><option value="siren">사이렌</option><option value="bell">종소리</option><option value="chime">차임</option><option value="beep">알림음</option></select></label><label class="block space-y-1 text-sm">음량 <span id="broadcast-sound-volume-label">50%</span><input id="broadcast-sound-volume" type="range" min="0" max="100" value="100" class="glass-input w-full"></label></div>
                                 <div class="flex items-center gap-3 flex-wrap"><button id="broadcast-sound-preview-btn" type="button" class="glass-button">효과음 미리 듣기</button><span id="broadcast-sound-status" class="text-xs text-white/60" aria-live="polite"></span></div>
@@ -1327,7 +1329,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                             <div class="p-4 space-y-5">
                                 <section class="theme-settings glass-section p-4" aria-labelledby="theme-settings-title">
                                     <div class="flex items-center justify-between gap-4">
-                                        <div><h4 id="theme-settings-title" class="font-semibold">화면 테마</h4><p class="text-sm text-white/60 mt-1">화면 테마를 다크, 라이트, 날씨로 변경 할 수 있습니다.</p></div>
+                                        <div><h4 id="theme-settings-title" class="font-semibold">화면 테마</h4><p class="text-sm text-white/60 mt-1">화면 테마를 다크/라이트/날씨로 변경 할 수 있습니다.</p></div>
                                         <div class="theme-picker" role="group" aria-label="화면 테마 선택">
                                             <button type="button" class="theme-choice" data-theme-choice="dark" aria-pressed="true"><span aria-hidden="true">☾</span> 다크</button>
                                             <button type="button" class="theme-choice" data-theme-choice="light" aria-pressed="false"><span aria-hidden="true">☼</span> 라이트</button>
@@ -1335,7 +1337,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                         </div>
                                     </div>
                                     <div class="weather-design-control flex items-center justify-between gap-4 mt-4"><div><h5 class="font-semibold">화면 디자인</h5><p class="text-xs text-white/60 mt-1">모든 테마에서 기본·모던·심플 레이아웃을 선택합니다.</p></div><div class="theme-picker" role="group" aria-label="화면 디자인 선택"><button type="button" class="weather-design-choice" data-weather-design-choice="default" aria-pressed="true">기본</button><button type="button" class="weather-design-choice" data-weather-design-choice="modern" aria-pressed="false">모던</button><button type="button" class="weather-design-choice" data-weather-design-choice="simple" aria-pressed="false">심플</button></div></div>
-                                    <div class="flex items-center justify-between gap-4 mt-3"><div><h5 class="font-semibold">상단 일정 pill</h5><p class="text-xs text-white/60 mt-1">켜면 일정 화면이 자동 전환에서 제외됩니다.</p></div><label class="glass-checkbox-label"><input type="checkbox" id="schedule-pills-toggle" class="glass-checkbox-input" aria-label="상단 일정 pill 표시"><span class="glass-checkbox-box"></span><span class="text-sm">표시</span></label></div>
+                                    <div class="flex items-center justify-between gap-4 mt-3"><div><h5 class="font-semibold">상단 일정 알림</h5><p class="text-xs text-white/60 mt-1">켜면 일정 화면이 자동 전환에서 제외됩니다.</p></div><label class="glass-checkbox-label"><input type="checkbox" id="schedule-pills-toggle" class="glass-checkbox-input" aria-label="상단 일정 알림 표시"><span class="glass-checkbox-box"></span><span class="text-sm">표시</span></label></div>
                                 </section>
                                 <section class="weather-settings-panel glass-section p-4 space-y-4" aria-labelledby="weather-scene-title">
                                     <div><h4 id="weather-scene-title" class="font-semibold">실시간 날씨 배경</h4><p class="text-sm text-white/60 mt-1"></p></div>
@@ -1357,7 +1359,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                     </div>
                                     <div id="weather-timeline-controls" class="weather-control-grid" hidden><label class="block space-y-1 text-sm">타임라인 한 바퀴 (분)<input id="weather-timeline-duration" class="glass-input w-full" type="number" min="1" max="1440" step="1" value="120"></label><p class="text-xs text-white/60 self-center">타임라인 선택시 일출부터 다음 일출까지 하늘이 반복되고, 낮에는 맑음→비→맑음→눈→맑음 순서로 바뀝니다.</p></div>
                                     <label class="block space-y-1 text-sm">천구 회전 속도 <span id="weather-rotation-value">10%</span><input id="weather-rotation-speed" type="range" min="0" max="300" step="10" value="10" aria-label="천구 회전 속도 조절" class="glass-input w-full"></label>
-                                    <p id="weather-detail" class="text-xs text-white/60">Open-Meteo 공개 날씨 API를 사용합니다. 위치 접근 없이 기본 대구 좌표로 시작합니다.</p>
+                                    <p id="weather-detail" class="text-xs text-white/60">별도 설정이 없을 경우 Open-Meteo 공개 날씨 API를 사용합니다. 위치 접근 없이 기본 대구 좌표로 시작합니다.</p>
                                 </section>
                                 <h3 id="screen-transition-title" class="text-lg font-semibold border-b border-white/30 pb-2 flex items-center gap-2">
                                     <span class="settings-section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg></span> 화면 모드 (전환 타이밍)
@@ -1414,7 +1416,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                         <label class="glass-checkbox-label">
                                             <input type="checkbox" id="low-performance-mode" class="glass-checkbox-input" /> 
                                             <span class="glass-checkbox-box"></span>
-                                            <span class="text-sm text-yellow-200 font-semibold">저사양 기기 모드 (투명도/배경 애니메이션 끄기)</span>
+                                            <span class="text-sm text-yellow-200 font-semibold">저사양 기기 모드 (투명/배경 애니메이션 끄기)</span>
                                         </label>
                                     </div>
                                 </div>
@@ -1446,7 +1448,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
 
                         <div id="play-view" class="settings-view hidden space-y-4">
                             <h4 class="text-xl font-semibold border-b border-white/30 pb-2 flex items-center gap-2">
-                                <svg class="settings-inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg> 플레이리스트 (Apple Music Style)
+                                <svg class="settings-inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg> 플레이리스트
                             </h4>
                             <div class="p-2 space-y-4">
                                 <div class="flex gap-2 mb-2">
@@ -1504,13 +1506,13 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                     <select id="font-family-select" class="glass-input w-full appearance-none">
                                         <option value="font-family-system">기본 시스템 글꼴</option>
                                         <option value="font-family-pretendard">Pretendard</option>
-                                        <option value="font-family-gowun">Gowun Dodum (beta.html)</option>
+                                        <option value="font-family-gowun">Gowun Dodum</option>
                                         <option value="font-family-notosanskr">Noto Sans KR</option>
                                         <option value="font-family-nanum">Nanum Gothic</option>
                                         <option value="font-family-jua">Jua</option>
                                         <option value="font-family-blackhan">Black Han Sans</option>
                                     </select>
-                                    <p class="text-xs text-gray-400 mt-1">(*Windows 환경에 최적화)</p>
+                                    <p class="text-xs text-gray-400 mt-1">(*Windows11 22H2 이상의 크로미움 환경에 최적화)</p>
                                 </div>
                             </div>
 
@@ -1528,7 +1530,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                 </label>
                                 <button type="submit" class="glass-button">일정 추가</button>
                             </form>
-                            <p class="text-xs text-gray-400 mt-1">* 나이스(NEIS) 연동 데이터는 자동으로 표시되며 수동 일정과 병합됩니다. 체크박문을 통해 개별 D-Day 설정이 가능합니다.</p>
+                            <p class="text-xs text-gray-400 mt-1">* 나이스(NEIS) 연동 데이터는 자동으로 표시되며 수동 일정과 병합됩니다. 체크박스를 통해 개별 D-Day 설정이 가능합니다.</p>
 
                             <div class="flex justify-end mt-2 mb-1">
                                 <button type="button" id="toggle-past-schedules-btn" class="text-xs bg-white/10 hover:bg-white/20 text-white py-1.5 px-3 rounded-md transition-colors font-medium">이전 일정 보기</button>
@@ -1542,7 +1544,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                         </div>
 
                         <div id="profile-view" class="settings-view hidden space-y-4">
-                            <h4 class="text-xl font-semibold border-b border-white/30 pb-2">학교 계정 및 시스템 정보 설정</h4>
+                            <h4 class="text-xl font-semibold border-b border-white/30 pb-2">계정 및 시스템 설정</h4>
                             <label for="profile-school-name-input" class="block text-sm font-medium text-gray-200">학교 이름</label>
                             <input id="profile-school-name-input" type="text" class="glass-input w-full" maxlength="60" placeholder="학교 이름을 입력하세요">
 
@@ -1603,11 +1605,11 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                             <div class="space-y-3">
                                 <button id="reset-schedule-btn" class="glass-button w-full flex justify-between items-center text-left">
                                     <span>수동 일정 초기화</span>
-                                    <span class="text-sm text-gray-300 font-normal">사용자가 수동으로 입력한 학사 일정을 모두 지웁니다.</span>
+                                    <span class="text-sm text-gray-300 font-normal">수동으로 입력한 학사 일정을 모두 지웁니다.</span>
                                 </button>
                                 <button id="reset-message-btn" class="glass-button w-full flex justify-between items-center text-left">
                                     <span>메시지 초기화</span>
-                                    <span class="text-sm text-gray-300 font-normal">커스텀 메시지를 기본값으로 되돌림</span>
+                                    <span class="text-sm text-gray-300 font-normal">메시지를 기본값으로 되돌림</span>
                                 </button>
                                 <button id="reset-all-btn" class="glass-button w-full flex justify-between items-center text-left" style="background: linear-gradient(145deg, rgba(255, 60, 60, 0.15), rgba(255, 60, 60, 0.05)); border-color: rgba(255, 60, 60, 0.5);">
                                     <span class="text-red-200">전체 초기화</span>
@@ -1680,7 +1682,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             <h1 id="current-time" class="text-6xl sm:text-8xl font-extrabold tracking-tight text-white">00:00:00</h1>
 
             <div class="glass-card no-initial-blur p-6 sm:p-8 rounded-[40px] shadow-2xl mt-12">
-                <p class="text-xl sm:text-2xl font-semibold text-gray-200 mb-4">현재 위치: <span data-weather-school-name>대륜고등학교</span></p>
+                <p class="text-xl sm:text-2xl font-semibold text-gray-200 mb-4">현재 위치: <span data-weather-school-name>대륜고등학교(만촌3동)</span></p>
                 <div class="flex flex-col sm:flex-row justify-around items-center">
                     <div class="flex items-center space-x-4 mb-6 sm:mb-0">
                         <span class="text-6xl sm:text-7xl">☀️</span>
@@ -1747,7 +1749,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                 <div class="aux-time aux-time-el">00:00:00</div>
                 <div class="aux-date aux-date-el">00월 00일(요일)</div>
             </div>
-            <h2 id="schedule-screen-title" class="text-5xl sm:text-6xl font-extrabold text-white mt-6 mb-6 text-shadow-lg">학사 일정 안내</h2>
+            <h2 id="schedule-screen-title" class="text-5xl sm:text-6xl font-extrabold text-white mt-6 mb-6 text-shadow-lg">학사 일정</h2>
             <div class="glass-card no-initial-blur w-full p-6 sm:p-10 rounded-[40px] shadow-2xl text-left text-white max-h-[70vh] flex flex-col overflow-hidden">
                 <div class="flex justify-between items-center mb-4 border-b pb-2 border-gray-300/50 shrink-0">
                     <h3 class="text-3xl font-bold text-white">주요 학사 일정</h3>
@@ -1878,7 +1880,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             }
             if (persist) {
                 try { localStorage.setItem('dashboardSchedulePillsEnabled', isEnabled ? '1' : '0'); }
-                catch (error) { console.warn('상단 일정 pill 설정을 저장하지 못했습니다.', error); }
+                catch (error) { console.warn('상단 일정 알림 설정을 저장하지 못했습니다.', error); }
             }
             try { updateSimpleSchedulePills(true); } catch (error) {}
         }
@@ -2801,7 +2803,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             const temperatureTextColor=temperatureColor(exactTemp), feelsTextColor=temperatureColor(exactFeels), humidityTextColor=interpolateWeatherColor(humidity,humidityColorStops), windTextColor=wind===null?conditionColor:interpolateWeatherColor(wind,windSpeedColorStops);
 
             weatherCard.innerHTML = `
-                <p class="text-xl sm:text-2xl font-semibold text-gray-200 mb-4">현재 위치: <span data-weather-school-name></span></p>
+                <p class="text-xl sm:text-2xl font-semibold text-gray-200 mb-4">현재 위치: <span data-weather-school-name>(만촌3동)</span></p>
                 <div class="flex flex-col sm:flex-row justify-around items-center">
                     <div class="flex items-center space-x-4 mb-6 sm:mb-0">
                         <img src="${iconUrl}" alt="${description}" class="w-20 h-20">
@@ -4710,7 +4712,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
   };
   let width = 0, height = 0, dpr = 1, sunVisibleArea = 0, sunDiscCheckAt = 0, sunDiscCheckX = NaN, clouds = [], cloudLayers = {high:[],mid:[],low:[]}, stars = [], shootingStars = [], nextShootingStarAt = 0, starRotation = 0, lastStarRotationAt = 0, rain = [], splashes = [], flakes = [], beads = [], snowPatches = [], snowClumps = [], shelves = [], snowBeds = new Map(), lastShelfScan = 0, lastFrame = 0, lastGrassPhase = '', lastSkyPaint = 0, lastSkyValue = '', lastWeatherVisualSignature = '', twilightWasVisible = false, weatherRequestId = 0, frameErrorNotified = false, starVisibility = 0, visualPrecipitation = 0, visualPrecipitationKind = 'none', precipitationFadeRemaining = 0;
   // A lower render cadence cuts repeated canvas and particle work while keeping motion time-based.
-  let nextFrameAt = 0, previousFrameCost = 0, weatherFrameRunning = false, weatherFrameRequestId = null, weatherFrameTimerId = 0, weatherFrameGeneration = 0, weatherFetchIntervalId = 0;
+  let nextFrameAt = 0, previousFrameCost = 0, weatherFrameRunning = false, weatherFrameRequestId = null, weatherFrameTimerId = 0, weatherFrameGeneration = 0, weatherFrameWatchdogId = 0, weatherFrameStartedAt = 0, weatherFetchIntervalId = 0;
   let grassGeometryCache={key:'',paths:null};
   let frameVisualContext=null, safeInsetsCache={left:0,right:0,top:0,bottom:0}, nextSafeInsetsRefresh=0, weatherLensCount=0;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -5684,12 +5686,23 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     if(document.hidden || document.documentElement.dataset.theme!=='weather') return;
     // Recover if the loop flag survived but its scheduled frame was lost during browser throttling.
     if(weatherFrameRunning && (weatherFrameRequestId!==null || weatherFrameTimerId)) return;
-    weatherFrameRunning=true; weatherFrameGeneration++; lastFrame=0; nextFrameAt=0; scheduleWeatherFrame(weatherFrameGeneration);
+    weatherFrameRunning=true; weatherFrameGeneration++; lastFrame=0; weatherFrameStartedAt=performance.now(); nextFrameAt=0; scheduleWeatherFrame(weatherFrameGeneration);
   }
   function stopWeatherFrameLoop() {
     weatherFrameRunning=false; weatherFrameGeneration++;
     if(weatherFrameRequestId!==null) { window.cancelAnimationFrame(weatherFrameRequestId); weatherFrameRequestId=null; }
     if(weatherFrameTimerId) { window.clearTimeout(weatherFrameTimerId); weatherFrameTimerId=0; }
+  }
+  function startWeatherFrameWatchdog() {
+    if(weatherFrameWatchdogId) return;
+    weatherFrameWatchdogId=window.setInterval(()=>{
+      if(document.hidden || document.documentElement.dataset.theme!=='weather') return;
+      const now=performance.now(), lastActivity=lastFrame||weatherFrameStartedAt;
+      if(!weatherFrameRunning || (!weatherFrameRequestId && !weatherFrameTimerId) || now-lastActivity>5000) {
+        stopWeatherFrameLoop();
+        startWeatherFrameLoop();
+      }
+    },2000);
   }
   function startWeatherDataRefresh() {
     if(weatherFetchIntervalId || state.mode!=='live' || document.documentElement.dataset.theme!=='weather') return;
@@ -5752,6 +5765,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
     sky.style.transition='background 180ms linear, filter 180ms linear';
     sync();
     if(document.documentElement.dataset.theme==='weather') startWeatherFrameLoop();
+    startWeatherFrameWatchdog();
     $('weather-mode')?.addEventListener('change',e=>{ weatherRequestId++; state.mode=e.target.value; if(state.mode==='live'){state.time='auto'; if($('weather-time')) $('weather-time').value='auto';} lastSkyValue=''; if(document.documentElement.dataset.theme==='weather'){setSky(true); drawMountains(); drawGrass();} persist(); if(state.mode==='live'&&document.documentElement.dataset.theme==='weather'){fetchWeather();startWeatherDataRefresh();}else stopWeatherDataRefresh(); });
     $('weather-reflect-toggle')?.addEventListener('change',e=>{ weatherRequestId++;
       state.reflectWeather=e.target.checked;
