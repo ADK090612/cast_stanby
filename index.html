@@ -714,37 +714,16 @@
 #simple-weather-temperature, #weather-current-temperature { transition:color .7s ease; }
 </style>
     <!-- YouTube media integration disabled: video and music features are removed from the standby UI. -->
-    <script>
-        (function() {
-            const manifestObj = {
-                "name": "ADK 방송 대시보드",
-                "short_name": "방송 대시보드",
-                "description": "학교 및 방송실용 실시간 대기화면 SPA by.ADK",
-                "start_url": window.location.href, 
-                "display": "standalone",           
-                "background_color": "#000000",
-                "theme_color": "#000000",
-                "orientation": "landscape",
-                "icons": [
-                    {
-                        "src": "https://adk090612.github.io/cast_stanby/icon.png", 
-                        "sizes": "512x512",
-                        "type": "image/png"
-                    }
-                ]
-            };
+    <head>
+    <link rel="icon" type="image/png" href="./icon.png">
+    <link rel="apple-touch-icon" href="./icon.png">
+    <link rel="manifest" href="./manifest.json">
 
-            const manifestStr = JSON.stringify(manifestObj);
-            const manifestDataUrl = 'data:application/manifest+json,' + encodeURIComponent(manifestStr);
-
-            const link = document.createElement('link');
-            link.rel = 'manifest';
-            link.href = manifestDataUrl;
-            document.head.appendChild(link);
-            
-            console.log("PWA 인라인 매니페스트 주입 완료");
-        })();
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADK 방송 대시보드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    </head>
 <style>
 #weather-scene{position:fixed;inset:0;z-index:0;isolation:isolate;pointer-events:none;overflow:hidden;--sky-top:#397bb6;--sky-mid:#b6d8e9;--sky-low:#f6d7a3;--weather-light:1}
 :root[data-theme="weather"] #weather-precip{display:block}
