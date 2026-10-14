@@ -2,7 +2,7 @@
   "name": "ADK Dash",
   "short_name": "방송 대시보드",
   "description": "학교 및 방송실용 실시간 대기화면 SPA by.ADK",
-  "start_url": "./방송 대기화면.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
