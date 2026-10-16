@@ -1185,11 +1185,12 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                 <div>
                                     <h5 class="font-bold text-blue-300 text-lg">v2.6.0</h5>
                                     <ul class="list-disc pl-5 text-sm text-gray-300 mt-2 space-y-1">
-                                        <li>기존 버전의 오류 해결</li>
+                                        <li>기존 버전의 버그 해결</li>
                                         <li>모던·심플 화면 디자인을 다크·라이트 테마에서도 지원</li>
                                         <li>테마 전환 중 급식·학사 일정 화면 표시 복원 개선</li>
                                         <li>날씨 정보 상자의 현재 위치에 학교 이름 표시</li>
                                         <li>연산 부하 최소화 및 최적화</li>
+                                        <li>PWA manifest를 별도의 .json으로 분리</li>
                                     </ul>
                                 </div>
                                 <div class="pt-2 border-t border-white/10">
@@ -1493,7 +1494,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                         <option value="font-family-jua">Jua</option>
                                         <option value="font-family-blackhan">Black Han Sans</option>
                                     </select>
-                                    <p class="text-xs text-gray-400 mt-1">(*Windows11 22H2 이상의 크로미움 환경에 최적화)</p>
+                                    <p class="text-xs text-gray-400 mt-1">(*Windows11 22H2 이상의 크로미움 기반 환경에 최적화)</p>
                                 </div>
                             </div>
 
@@ -1975,8 +1976,8 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             } catch (error) {
                 console.error("업데이트 확인 실패:", error);
                 const statusText = document.getElementById('update-status-text');
-                if(statusText) statusText.textContent = '업데이트 서버에 연결할 수 없습니다.';
-                if (manual) alert("업데이트 서버에 연결할 수 없습니다.");
+                if(statusText) statusText.textContent = '서버에 연결할 수 없습니다.';
+                if (manual) alert("서버에 연결할 수 없습니다.");
             }
         }
 
@@ -3842,7 +3843,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                 if (document.fullscreenElement) await document.exitFullscreen();
                 else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
                 else if (document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
-            } catch (error) { console.warn('전체 화면 전환이 브라우저에서 허용되지 않았습니다.', error); }
+            } catch (error) { console.warn('전체 화면 전환이 허용되지 않는 브라우저입니다.', error); }
         }
         function updateFullscreenButton() {
             const button=document.getElementById('fullscreen-btn');
@@ -4156,12 +4157,12 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
 
                         callback(dataUrl);
                     } catch (error) {
-                        console.warn('이미지 리사이즈 실패, 원본으로 적용합니다:', error);
+                        console.warn('이미지 리사이즈에 실패하여 원본으로 적용합니다:', error);
                         callback(originalDataUrl);
                     }
                 };
                 img.onerror = function() {
-                    console.warn('이미지 디코딩 실패, 원본으로 적용합니다.');
+                    console.warn('이미지 디코딩을 실패하여 원본으로 적용합니다.');
                     callback(originalDataUrl);
                 };
                 img.src = originalDataUrl;
@@ -4362,7 +4363,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
             const resetBgBtn = document.getElementById('reset-bg-btn');
             if (resetBgBtn) {
                 resetBgBtn.addEventListener('click', () => {
-                    if (confirm("배경화면을 기본 설정으로 되돌리시겠습니까?")) {
+                    if (confirm("기본 배경으로 되돌리시겠습니까?")) {
                         localStorage.removeItem('dashboardBackground');
                         document.body.style.backgroundImage = '';
                         const defaultAnimatedBg = document.getElementById('default-animated-bg');
@@ -4452,7 +4453,7 @@ body.low-performance-mode #weather-scene canvas{display:none}body.low-performanc
                                 alert("올바른 백업 파일이 아닙니다.");
                             }
                         } catch (err) {
-                            alert("유효하지 않은 JSON 파일입니다.");
+                            alert("유효하지 않은 .json 파일입니다.");
                         }
                     };
                     reader.readAsText(file);
